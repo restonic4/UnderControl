@@ -1,0 +1,6 @@
+accessWidener	v2	named
+
+transitive-accessible	field	net/minecraft/client/renderer/ShaderInstance	uniformMap	Ljava/util/Map;
+transitive-extendable	method	net/minecraft/client/renderer/ShaderInstance	parseUniformNode	(Lcom/google/gson/JsonElement;)V
+transitive-accessible	field	net/minecraft/client/renderer/ShaderInstance	uniforms	Ljava/util/List;
+accessible class net/minecraft/client/renderer/RenderStateShard$ShaderStateShard

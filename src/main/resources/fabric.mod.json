@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "under_control",
+  "version": "${version}",
+  "name": "UnderControl",
+  "description": "Library to make things easier",
+  "authors": [
+    "restonic4"
+  ],
+  "contact": {
+    "repo": "https://github.com/restonic4/UnderControl"
+  },
+  "license": "MIT",
+  "icon": "assets/under_control/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.restonic4.under_control.client.UnderControlClient"
+    ],
+    "main": [
+      "com.restonic4.under_control.UnderControl"
+    ]
+  },
+  "mixins": [
+    "under_control.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  },
+  "accessWidener": "mod.accesswidener"
+}
