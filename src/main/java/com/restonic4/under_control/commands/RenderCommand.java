@@ -6,6 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.restonic4.under_control.client.ClientCacheData;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
@@ -38,11 +39,7 @@ public class RenderCommand {
         Minecraft.getInstance().player.sendSystemMessage(Component.literal("Wireframe: " + (state ? "Activated" : "Deactivated")));
 
         RenderSystem.assertOnRenderThread();
-        if (state) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        } else {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
+        ClientCacheData.shouldRenderWireframe = state;
 
         return 1;
     }
