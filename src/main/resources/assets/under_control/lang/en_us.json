@@ -1,0 +1,5 @@
+{
+  "gui.under_control.fatal_error.title": "Mod incompatibility found!",
+  "gui.under_control.fatal_error.message": "A mod incompatibility has been found with ",
+  "gui.under_control.fatal_error.close": "Close Minecraft"
+}

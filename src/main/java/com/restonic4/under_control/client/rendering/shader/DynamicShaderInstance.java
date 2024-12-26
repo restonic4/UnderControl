@@ -1,4 +1,4 @@
-package com.restonic4.under_control.client.rendering;
+package com.restonic4.under_control.client.rendering.shader;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

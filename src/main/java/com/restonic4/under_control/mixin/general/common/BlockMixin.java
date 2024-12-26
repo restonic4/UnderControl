@@ -1,4 +1,4 @@
-package com.restonic4.under_control.mixin;
+package com.restonic4.under_control.mixin.general.common;
 
 import com.restonic4.under_control.events.EventResult;
 import com.restonic4.under_control.events.types.BlockEvents;

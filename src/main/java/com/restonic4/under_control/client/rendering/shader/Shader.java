@@ -1,4 +1,4 @@
-package com.restonic4.under_control.client.rendering;
+package com.restonic4.under_control.client.rendering.shader;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;

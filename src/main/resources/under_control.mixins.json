@@ -3,14 +3,32 @@
   "minVersion": "0.8",
   "package": "com.restonic4.under_control.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "com.restonic4.under_control.plugin.MixinActivatorPlugin",
+  "plugin": "com.restonic4.under_control.plugin.UnderControlMixinPlugin",
   "mixins": [
-    "BlockMixin",
-    "client.ShaderInstanceMixin"
+    "general.client.ShaderInstanceMixin",
+    "general.common.BasePressurePlateBlockMixin",
+    "general.common.BigDripleafBlockMixin",
+    "general.common.BlockMixin",
+    "vanish.EntitySelectors$AbstractMinecartMixin",
+    "vanish.EntitySelectors$ArmorItemMixin",
+    "vanish.EntitySelectors$BeehiveBlockMixin",
+    "vanish.EntitySelectors$EntityGetterMixin",
+    "vanish.EntitySelectors$EntitySelectorMixin",
+    "vanish.EntitySelectors$PlayerMixin",
+    "general.common.FarmBlockMixin",
+    "general.common.LivingEntityMixin",
+    "general.common.MobEffectsMixin",
+    "general.common.PlayerMixin",
+    "general.common.RedStoneOreBlockMixin",
+    "general.common.SculkLikeBlockMixin",
+    "general.common.TripWireBlockMixin",
+    "general.common.TurtleEggBlockMixin",
+    "vanish.VibrationSystemMixin"
   ],
   "client": [
-    "client.GameRendererMixin",
-    "client.LevelRendererMixin"
+    "general.client.GameRendererMixin",
+    "general.client.LevelRendererMixin",
+    "general.client.MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

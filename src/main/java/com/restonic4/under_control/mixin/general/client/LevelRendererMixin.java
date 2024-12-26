@@ -1,4 +1,4 @@
-package com.restonic4.under_control.mixin.client;
+package com.restonic4.under_control.mixin.general.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.restonic4.under_control.client.ClientCacheData;

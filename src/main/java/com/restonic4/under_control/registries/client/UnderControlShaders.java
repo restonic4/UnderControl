@@ -3,15 +3,13 @@ package com.restonic4.under_control.registries.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.datafixers.util.Pair;
 import com.restonic4.under_control.UnderControl;
-import com.restonic4.under_control.client.rendering.DynamicShaderInstance;
-import com.restonic4.under_control.client.rendering.Shader;
+import com.restonic4.under_control.client.rendering.shader.DynamicShaderInstance;
+import com.restonic4.under_control.client.rendering.shader.Shader;
 import com.restonic4.under_control.events.types.ShaderEvents;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class UnderControlShaders {
     private static final List<Shader> shaders = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.restonic4.under_control.client;
 
 import com.restonic4.under_control.UnderControl;
+import com.restonic4.under_control.api.incompatibilities.IncompatibilitiesAPI;
 import com.restonic4.under_control.registries.RegistriesManager;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -10,5 +11,6 @@ public class UnderControlClient implements ClientModInitializer {
         UnderControl.LOGGER.info("Starting client");
 
         RegistriesManager.register(this);
+        IncompatibilitiesAPI.registerClient();
     }
 }
