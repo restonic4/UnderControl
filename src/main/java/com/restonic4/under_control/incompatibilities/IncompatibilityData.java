@@ -1,4 +1,4 @@
-package com.restonic4.under_control.api.incompatibilities;
+package com.restonic4.under_control.incompatibilities;
 
 import java.util.ArrayList;
 import java.util.List;

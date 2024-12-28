@@ -9,12 +9,6 @@
     "general.common.BasePressurePlateBlockMixin",
     "general.common.BigDripleafBlockMixin",
     "general.common.BlockMixin",
-    "vanish.EntitySelectors$AbstractMinecartMixin",
-    "vanish.EntitySelectors$ArmorItemMixin",
-    "vanish.EntitySelectors$BeehiveBlockMixin",
-    "vanish.EntitySelectors$EntityGetterMixin",
-    "vanish.EntitySelectors$EntitySelectorMixin",
-    "vanish.EntitySelectors$PlayerMixin",
     "general.common.FarmBlockMixin",
     "general.common.LivingEntityMixin",
     "general.common.MobEffectsMixin",
@@ -23,12 +17,19 @@
     "general.common.SculkLikeBlockMixin",
     "general.common.TripWireBlockMixin",
     "general.common.TurtleEggBlockMixin",
+    "vanish.AbstractMinecartMixin",
+    "vanish.ArmorItemMixin",
+    "vanish.BeehiveBlockMixin",
+    "vanish.EntityGetterMixin",
+    "vanish.EntitySelectorMixin",
+    "vanish.PlayerMixin",
     "vanish.VibrationSystemMixin"
   ],
   "client": [
     "general.client.GameRendererMixin",
     "general.client.LevelRendererMixin",
-    "general.client.MinecraftMixin"
+    "general.client.MinecraftMixin",
+    "general.client.ReceivingLevelScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,5 +1,9 @@
 {
-  "gui.under_control.fatal_error.title": "Mod incompatibility found!",
-  "gui.under_control.fatal_error.message": "A mod incompatibility has been found with ",
-  "gui.under_control.fatal_error.close": "Close Minecraft"
+  "gui.under_control.fatal_error.title": "Fatal error!",
+  "gui.under_control.fatal_error.message": "Something went wrong -> ",
+  "gui.under_control.fatal_error.close": "Close Minecraft",
+  "gui.under_control.incompatibility.title": "Mod incompatibility found!",
+  "gui.under_control.incompatibility.message": "A mod incompatibility has been found with ",
+  "gui.under_control.incompatibility.message.server": "A mod incompatibility has been found by the current server: ",
+  "gui.under_control.incompatibility.close": "Close"
 }

@@ -19,6 +19,12 @@
     ],
     "main": [
       "com.restonic4.under_control.UnderControl"
+    ],
+    "server": [
+      "com.restonic4.under_control.UnderControlServer"
+    ],
+    "modmenu": [
+      "com.restonic4.under_control.compatibility.modmenu.ModMenuAPIImpl"
     ]
   },
   "mixins": [
@@ -29,5 +35,6 @@
     "fabric": "*",
     "minecraft": "${minecraft_version}"
   },
-  "accessWidener": "mod.accesswidener"
+  "accessWidener": "mod.accesswidener",
+  "custom": {}
 }

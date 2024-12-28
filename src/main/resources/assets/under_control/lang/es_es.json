@@ -1,5 +1,9 @@
 {
-  "gui.under_control.fatal_error.title": "¡Mods incompatibles!",
-  "gui.under_control.fatal_error.message": "Se ha encontrado una incompatibilidad con ",
-  "gui.under_control.fatal_error.close": "Cerrar Minecraft"
+  "gui.under_control.fatal_error.title": "¡Error fatal!",
+  "gui.under_control.fatal_error.message": "Algo ha ido mal -> ",
+  "gui.under_control.fatal_error.close": "Cerrar Minecraft",
+  "gui.under_control.incompatibility.title": "Mods incompatibles!",
+  "gui.under_control.incompatibility.message": "Se ha encontrado una incompatibilidad con ",
+  "gui.under_control.incompatibility.message.server": "Una incompatibilidad ha sido detectada por el servidor: ",
+  "gui.under_control.incompatibility.close": "Cerrar"
 }
