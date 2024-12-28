@@ -2,6 +2,7 @@ package com.restonic4.under_control.client;
 
 import com.restonic4.under_control.UnderControl;
 import com.restonic4.under_control.api.config.ConfigAPI;
+import com.restonic4.under_control.core.UnderControlConfig;
 import com.restonic4.under_control.incompatibilities.ClientIncompatibilitiesManager;
 import com.restonic4.under_control.api.saving.SavingAPI;
 import com.restonic4.under_control.networking.PacketManager;
@@ -16,6 +17,7 @@ public class UnderControlClient implements ClientModInitializer {
         UnderControl.LOGGER.info("Starting client");
 
         SavingAPI.registerClientEvents();
+        UnderControlConfig.registerClient();
         RegistriesManager.register(this);
         ClientIncompatibilitiesManager.registerClient();
         PacketManager.registerServerToClient();

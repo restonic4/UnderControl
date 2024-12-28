@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SavingProvider {
-    private final Map<String, Object> dataStore = new HashMap<>();
-    private final Map<String, Object> defaultValues = new HashMap<>();
+    private Map<String, Object> dataStore = new HashMap<>();
+    private Map<String, Object> defaultValues = new HashMap<>();
 
     private final String saveFilePath;
 
@@ -162,5 +162,25 @@ public class SavingProvider {
 
     public void delete(String key) {
         dataStore.remove(key);
+    }
+
+    public String getSaveFilePath() {
+        return this.saveFilePath;
+    }
+
+    public Map<String, Object> getDataStore() {
+        return this.dataStore;
+    }
+
+    public Map<String, Object> getDefaultValues() {
+        return this.defaultValues;
+    }
+
+    public void setDataStore(Map<String, Object> dataStore) {
+        this.dataStore = dataStore;
+    }
+
+    public void setDefaultValues(Map<String, Object> defaultValues) {
+        this.defaultValues = defaultValues;
     }
 }

@@ -1,6 +1,8 @@
 package com.restonic4.under_control.api.config;
 
+import com.restonic4.under_control.UnderControl;
 import com.restonic4.under_control.api.saving.SavingAPI;
+import com.restonic4.under_control.config.ConfigProvider;
 import com.restonic4.under_control.saving.SavingProvider;
 import com.restonic4.under_control.saving.VanillaSerializableTypes;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -16,34 +18,62 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigAPI {
-    public static void registerServerConfig(String modID) {
+    private static Map<String, ConfigProvider> clientConfigProviders = new HashMap<>();
+    private static Map<String, ConfigProvider> serverConfigProviders = new HashMap<>();
+
+    public static ConfigProvider registerServerConfig(String modID, MinecraftServer minecraftServer) {
         String serverID = modID + "_server";
 
-        Path serverRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(serverID + ".config");
+        if (minecraftServer != null && minecraftServer.isDedicatedServer()) {
+            Path serverRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(serverID + ".config");
 
-        SavingAPI.registerProvider(serverID, serverRootPath, SavingAPI.getWorldSavingProviders());
+            ConfigProvider configProvider = new ConfigProvider(SavingAPI.registerProvider(serverID, serverRootPath, SavingAPI.getWorldSavingProviders()));
+            serverConfigProviders.put(modID, configProvider);
+            return configProvider;
+        } else {
+            Path serverRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(serverID + ".config");
+            ConfigProvider configProvider = new ConfigProvider(SavingAPI.registerProvider(serverID, serverRootPath, SavingAPI.getClientSavingProviders()));
+            serverConfigProviders.put(modID, configProvider);
+            return configProvider;
+        }
     }
 
-    public static void registerClientConfig(String modID) {
+    public static ConfigProvider registerClientConfig(String modID) {
         String clientID = modID + "_client";
-        String serverID = modID + "_server";
 
         Path clientRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(clientID + ".config");
-        Path serverRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(serverID + ".config");
 
-        SavingAPI.registerProvider(clientID, clientRootPath, SavingAPI.getClientSavingProviders());
-        SavingAPI.registerProvider(serverID, serverRootPath, SavingAPI.getClientSavingProviders());
+        ConfigProvider configProvider = new ConfigProvider(SavingAPI.registerProvider(clientID, clientRootPath, SavingAPI.getClientSavingProviders()));
+        clientConfigProviders.put(modID, configProvider);
+        return configProvider;
     }
 
-    public static SavingProvider getClientProvider(String modID) {
-        return SavingAPI.getClientSavingProviders().get(modID + "_client");
+    public static ConfigProvider getClientProvider(String modID) {
+        return clientConfigProviders.get(modID);
     }
 
-    public static SavingProvider getServerProvider(String modID, MinecraftServer minecraftServer) {
-        if (minecraftServer.isDedicatedServer()) {
-            return SavingAPI.getWorldSavingProviders().get(modID + "_server");
+    public static ConfigProvider getServerProvider(String modID) {
+        return serverConfigProviders.get(modID);
+    }
+
+    public static void reloadServerConfigs() {
+        for (Map.Entry<String, ConfigProvider> entry : serverConfigProviders.entrySet()) {
+            String key = entry.getKey();
+            ConfigProvider value = entry.getValue();
+
+            value.reload();
         }
 
-        return SavingAPI.getClientSavingProviders().get(modID);
+    }
+
+    public static void registerServerEvents() {
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
+            if (success) {
+                reloadServerConfigs();
+                UnderControl.LOGGER.info("Server reloaded correctly");
+            } else {
+                UnderControl.LOGGER.info("Error reloading the server");
+            }
+        });
     }
 }

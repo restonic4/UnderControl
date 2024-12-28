@@ -27,9 +27,9 @@ public class UnderControl implements ModInitializer {
         LOGGER.info("Starting the library");
 
         SavingAPI.registerServerEvents();
+        ConfigAPI.registerServerEvents();
         RegistriesManager.register(this);
         PacketManager.registerClientToServer();
-
         test();
     }
 
