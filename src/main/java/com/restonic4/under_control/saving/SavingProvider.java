@@ -18,9 +18,13 @@ public class SavingProvider {
     private Map<String, Object> dataStore = new HashMap<>();
     private Map<String, Object> defaultValues = new HashMap<>();
 
+    private Map<String, String> comments = new HashMap<>();
+
+    private final String modID;
     private final String saveFilePath;
 
-    public SavingProvider(String saveFilePath) {
+    public SavingProvider(String modID, String saveFilePath) {
+        this.modID = modID;
         this.saveFilePath = saveFilePath;
     }
 
@@ -31,7 +35,13 @@ public class SavingProvider {
     public void saveToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFilePath))) {
             for (Map.Entry<String, Object> entry : dataStore.entrySet()) {
-                writer.write(entry.getKey() + "=" + serializeObject(entry.getValue()));
+                String line = entry.getKey() + "=" + serializeObject(entry.getValue());
+
+                if (comments.containsKey(entry.getKey())) {
+                    line += "#" + comments.get(entry.getKey());
+                }
+
+                writer.write(line);
                 writer.newLine();
             }
         } catch (Exception e) {
@@ -50,13 +60,24 @@ public class SavingProvider {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
+            String lineComment;
             dataStore.clear();
             while ((line = reader.readLine()) != null) {
+                String[] lineParts = line.split("#");
+
+                line = lineParts[0];
+                lineComment = lineParts.length == 2 ? lineParts[1] : "";
+
                 String[] parts = line.split("=", 2);
+
                 if (parts.length == 2) {
                     String key = parts[0];
                     Object value = deserializeObject(parts[1]);
                     dataStore.put(key, value);
+
+                    if (!lineComment.isEmpty() && !lineComment.isBlank()) {
+                        comments.put(key, lineComment);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -65,6 +86,10 @@ public class SavingProvider {
     }
 
     private String serializeObject(Object object) {
+        if (object == null) {
+            return "null";
+        }
+
         if (object instanceof Integer || object instanceof Double || object instanceof Boolean) {
             return object.toString();
         }
@@ -164,6 +189,14 @@ public class SavingProvider {
         dataStore.remove(key);
     }
 
+    public void addComment(String key, String comment) {
+        comments.put(key, comment);
+    }
+
+    public String getComment(String key) {
+        return comments.get(key);
+    }
+
     public String getSaveFilePath() {
         return this.saveFilePath;
     }
@@ -176,11 +209,23 @@ public class SavingProvider {
         return this.defaultValues;
     }
 
+    public Map<String, String> getComments() {
+        return this.comments;
+    }
+
     public void setDataStore(Map<String, Object> dataStore) {
         this.dataStore = dataStore;
     }
 
     public void setDefaultValues(Map<String, Object> defaultValues) {
         this.defaultValues = defaultValues;
+    }
+
+    public void setComments(Map<String, String> comments) {
+        this.comments = comments;
+    }
+
+    public String getModID() {
+        return this.modID;
     }
 }

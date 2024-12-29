@@ -5,5 +5,13 @@
   "gui.under_control.incompatibility.title": "Mod incompatibility found!",
   "gui.under_control.incompatibility.message": "A mod incompatibility has been found with ",
   "gui.under_control.incompatibility.message.server": "A mod incompatibility has been found by the current server: ",
-  "gui.under_control.incompatibility.close": "Close"
+  "gui.under_control.incompatibility.close": "Close",
+  "gui.under_control.config_selector.title": "Select the config file!",
+  "gui.under_control.config.client_side": "Client side",
+  "gui.under_control.config.server_side": "Server side",
+  "gui.under_control.config.close_menu": "Go back",
+  "gui.under_control.config.open_file": "Open file",
+  "gui.under_control.config.option.log_extra": "Log extra information.",
+  "gui.under_control.config.option.allow_render_command": "Allow render command for clients.",
+  "gui.under_control.config.option.mod_incompatibilities": "Mod incompatibilities."
 }

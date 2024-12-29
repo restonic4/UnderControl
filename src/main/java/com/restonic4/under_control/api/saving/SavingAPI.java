@@ -91,12 +91,18 @@ public class SavingAPI {
     }
 
     public static SavingProvider registerProvider(String modID, String path, Map<String, SavingProvider> map) {
-        SavingProvider savingProvider =  new SavingProvider(path);
+        SavingProvider savingProvider =  new SavingProvider(modID, path);
+        return registerProvider(modID, map, savingProvider);
+    }
+
+    public static SavingProvider registerProvider(String modID, Map<String, SavingProvider> map, SavingProvider savingProvider) {
         map.put(modID, savingProvider);
 
         savingProvider.loadFromFile();
 
-        UnderControl.LOGGER.info("Saving provider for " + modID + " loaded at " + path);
+        UnderControl.LOGGER.info("Saving provider for " + modID + " loaded at " + savingProvider.getSaveFilePath());
+
+        savingProvider.saveToFile();
 
         return savingProvider;
     }

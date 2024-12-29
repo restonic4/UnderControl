@@ -35,6 +35,5 @@
     "fabric": "*",
     "minecraft": "${minecraft_version}"
   },
-  "accessWidener": "mod.accesswidener",
-  "custom": {}
+  "accessWidener": "mod.accesswidener"
 }

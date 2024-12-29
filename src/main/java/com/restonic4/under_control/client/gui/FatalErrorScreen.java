@@ -18,6 +18,13 @@ public class FatalErrorScreen extends Screen {
         this.close = Component.translatable("gui.under_control.fatal_error.close");
     }
 
+    public FatalErrorScreen(Screen parent) {
+        super(Component.literal("Fatal error!"));
+        this.title = Component.literal("Fatal error!");
+        this.message = Component.literal("Something went terribly wrong and we don't know why...");
+        this.close = Component.translatable("gui.under_control.fatal_error.close");
+    }
+
     protected void init() {
         super.init();
 

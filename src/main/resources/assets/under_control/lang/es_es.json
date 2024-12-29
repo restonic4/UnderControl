@@ -5,5 +5,13 @@
   "gui.under_control.incompatibility.title": "Mods incompatibles!",
   "gui.under_control.incompatibility.message": "Se ha encontrado una incompatibilidad con ",
   "gui.under_control.incompatibility.message.server": "Una incompatibilidad ha sido detectada por el servidor: ",
-  "gui.under_control.incompatibility.close": "Cerrar"
+  "gui.under_control.incompatibility.close": "Cerrar",
+  "gui.under_control.config_selector.title": "¡Elige el archivo de configuración!",
+  "gui.under_control.config.client_side": "Cliente",
+  "gui.under_control.config.server_side": "Servidor",
+  "gui.under_control.config.close_menu": "Cancelar",
+  "gui.under_control.config.open_file": "Abrir archivo",
+  "gui.under_control.config.option.log_extra": "Información extra en los logs.",
+  "gui.under_control.config.option.allow_render_command": "Permitir el uso del comando render a los jugadores.",
+  "gui.under_control.config.option.mod_incompatibilities": "Mods incompatibles."
 }

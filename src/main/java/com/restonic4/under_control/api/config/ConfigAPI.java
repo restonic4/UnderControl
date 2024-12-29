@@ -3,11 +3,13 @@ package com.restonic4.under_control.api.config;
 import com.restonic4.under_control.UnderControl;
 import com.restonic4.under_control.api.saving.SavingAPI;
 import com.restonic4.under_control.config.ConfigProvider;
+import com.restonic4.under_control.config.ConfigScreenManager;
 import com.restonic4.under_control.saving.SavingProvider;
 import com.restonic4.under_control.saving.VanillaSerializableTypes;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 
@@ -27,12 +29,12 @@ public class ConfigAPI {
         if (minecraftServer != null && minecraftServer.isDedicatedServer()) {
             Path serverRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(serverID + ".config");
 
-            ConfigProvider configProvider = new ConfigProvider(SavingAPI.registerProvider(serverID, serverRootPath, SavingAPI.getWorldSavingProviders()));
+            ConfigProvider configProvider = (ConfigProvider) SavingAPI.registerProvider(serverID, SavingAPI.getWorldSavingProviders(), new ConfigProvider(modID, serverRootPath.toString()));
             serverConfigProviders.put(modID, configProvider);
             return configProvider;
         } else {
             Path serverRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(serverID + ".config");
-            ConfigProvider configProvider = new ConfigProvider(SavingAPI.registerProvider(serverID, serverRootPath, SavingAPI.getClientSavingProviders()));
+            ConfigProvider configProvider = (ConfigProvider) SavingAPI.registerProvider(serverID, SavingAPI.getClientSavingProviders(), new ConfigProvider(modID, serverRootPath.toString()));
             serverConfigProviders.put(modID, configProvider);
             return configProvider;
         }
@@ -43,9 +45,13 @@ public class ConfigAPI {
 
         Path clientRootPath = FabricLoader.getInstance().getGameDir().resolve("config").resolve(clientID + ".config");
 
-        ConfigProvider configProvider = new ConfigProvider(SavingAPI.registerProvider(clientID, clientRootPath, SavingAPI.getClientSavingProviders()));
+        ConfigProvider configProvider = (ConfigProvider) SavingAPI.registerProvider(clientID, SavingAPI.getClientSavingProviders(), new ConfigProvider(modID, clientRootPath.toString()));
         clientConfigProviders.put(modID, configProvider);
         return configProvider;
+    }
+
+    public static void registerConfigScreen(String modID, Class<? extends Screen> screenClass) {
+        ConfigScreenManager.registerConfigScreen(modID, screenClass);
     }
 
     public static ConfigProvider getClientProvider(String modID) {

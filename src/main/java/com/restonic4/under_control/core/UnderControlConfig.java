@@ -3,6 +3,7 @@ package com.restonic4.under_control.core;
 import com.restonic4.under_control.UnderControl;
 import com.restonic4.under_control.api.config.ConfigAPI;
 import com.restonic4.under_control.config.ConfigProvider;
+import com.restonic4.under_control.incompatibilities.IncompatibilitiesList;
 import com.restonic4.under_control.saving.SavingProvider;
 import net.minecraft.server.MinecraftServer;
 
@@ -32,10 +33,13 @@ public class UnderControlConfig {
     }
 
     private static void setUpClient() {
-        clientConfigProvider.registerDefaultValue("log_extra", false);
+        clientConfigProvider.registerOption("log_extra", false, "Logs extra information about what's going on with the library.");
     }
 
     private static void setUpServer() {
-        serverConfigProvider.registerDefaultValue("log_extra", false);
+        serverConfigProvider.registerOption("log_extra", false, "Logs extra information about what's going on with the library.");
+        serverConfigProvider.registerOption("allow_render_command", true, "Allows the client the use of the render command.");
+        serverConfigProvider.registerOption("mod_incompatibilities", new IncompatibilitiesList(), "It allows the server to prevent a player from joining with an incompatible mod, or you can even use it as a small layer of security to prevent users from using malicious mods.");
+        serverConfigProvider.registerOption("a", "aaaaaaaaaa", "no");
     }
 }

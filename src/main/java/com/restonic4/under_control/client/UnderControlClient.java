@@ -2,6 +2,8 @@ package com.restonic4.under_control.client;
 
 import com.restonic4.under_control.UnderControl;
 import com.restonic4.under_control.api.config.ConfigAPI;
+import com.restonic4.under_control.client.gui.FatalErrorScreen;
+import com.restonic4.under_control.config.ConfigProvider;
 import com.restonic4.under_control.core.UnderControlConfig;
 import com.restonic4.under_control.incompatibilities.ClientIncompatibilitiesManager;
 import com.restonic4.under_control.api.saving.SavingAPI;
@@ -23,6 +25,7 @@ public class UnderControlClient implements ClientModInitializer {
         PacketManager.registerServerToClient();
 
         SavingProvider savingProvider = SavingAPI.registerProviderForClient(UnderControl.MOD_ID);
-        ConfigAPI.registerClientConfig(UnderControl.MOD_ID);
+
+        ConfigAPI.registerConfigScreen("cool_enchantments", FatalErrorScreen.class);
     }
 }
