@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "com.restonic4.under_control.plugin.UnderControlMixinPlugin",
   "mixins": [
+    "compatibility.modmenu.ModMenuAccessor",
     "general.client.ShaderInstanceMixin",
     "general.common.BasePressurePlateBlockMixin",
     "general.common.BigDripleafBlockMixin",

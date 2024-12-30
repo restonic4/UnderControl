@@ -5,6 +5,7 @@ import com.restonic4.under_control.api.config.ConfigAPI;
 import com.restonic4.under_control.config.ConfigProvider;
 import com.restonic4.under_control.incompatibilities.IncompatibilitiesList;
 import com.restonic4.under_control.saving.SavingProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 
 public class UnderControlConfig {
@@ -40,6 +41,6 @@ public class UnderControlConfig {
         serverConfigProvider.registerOption("log_extra", false, "Logs extra information about what's going on with the library.");
         serverConfigProvider.registerOption("allow_render_command", true, "Allows the client the use of the render command.");
         serverConfigProvider.registerOption("mod_incompatibilities", new IncompatibilitiesList(), "It allows the server to prevent a player from joining with an incompatible mod, or you can even use it as a small layer of security to prevent users from using malicious mods.");
-        serverConfigProvider.registerOption("a", "aaaaaaaaaa", "no");
+        serverConfigProvider.registerOption("log_on_reload_in_chat", true, "Logs info on chat when the server reloads.");
     }
 }

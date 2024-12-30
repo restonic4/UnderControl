@@ -14,7 +14,6 @@ import java.lang.reflect.Type;
 public abstract class VanillaSerializableTypes {
     public static class BlockPos implements ClassProvider<net.minecraft.core.BlockPos> {
         int x, y, z;
-        net.minecraft.core.BlockPos blockPos = null;
 
         public BlockPos() {
             this.x = 0;
@@ -34,20 +33,6 @@ public abstract class VanillaSerializableTypes {
             this.z = blockPos.getZ();
         }
 
-        public net.minecraft.core.BlockPos getBlockPos() {
-            if (this.blockPos == null) {
-                this.blockPos = new net.minecraft.core.BlockPos(this.x, this.y, this.z);
-            }
-
-            return this.blockPos;
-        }
-
-        public void applyChanges() {
-            this.x = this.blockPos.getX();
-            this.y = this.blockPos.getY();
-            this.z = this.blockPos.getZ();
-        }
-
         @Override
         public String getIdentifier() {
             return "BlockPos";
@@ -62,11 +47,7 @@ public abstract class VanillaSerializableTypes {
         public net.minecraft.core.BlockPos deserialize(String data) {
             String[] axis = data.split(",");
 
-            this.x = Integer.parseInt(axis[0]);
-            this.y = Integer.parseInt(axis[1]);
-            this.z = Integer.parseInt(axis[2]);
-
-            return this.getBlockPos();
+            return new net.minecraft.core.BlockPos(Integer.parseInt(axis[0]), Integer.parseInt(axis[1]), Integer.parseInt(axis[2]));
         }
     }
 }

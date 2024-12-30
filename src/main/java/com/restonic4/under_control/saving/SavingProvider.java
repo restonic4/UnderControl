@@ -3,6 +3,7 @@ package com.restonic4.under_control.saving;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.restonic4.under_control.UnderControl;
 import com.restonic4.under_control.api.saving.SavingAPI;
 import net.minecraft.core.BlockPos;
 
@@ -147,14 +148,16 @@ public class SavingProvider {
         }
 
         String[] parts = objectData.split(";", 2);
-        if (parts.length == 2) {
+        if (parts.length <= 2) {
             String identifier = parts[0];
-            String data = parts[1];
+            String data = (parts.length == 2) ? parts[1] : "";
 
             ClassProvider<?> provider = SavingAPI.getClassProviders().get(identifier);
             if (provider != null) {
                 return provider.deserialize(data);
             }
+
+            throw new IllegalStateException("Class provider not found for " + identifier + ", you should register the provider using SavingAPI.registerClassProvider(...);");
         }
 
         return null;
@@ -183,6 +186,10 @@ public class SavingProvider {
         }
 
         return null;
+    }
+
+    public Object getDefaultValue(String key) {
+        return defaultValues.get(key);
     }
 
     public void delete(String key) {

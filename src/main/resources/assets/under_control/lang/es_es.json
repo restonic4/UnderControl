@@ -9,9 +9,13 @@
   "gui.under_control.config_selector.title": "¡Elige el archivo de configuración!",
   "gui.under_control.config.client_side": "Cliente",
   "gui.under_control.config.server_side": "Servidor",
-  "gui.under_control.config.close_menu": "Cancelar",
+  "gui.under_control.config.back": "Atras",
   "gui.under_control.config.open_file": "Abrir archivo",
+  "gui.under_control.config.reset_option": "Reinicia la opcción a su valor por defecto.",
   "gui.under_control.config.option.log_extra": "Información extra en los logs.",
   "gui.under_control.config.option.allow_render_command": "Permitir el uso del comando render a los jugadores.",
-  "gui.under_control.config.option.mod_incompatibilities": "Mods incompatibles."
+  "gui.under_control.config.option.mod_incompatibilities": "Mods incompatibles.",
+  "gui.under_control.config.option.log_on_reload_in_chat": "Información en el chat al hacer reload.",
+  "message.under_control.server.reload.complete": "¡Servidor recargado correctamente!",
+  "message.under_control.server.reload.error": "¡Hubo un problema recargando el servidor!"
 }

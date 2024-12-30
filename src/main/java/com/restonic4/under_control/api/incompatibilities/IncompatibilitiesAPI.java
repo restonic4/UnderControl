@@ -1,5 +1,6 @@
 package com.restonic4.under_control.api.incompatibilities;
 
+import com.restonic4.under_control.incompatibilities.IncompatibilitiesList;
 import com.restonic4.under_control.incompatibilities.IncompatibilityData;
 
 import java.util.ArrayList;

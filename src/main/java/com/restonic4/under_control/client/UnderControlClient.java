@@ -25,7 +25,5 @@ public class UnderControlClient implements ClientModInitializer {
         PacketManager.registerServerToClient();
 
         SavingProvider savingProvider = SavingAPI.registerProviderForClient(UnderControl.MOD_ID);
-
-        ConfigAPI.registerConfigScreen("cool_enchantments", FatalErrorScreen.class);
     }
 }

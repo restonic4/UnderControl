@@ -1,5 +1,7 @@
 package com.restonic4.under_control.incompatibilities;
 
+import com.restonic4.under_control.UnderControl;
+import com.restonic4.under_control.api.config.ConfigAPI;
 import com.restonic4.under_control.api.incompatibilities.IncompatibilitiesAPI;
 import com.restonic4.under_control.incompatibilities.IncompatibilityData;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,5 +21,8 @@ public class IncompatibilitiesUtil {
                 }
             }
         }
+
+        IncompatibilitiesList incompatibilitiesListFromServerConfig = ConfigAPI.getServerProvider(UnderControl.MOD_ID).get("mod_incompatibilities", IncompatibilitiesList.class);
+        result.addAll(incompatibilitiesListFromServerConfig.getIncompatibleMods());
     }
 }

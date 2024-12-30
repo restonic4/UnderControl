@@ -1,6 +1,7 @@
 package com.restonic4.under_control.api.saving;
 
 import com.restonic4.under_control.UnderControl;
+import com.restonic4.under_control.incompatibilities.IncompatibilitiesList;
 import com.restonic4.under_control.saving.ClassProvider;
 import com.restonic4.under_control.saving.SavingProvider;
 import com.restonic4.under_control.saving.VanillaSerializableTypes;
@@ -31,6 +32,7 @@ public class SavingAPI {
 
     public static void registerServerEvents() {
         SavingAPI.registerClassProvider(new VanillaSerializableTypes.BlockPos());
+        SavingAPI.registerClassProvider(new IncompatibilitiesList());
 
         ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             for (String modID: worldSavingProvidersGenerators) {

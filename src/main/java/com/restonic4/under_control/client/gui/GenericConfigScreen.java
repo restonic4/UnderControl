@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 import java.awt.*;
@@ -35,6 +36,7 @@ public class GenericConfigScreen extends Screen {
 
     private List<AbstractWidget> scrollableButtons;
     private Map<AbstractWidget, Component> widgetComments;
+    private Map<AbstractWidget, Button> resetButtons;
 
     public GenericConfigScreen(final Screen parent, ConfigProvider configProvider) {
         super(Component.translatable("gui.under_control.config_selector.title"));
@@ -42,6 +44,7 @@ public class GenericConfigScreen extends Screen {
         this.configProvider = configProvider;
 
         this.scrollableButtons = new ArrayList<>();
+        this.resetButtons = new HashMap<>();
         this.widgetComments = new HashMap<>();
     }
 
@@ -61,12 +64,13 @@ public class GenericConfigScreen extends Screen {
         buttonWidth = Math.min(buttonWidth, maxButtonWidth);
         buttonWidth = Math.max(buttonWidth, minButtonWidth);
 
-        int buttonHorizontalPosition = this.width - padding - scrollBarWidth - buttonWidth;
+        int buttonHorizontalPosition = this.width - padding * 2 - scrollBarWidth - buttonWidth;
 
         scrollableButtons.clear();
         widgetComments.clear();
+        resetButtons.clear();
 
-        Map<String, Object> savedConfigs = configProvider.getDataStore();
+        Map<String, Object> savedConfigs = configProvider.getConfigs();
 
         int y = padding;
         for (Map.Entry<String, Object> entry : savedConfigs.entrySet()) {
@@ -75,6 +79,8 @@ public class GenericConfigScreen extends Screen {
 
             Component label = Component.translatable("gui." + configProvider.getModID() + ".config.option." + key);
             int labelHeight = this.font.lineHeight;
+
+            AbstractWidget abstractWidget;
 
             // Widgets types
             if (value instanceof Boolean) {
@@ -87,9 +93,7 @@ public class GenericConfigScreen extends Screen {
                     configProvider.save(key, currentValue[0]);
                 }).bounds(buttonHorizontalPosition, y, buttonWidth, buttonHeight).tooltip(Tooltip.create(Component.literal(configProvider.getComment(key)))).build();
 
-                scrollableButtons.add(boolButton);
-                widgetComments.put(boolButton, label);
-                this.addRenderableWidget(boolButton);
+                abstractWidget = boolButton;
             } else if (value instanceof Integer || value instanceof Float || value instanceof Long || value instanceof Double) {
                 String initialText = value.toString();
                 EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal(initialText));
@@ -109,9 +113,7 @@ public class GenericConfigScreen extends Screen {
                     configProvider.save(key, newValue);
                 });
 
-                scrollableButtons.add(textField);
-                widgetComments.put(textField, label);
-                this.addRenderableWidget(textField);
+                abstractWidget = textField;
             } else if (value instanceof String) {
                 EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal((String) value));
 
@@ -122,18 +124,67 @@ public class GenericConfigScreen extends Screen {
                     configProvider.save(key, newValue);
                 });
 
-                scrollableButtons.add(textField);
-                widgetComments.put(textField, label);
-                this.addRenderableWidget(textField);
+                abstractWidget = textField;
+            } else if (value instanceof BlockPos blockPos) {
+                String initialText = value.toString();
+
+                String formattedText;
+
+                int start = initialText.indexOf('{');
+                int end = initialText.indexOf('}');
+
+                if (start != -1 && end != -1 && start < end) {
+                    formattedText = initialText.substring(start + 1, end);
+                } else {
+                    formattedText = initialText;
+                }
+
+                EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal(formattedText));
+
+                textField.setValue(formattedText);
+                textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
+
+                textField.setFilter(s -> s.matches("^x=-?\\d+,\\s*y=-?\\d+,\\s*z=-?\\d+$"));
+
+                textField.setResponder(newValue -> {
+                    if (newValue.matches("^x=-?\\d+,\\s*y=-?\\d+,\\s*z=-?\\d+$")) {
+                        String[] parts = newValue.split("[=,]");
+
+                        try {
+                            int bx = Integer.parseInt(parts[1].trim());
+                            int by = Integer.parseInt(parts[3].trim());
+                            int bz = Integer.parseInt(parts[5].trim());
+
+                            configProvider.save(key, new BlockPos(bx, by, bz));
+                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                            textField.setValue(formattedText);
+                        }
+                    } else {
+                        textField.setValue(formattedText);
+                    }
+                });
+
+                abstractWidget = textField;
+
             } else {
                 Button openConfigButton = Button.builder(Component.translatable("gui." + UnderControl.MOD_ID + ".config.open_file"), (button) -> {
                     openConfigFile();
                 }).bounds(buttonHorizontalPosition, y, buttonWidth, buttonHeight).tooltip(Tooltip.create(Component.literal(configProvider.getComment(key)))).build();
 
-                scrollableButtons.add(openConfigButton);
-                widgetComments.put(openConfigButton, label);
-                this.addRenderableWidget(openConfigButton);
+                abstractWidget = openConfigButton;
             }
+
+            Button resetButton = Button.builder(Component.literal("X"), (button) -> {
+                configProvider.resetOption(key);
+                rebuildWidgets();
+            }).bounds(buttonHorizontalPosition + buttonWidth, y, buttonHeight, buttonHeight).tooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option"))).build();
+
+            scrollableButtons.add(abstractWidget);
+            widgetComments.put(abstractWidget, label);
+            this.addRenderableWidget(abstractWidget);
+
+            this.resetButtons.put(abstractWidget, resetButton);
+            this.addRenderableWidget(resetButton);
 
             y += labelHeight + buttonHeight + buttonSpacing;
         }
@@ -168,13 +219,24 @@ public class GenericConfigScreen extends Screen {
 
         int y = -scrollOffset + scrollTop;
         for (AbstractWidget abstractWidget : scrollableButtons) {
+            Button resetButton = resetButtons.get(abstractWidget);
+
             if (y + buttonHeight > scrollTop && y < scrollBottom) {
                 drawWrappedText(guiGraphics, widgetComments.get(abstractWidget), padding, y, abstractWidget.getX() - padding * 2);
 
                 abstractWidget.setY(y);
                 abstractWidget.visible = true;
+
+                if (resetButton != null) {
+                    resetButton.setY(y);
+                    resetButton.visible = true;
+                }
             } else {
                 abstractWidget.visible = false;
+
+                if (resetButton != null) {
+                    resetButton.visible = false;
+                }
             }
             y += buttonHeight + buttonSpacing;
         }

@@ -14,15 +14,15 @@ import java.util.List;
 public class UnderControlShaders {
     private static final List<Shader> shaders = new ArrayList<>();
 
-    public static Shader SIMPLE_COLOR = registerShader(new Shader(new ResourceLocation(UnderControl.MOD_ID, "program/simple_color"), DefaultVertexFormat.POSITION));
+    public static Shader SIMPLE_COLOR = registerShader(new Shader(
+            new ResourceLocation(UnderControl.MOD_ID, "program/simple_color"),
+            DefaultVertexFormat.POSITION
+    ));
 
     public static void register() {
         ShaderEvents.REGISTRATION.register((resourceProvider, shaderPairList) -> {
             for (Shader shaderToRegister : shaders) {
-                shaderPairList.add(Pair.of(
-                        shaderToRegister.createInstance(resourceProvider),
-                        (shader) -> ((DynamicShaderInstance) shader).getShader()
-                ));
+                Shader.register(resourceProvider, shaderPairList, shaderToRegister);
             }
         });
     }

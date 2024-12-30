@@ -9,8 +9,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class UnderControlServer implements DedicatedServerModInitializer {
     @Override
     public void onInitializeServer() {
-        IncompatibilitiesAPI.registerIncompatibleMods(UnderControl.MOD_ID, "minecraft", "fabric");
-
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             UnderControlConfig.registerServer(server);
         });

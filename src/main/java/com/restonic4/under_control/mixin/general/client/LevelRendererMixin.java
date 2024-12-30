@@ -30,8 +30,6 @@ public class LevelRendererMixin {
     Vector3f pos = new Vector3f(0, 100, 0);
     @Inject(method = "renderLevel", at = @At("TAIL"))
     private void renderManagers(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
-        RenderingHelper.renderSphere(poseStack, matrix4f, camera, pos, 20);
-
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }

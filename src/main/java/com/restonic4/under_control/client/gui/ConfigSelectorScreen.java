@@ -21,7 +21,7 @@ public class ConfigSelectorScreen extends Screen {
 
         this.clientSide = Component.translatable("gui.under_control.config.client_side");
         this.serverSide = Component.translatable("gui.under_control.config.server_side");
-        this.closeMenu = Component.translatable("gui.under_control.config.close_menu");
+        this.closeMenu = Component.translatable("gui.under_control.config.back");
     }
 
     protected void init() {

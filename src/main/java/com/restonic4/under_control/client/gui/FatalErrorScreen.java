@@ -60,4 +60,8 @@ public class FatalErrorScreen extends Screen {
     public boolean shouldCloseOnEsc() {
         return false;
     }
+
+    public Component getMessage() {
+        return this.message;
+    }
 }

@@ -26,8 +26,6 @@ public class ServerJoinRequest {
         if (player instanceof ServerPlayer serverPlayer) {
             List<String> mods = getMods(friendlyByteBuf);
 
-            
-
             ServerIncompatibilitiesAPI.executeServerIncompatibilitiesCheckForClient(serverPlayer, mods);
         }
     }

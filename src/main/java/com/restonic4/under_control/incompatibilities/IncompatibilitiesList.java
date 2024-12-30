@@ -2,10 +2,12 @@ package com.restonic4.under_control.incompatibilities;
 
 import com.restonic4.under_control.saving.ClassProvider;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IncompatibilitiesList implements ClassProvider<IncompatibilitiesList> {
+public class IncompatibilitiesList implements ClassProvider<IncompatibilitiesList>, Serializable {
     private final List<String> mods;
 
     public IncompatibilitiesList() {
@@ -32,12 +34,15 @@ public class IncompatibilitiesList implements ClassProvider<IncompatibilitiesLis
 
     @Override
     public IncompatibilitiesList deserialize(String data) {
+        IncompatibilitiesList newInstance = new IncompatibilitiesList();
         String[] mods = data.split(",");
 
         for (String mod : mods) {
-            addMod(mod);
+            if (!mod.isBlank() && !mod.isEmpty()) {
+                newInstance.addMod(mod);
+            }
         }
 
-        return this;
+        return newInstance;
     }
 }

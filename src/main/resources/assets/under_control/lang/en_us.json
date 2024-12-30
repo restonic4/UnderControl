@@ -9,9 +9,13 @@
   "gui.under_control.config_selector.title": "Select the config file!",
   "gui.under_control.config.client_side": "Client side",
   "gui.under_control.config.server_side": "Server side",
-  "gui.under_control.config.close_menu": "Go back",
+  "gui.under_control.config.back": "Go back",
   "gui.under_control.config.open_file": "Open file",
+  "gui.under_control.config.reset_option": "Reset option to it's default value.",
   "gui.under_control.config.option.log_extra": "Log extra information.",
   "gui.under_control.config.option.allow_render_command": "Allow render command for clients.",
-  "gui.under_control.config.option.mod_incompatibilities": "Mod incompatibilities."
+  "gui.under_control.config.option.mod_incompatibilities": "Mod incompatibilities.",
+  "gui.under_control.config.option.log_on_reload_in_chat": "Log info on reloads in chat.",
+  "message.under_control.server.reload.complete": "Server reloaded correctly!",
+  "message.under_control.server.reload.error": "Server reload failed!"
 }

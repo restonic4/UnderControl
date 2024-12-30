@@ -34,6 +34,11 @@ public class RenderCommand {
     }
 
     private static int setWireframe(CommandContext<FabricClientCommandSource> context) {
+        if (!canUseCommand()) {
+            sendNotAllowedMessage();
+            return 1;
+        }
+
         boolean state = BoolArgumentType.getBool(context, "state");
 
         Minecraft.getInstance().player.sendSystemMessage(Component.literal("Wireframe: " + (state ? "Activated" : "Deactivated")));
@@ -45,13 +50,24 @@ public class RenderCommand {
     }
 
     private static int renderSphere(CommandContext<FabricClientCommandSource> context) {
+        if (!canUseCommand()) {
+            sendNotAllowedMessage();
+            return 1;
+        }
+
         float x = FloatArgumentType.getFloat(context, "x");
         float y = FloatArgumentType.getFloat(context, "y");
         float z = FloatArgumentType.getFloat(context, "z");
         float radius = FloatArgumentType.getFloat(context, "radius");
 
-
-
         return 1;
+    }
+
+    private static boolean canUseCommand() {
+        return ClientCacheData.isRenderCommandAllowedOnServer;
+    }
+
+    private static void sendNotAllowedMessage() {
+        Minecraft.getInstance().player.sendSystemMessage(Component.literal("This command is not allowed on this server!"));
     }
 }
