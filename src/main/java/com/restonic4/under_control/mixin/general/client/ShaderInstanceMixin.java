@@ -1,6 +1,6 @@
 package com.restonic4.under_control.mixin.general.client;
 
-import com.restonic4.under_control.client.rendering.shader.DynamicShaderInstance;
+import com.restonic4.under_control.client.rendering.shader.ExtendedShaderInstance;
 import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.spongepowered.asm.mixin.Final;
@@ -18,7 +18,7 @@ public class ShaderInstanceMixin {
     private String modifyProgramId(String id) {
         Object current = this;
 
-        if (current instanceof DynamicShaderInstance) {
+        if (current instanceof ExtendedShaderInstance) {
             return FabricShaderProgram.rewriteAsId(id, name);
         }
 
