@@ -3,20 +3,21 @@ package com.restonic4.under_control.client.rendering.shader;
 /*
  * Copyright 2024 Lodestar's team
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This class is based on code from Lodestone,
+ * developed by Lodestar's team
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Original library: Lodestone
+ * License: GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+ * Original URL: https://github.com/LodestarMC/Lodestone?tab=LGPL-3.0-1-ov-file.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Modifications:
+ * Some fields where renamed.
  *
- * This file is part of UnderControl, derived from Lodestone
- * by Lodestar's team. Credit goes to the original authors for their work.
+ * License Notice:
+ * This file is licensed under the GNU Lesser General Public License, version 3.
+ * You should have received a copy of the license along with this code.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 import com.google.gson.JsonElement;
