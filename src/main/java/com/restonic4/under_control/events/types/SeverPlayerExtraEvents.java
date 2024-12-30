@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-public class SeverExtraPlayerEvents {
+public class SeverPlayerExtraEvents {
     public static final Event<VillageRaidStarted> VILLAGE_RAID_STARTED = EventFactory.createArray(VillageRaidStarted.class, callbacks -> (player, badOmenLevel) -> {
         for (VillageRaidStarted callback : callbacks) {
             EventResult result = callback.onVillageRaidStarted(player, badOmenLevel);

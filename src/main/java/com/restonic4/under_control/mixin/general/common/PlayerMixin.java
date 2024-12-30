@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import com.restonic4.under_control.events.types.SeverExtraPlayerEvents;
+import com.restonic4.under_control.events.types.SeverPlayerExtraEvents;
 
 @Mixin(Player.class)
 public class PlayerMixin {
     @Inject(method = "touch", at = @At("HEAD"), cancellable = true)
     private void touch(Entity entity, CallbackInfo ci) {
-        EventResult eventResult = SeverExtraPlayerEvents.TOUCH_ENTITY.invoker().onTouchEntity((Player) (Object) this, entity);
+        EventResult eventResult = SeverPlayerExtraEvents.TOUCH_ENTITY.invoker().onTouchEntity((Player) (Object) this, entity);
         if (eventResult == EventResult.CANCELED) {
             ci.cancel();
         }
@@ -22,7 +22,7 @@ public class PlayerMixin {
 
     @Inject(method = "canBeHitByProjectile", at = @At("HEAD"), cancellable = true)
     public void canBeHitByProjectile(CallbackInfoReturnable<Boolean> cir) {
-        EventResult eventResult = SeverExtraPlayerEvents.CAN_BEW_HIT_BY_PROJECTILES.invoker().onCanBeHitByProjectiles((Player) (Object) this);
+        EventResult eventResult = SeverPlayerExtraEvents.CAN_BEW_HIT_BY_PROJECTILES.invoker().onCanBeHitByProjectiles((Player) (Object) this);
         if (eventResult == EventResult.CANCELED) {
             cir.setReturnValue(false);
             cir.cancel();

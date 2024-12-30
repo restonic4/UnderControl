@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.restonic4.under_control.events.types.SeverExtraPlayerEvents;
+import com.restonic4.under_control.events.types.SeverPlayerExtraEvents;
 
 @Mixin(targets = "net/minecraft/world/effect/MobEffects$1")
 public class MobEffectsMixin {
@@ -19,7 +19,7 @@ public class MobEffectsMixin {
         cancellable = true
     )
     public void onPlayerBadOmenRaid(LivingEntity livingEntity, int level, CallbackInfo ci) {
-        EventResult eventResult = SeverExtraPlayerEvents.VILLAGE_RAID_STARTED.invoker().onVillageRaidStarted((ServerPlayer) livingEntity, level);
+        EventResult eventResult = SeverPlayerExtraEvents.VILLAGE_RAID_STARTED.invoker().onVillageRaidStarted((ServerPlayer) livingEntity, level);
         if (eventResult == EventResult.CANCELED) {
             ci.cancel();
         }
