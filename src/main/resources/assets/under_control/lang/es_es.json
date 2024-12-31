@@ -5,6 +5,7 @@
   "gui.under_control.incompatibility.title": "Mods incompatibles!",
   "gui.under_control.incompatibility.message": "Se ha encontrado una incompatibilidad con ",
   "gui.under_control.incompatibility.message.server": "Una incompatibilidad ha sido detectada por el servidor: ",
+  "gui.under_control.incompatibility_pack.message.server": "Este servidor usa una version diferecte del modpack, deberias actualizarlo.",
   "gui.under_control.incompatibility.close": "Cerrar",
   "gui.under_control.config_selector.title": "¡Elige el archivo de configuración!",
   "gui.under_control.config.client_side": "Cliente",

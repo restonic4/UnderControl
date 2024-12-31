@@ -5,6 +5,7 @@
   "gui.under_control.incompatibility.title": "Mod incompatibility found!",
   "gui.under_control.incompatibility.message": "A mod incompatibility has been found with ",
   "gui.under_control.incompatibility.message.server": "A mod incompatibility has been found by the current server: ",
+  "gui.under_control.incompatibility_pack.message.server": "This server needs a different modpack version, you should update it.",
   "gui.under_control.incompatibility.close": "Close",
   "gui.under_control.config_selector.title": "Select the config file!",
   "gui.under_control.config.client_side": "Client side",

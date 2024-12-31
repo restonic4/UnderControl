@@ -26,6 +26,7 @@ public class UnderControl implements ModInitializer {
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer player = handler.getPlayer();
+
             UpdateServerDataOnClient.sendToClient(player);
         });
     }

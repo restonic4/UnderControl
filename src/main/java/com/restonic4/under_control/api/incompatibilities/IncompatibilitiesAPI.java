@@ -8,6 +8,7 @@ import java.util.List;
 
 public class IncompatibilitiesAPI {
     private static List<IncompatibilityData> incompatibilityDataList = new ArrayList<>();
+    private static String serverModPackRequiredVersion = "";
 
     public static void registerIncompatibleMods(String modID, String... incompatibleModID) {
         for (String foundModID : incompatibleModID) {
@@ -34,5 +35,13 @@ public class IncompatibilitiesAPI {
 
     public static List<IncompatibilityData> getIncompatibilityDataList() {
         return incompatibilityDataList;
+    }
+
+    public static void setModPackRequiredVersion(String version) {
+        serverModPackRequiredVersion = version;
+    }
+
+    public static String getServerModPackRequiredVersion() {
+        return serverModPackRequiredVersion;
     }
 }

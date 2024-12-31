@@ -25,8 +25,9 @@ public class ServerJoinRequest {
     public static void receive(MinecraftServer server, Player player, ServerPacketListener serverPacketListener, FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
         if (player instanceof ServerPlayer serverPlayer) {
             List<String> mods = getMods(friendlyByteBuf);
+            String serverModPackRequiredVersion = friendlyByteBuf.readUtf();
 
-            ServerIncompatibilitiesAPI.executeServerIncompatibilitiesCheckForClient(serverPlayer, mods);
+            ServerIncompatibilitiesAPI.executeServerIncompatibilitiesCheckForClient(serverPlayer, mods, serverModPackRequiredVersion);
         }
     }
 
@@ -52,6 +53,7 @@ public class ServerJoinRequest {
         }
 
         friendlyByteBuf.writeUtf(modsString.toString());
+        friendlyByteBuf.writeUtf(IncompatibilitiesAPI.getServerModPackRequiredVersion());
 
         ClientPlayNetworking.send(getId(), friendlyByteBuf);
     }

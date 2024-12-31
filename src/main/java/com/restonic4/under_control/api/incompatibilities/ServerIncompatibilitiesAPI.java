@@ -9,10 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerIncompatibilitiesAPI {
-    public static void executeServerIncompatibilitiesCheckForClient(ServerPlayer serverPlayer, List<String> mods) {
+    public static void executeServerIncompatibilitiesCheckForClient(ServerPlayer serverPlayer, List<String> mods, String serverModPackRequiredVersion) {
         List<String> incompatibleMods = new ArrayList<>();
 
         IncompatibilitiesUtil.getIncompatibleModsOnUse(mods, incompatibleMods);
+
+        if (!IncompatibilitiesAPI.getServerModPackRequiredVersion().isEmpty() && !IncompatibilitiesAPI.getServerModPackRequiredVersion().isBlank() && !IncompatibilitiesAPI.getServerModPackRequiredVersion().equals(serverModPackRequiredVersion)) {
+            UnderControl.LOGGER.warn("Modpack version mismatch for " + serverPlayer.getName() + "; " + serverModPackRequiredVersion + " is not " + IncompatibilitiesAPI.getServerModPackRequiredVersion());
+
+            serverPlayer.connection.disconnect(
+                    Component.translatable("gui.under_control.incompatibility_pack.message.server")
+            );
+
+            return;
+        }
 
         if (!incompatibleMods.isEmpty()) {
             UnderControl.LOGGER.warn(incompatibleMods.size() + " mod incompatibilities found for " + serverPlayer.getName());
