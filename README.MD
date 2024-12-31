@@ -30,6 +30,8 @@ Under Control is a library I developed primarily for my personal use. It brings 
     - Spheres.
     - Other geometric shapes.
     - More coming soon.
+- Whitelist system.
+  - Create whitelists of all kinds with specific conditions.
 - New Events.
   - BlockEvents.
   - ClientEvents.
