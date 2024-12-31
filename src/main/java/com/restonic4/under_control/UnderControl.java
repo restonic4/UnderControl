@@ -2,6 +2,7 @@ package com.restonic4.under_control;
 
 import com.restonic4.under_control.api.config.ConfigAPI;
 import com.restonic4.under_control.api.saving.SavingAPI;
+import com.restonic4.under_control.api.whitelist.WhitelistAPI;
 import com.restonic4.under_control.networking.PacketManager;
 import com.restonic4.under_control.networking.packets.server_to_client.UpdateServerDataOnClient;
 import com.restonic4.under_control.registries.RegistriesManager;
