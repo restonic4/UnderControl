@@ -1,7 +1,6 @@
 # Under control
-<hr>
 
-<div style="text-align: center;">
+<div align="center">
   <img src="src/main/resources/assets/under_control/icon.png" alt="Under control library icon" width="200" height="200">
 </div>
 
