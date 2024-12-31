@@ -16,14 +16,12 @@ import net.fabricmc.api.ClientModInitializer;
 public class UnderControlClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        UnderControl.LOGGER.info("Starting client");
+        UnderControl.LOGGER.info("Starting the library, client side");
 
         SavingAPI.registerClientEvents();
         UnderControlConfig.registerClient();
         RegistriesManager.register(this);
         ClientIncompatibilitiesManager.registerClient();
         PacketManager.registerServerToClient();
-
-        SavingProvider savingProvider = SavingAPI.registerProviderForClient(UnderControl.MOD_ID);
     }
 }

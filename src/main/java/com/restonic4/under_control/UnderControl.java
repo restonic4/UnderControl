@@ -18,7 +18,7 @@ public class UnderControl implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Starting the library");
+        LOGGER.info("Starting the library, common side");
 
         SavingAPI.registerServerEvents();
         ConfigAPI.registerServerEvents();
