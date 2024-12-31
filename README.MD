@@ -23,6 +23,7 @@ Under Control is a library I developed primarily for my personal use. It brings 
   - Server compatible:
     - The server retrieves the list of mods the client has, including client-side mods.
     - Can be used as a simple security layer to prevent malicious mods on your server.
+  - If you are the owner of a modpack, you can create a mod that prevents you from joining the server if you are using an outdated version of the modpack by using the function IncompatibilitiesAPI.setModPackRequiredVersion();
 - Advanced Rendering System.
   - Easily register your own shaders.
   - Special effects:
