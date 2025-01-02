@@ -1,6 +1,7 @@
 package com.restonic4.under_control.plugin;
 
 import com.google.common.collect.ImmutableMap;
+import com.restonic4.under_control.UnderControl;
 import com.restonic4.under_control.events.EventResult;
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
@@ -21,6 +22,16 @@ public abstract class MixinActivatorPlugin implements IMixinConfigPlugin {
     public static void addLoadCondition(String mixinClassName, Supplier<Boolean> condition) {
         if (!conditions.containsKey(mixinClassName)) {
             conditions.put(mixinClassName, condition);
+            UnderControl.LOGGER.info(mixinClassName + " added to conditional mixins");
+        }
+    }
+
+    public static void addLoadConditions(Supplier<Boolean> condition, String... mixinClassNames) {
+        for (String mixinClassName : mixinClassNames) {
+            if (!conditions.containsKey(mixinClassName)) {
+                conditions.put(mixinClassName, condition);
+                UnderControl.LOGGER.info(mixinClassName + " added to conditional mixins");
+            }
         }
     }
 
@@ -33,7 +44,7 @@ public abstract class MixinActivatorPlugin implements IMixinConfigPlugin {
         boolean shouldApply = conditions.getOrDefault(mixinClassName, TRUE).get();
 
         if (!shouldApply) {
-            System.out.println("Skipping mixin: " + targetClassName + " -> " + mixinClassName);
+            UnderControl.LOGGER.warn("Skipping mixin: " + targetClassName + " -> " + mixinClassName);
         }
 
         return shouldApply;
