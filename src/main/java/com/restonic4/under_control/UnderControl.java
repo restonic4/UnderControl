@@ -12,6 +12,8 @@ import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.UUID;
+
 public class UnderControl implements ModInitializer {
     public static final String MOD_ID = "under_control";
     public static final Logger LOGGER = LogManager.getLogger();

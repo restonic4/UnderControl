@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class Shader {
+public class ShaderHolder {
     public final ResourceLocation shaderLocation;
     public final VertexFormat vertexFormat;
 
@@ -42,18 +42,18 @@ public class Shader {
     public Collection<String> uniformsToCache;
     private final RenderStateShard.ShaderStateShard renderStateShard = new RenderStateShard.ShaderStateShard(getInstance());
 
-    public Shader(ResourceLocation shaderLocation, VertexFormat vertexFormat, String... uniformsToCache) {
+    public ShaderHolder(ResourceLocation shaderLocation, VertexFormat vertexFormat, String... uniformsToCache) {
         this.shaderLocation = shaderLocation;
         this.vertexFormat = vertexFormat;
         this.uniformsToCache = new ArrayList<>(List.of(uniformsToCache));
     }
 
     public ExtendedShaderInstance createInstance(ResourceProvider provider) throws IOException {
-        Shader shader = this;
+        ShaderHolder shaderHolder = this;
         ExtendedShaderInstance shaderInstance = new ExtendedShaderInstance(provider, shaderLocation, vertexFormat) {
             @Override
-            public Shader getShader() {
-                return shader;
+            public ShaderHolder getShader() {
+                return shaderHolder;
             }
         };
         this.shaderInstance = shaderInstance;
@@ -72,9 +72,9 @@ public class Shader {
         return renderStateShard;
     }
 
-    public static void register(ResourceProvider resourceProvider, List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaderPairList, Shader shaderToRegister) throws IOException {
+    public static void register(ResourceProvider resourceProvider, List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaderPairList, ShaderHolder shaderHolderToRegister) throws IOException {
         shaderPairList.add(Pair.of(
-                shaderToRegister.createInstance(resourceProvider),
+                shaderHolderToRegister.createInstance(resourceProvider),
                 (shader) -> ((ExtendedShaderInstance) shader).getShader()
         ));
     }

@@ -53,7 +53,7 @@ public abstract class ExtendedShaderInstance extends ShaderInstance {
         }
     }
 
-    public abstract Shader getShader();
+    public abstract ShaderHolder getShader();
 
     public Map<String, Consumer<Uniform>> getDefaultUniformData() {
         if (defaultUniformData == null) {
