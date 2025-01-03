@@ -15,16 +15,16 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "com.restonic4.under_control.client.UnderControlClient"
+      "com.chaotic_loom.under_control.client.UnderControlClient"
     ],
     "main": [
-      "com.restonic4.under_control.UnderControl"
+      "com.chaotic_loom.under_control.UnderControl"
     ],
     "server": [
-      "com.restonic4.under_control.UnderControlServer"
+      "com.chaotic_loom.under_control.UnderControlServer"
     ],
     "modmenu": [
-      "com.restonic4.under_control.compatibility.modmenu.ModMenuAPIImpl"
+      "com.chaotic_loom.under_control.compatibility.modmenu.ModMenuAPIImpl"
     ]
   },
   "mixins": [
