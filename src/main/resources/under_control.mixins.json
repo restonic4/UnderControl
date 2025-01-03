@@ -34,14 +34,15 @@
     "general.common.ServerCommonPacketListenerImplMixin",
     "general.common.ServerGamePacketListenerImplMixin",
     "general.common.ServerLevelMixin",
-    "general.common.TripWireBlockMixin",
-    "general.common.TurtleEggBlockMixin",
-    "vanish.ServerGamePacketListenerImplMixin",
-    "vanish.ServerLevelMixin",
     "general.common.ServerPlayerMixin",
     "general.common.SleepStatusMixin",
+    "general.common.TellRawCommandMixin",
+    "general.common.TripWireBlockMixin",
+    "general.common.TurtleEggBlockMixin",
     "general.common.VibrationSystemMixin",
-    "general.common.WardenMixin"
+    "general.common.WardenMixin",
+    "vanish.ServerGamePacketListenerImplMixin",
+    "vanish.ServerLevelMixin"
   ],
   "client": [
     "general.client.GameRendererMixin",

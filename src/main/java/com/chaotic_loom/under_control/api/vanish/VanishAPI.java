@@ -54,6 +54,8 @@ public class VanishAPI {
             return;
         }
 
+        ServerPlayer serverActor = (ServerPlayer) actor;
+
         SavingProvider savingProvider = SavingAPI.getWorldProvider(UnderControl.MOD_ID);
 
         VanishList vanishList = savingProvider.get("vanish_list", VanishList.class);
@@ -61,14 +63,12 @@ public class VanishAPI {
             vanishList = new VanishList();
         }
 
-        if (vanishList.contains(actor.getGameProfile().getId())) {
+        if (vanishList.contains(serverActor.getGameProfile().getId())) {
             return;
         }
 
-        vanishList.addUUID(actor.getGameProfile().getId().toString());
+        vanishList.addUUID(serverActor.getGameProfile().getId().toString());
         savingProvider.save("vanish_list", vanishList);
-
-        ServerPlayer serverActor = (ServerPlayer) actor;
 
         broadcastToOthers(serverActor, new ClientboundPlayerInfoRemovePacket(Collections.singletonList(serverActor.getUUID())));
         serverActor.server.getPlayerList().broadcastSystemMessage(Component.translatable("multiplayer.player.left", serverActor.getDisplayName()).withStyle(ChatFormatting.YELLOW), false);
@@ -80,6 +80,8 @@ public class VanishAPI {
             return;
         }
 
+        ServerPlayer serverActor = (ServerPlayer) actor;
+
         SavingProvider savingProvider = SavingAPI.getWorldProvider(UnderControl.MOD_ID);
 
         VanishList vanishList = savingProvider.get("vanish_list", VanishList.class);
@@ -87,14 +89,12 @@ public class VanishAPI {
             return;
         }
 
-        if (!vanishList.contains(actor.getGameProfile().getId())) {
+        if (!vanishList.contains(serverActor.getGameProfile().getId())) {
             return;
         }
 
-        vanishList.removeUUID(actor.getGameProfile().getId().toString());
+        vanishList.removeUUID(serverActor.getGameProfile().getId().toString());
         savingProvider.save("vanish_list", vanishList);
-
-        ServerPlayer serverActor = (ServerPlayer) actor;
 
         broadcastToOthers(serverActor, ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(Collections.singletonList(serverActor)));
         serverActor.server.getPlayerList().broadcastSystemMessage(Component.translatable("multiplayer.player.joined", serverActor.getDisplayName()).withStyle(ChatFormatting.YELLOW), false);
@@ -169,16 +169,5 @@ public class VanishAPI {
                 observer.connection.send(packet);
             }
         }
-    }
-
-    public static void registerServerEvents() {
-        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            if (isVanished(sender)) {
-                sender.sendSystemMessage(Component.literal("IMPLEMENTATION NEEDED").withStyle(ChatFormatting.RED));
-                return false;
-            } else {
-                return true;
-            }
-        });
     }
 }

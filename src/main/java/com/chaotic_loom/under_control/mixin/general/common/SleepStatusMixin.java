@@ -20,11 +20,8 @@ public abstract class SleepStatusMixin {
             )
     )
     public boolean hideSleeping(ServerPlayer player, Operation<Boolean> original) {
-        EventResult eventResult = ServerPlayerExtraEvents.SLEEPING_COUNT.invoker().onSleepingCount(player);
-        if (eventResult == EventResult.CANCELED) {
+        if (ServerPlayerExtraEvents.SLEEPING_COUNT.invoker().onSleepingCount(player) == EventResult.CANCELED) {
             return false;
-        } else if (eventResult == EventResult.SUCCEEDED) {
-            return true;
         }
 
         return original.call(player);

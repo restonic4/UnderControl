@@ -33,7 +33,7 @@ public abstract class ServerLevelMixin {
     public void sendBlockDestroyProgress(ServerGamePacketListenerImpl packetListener, Packet<?> packet, Operation<Void> original) {
         Entity entity = this.getEntity(((ClientboundBlockDestructionPacket) packet).getId());
 
-        if (BlockEvents.DESTROY_PROGRESS_BROADCAST.invoker().onDestroyProgressBroadcast(packetListener, packet, entity) == EventResult.CANCELED) {
+        if (BlockEvents.DESTROY_PROGRESS_BROADCAST.invoker().onDestroyProgressBroadcast(packetListener, packet, entity) != EventResult.CANCELED) {
             original.call(packetListener, packet);
         }
     }

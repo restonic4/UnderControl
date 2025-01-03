@@ -3,6 +3,7 @@ package com.chaotic_loom.under_control;
 import com.chaotic_loom.under_control.api.config.ConfigAPI;
 import com.chaotic_loom.under_control.api.saving.SavingAPI;
 import com.chaotic_loom.under_control.config.ConfigManager;
+import com.chaotic_loom.under_control.config.ConfigProvider;
 import com.chaotic_loom.under_control.networking.services.ApiClient;
 import com.chaotic_loom.under_control.saving.SavingManager;
 import com.chaotic_loom.under_control.api.vanish.VanishAPI;
@@ -10,6 +11,7 @@ import com.chaotic_loom.under_control.networking.PacketManager;
 import com.chaotic_loom.under_control.networking.packets.server_to_client.UpdateServerDataOnClient;
 import com.chaotic_loom.under_control.registries.RegistriesManager;
 import com.chaotic_loom.under_control.saving.custom.VanishList;
+import com.chaotic_loom.under_control.vanish.VanishManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +33,7 @@ public class UnderControl implements ModInitializer {
 
         ConfigManager.registerServerEvents();
 
-        VanishAPI.registerServerEvents();
+        VanishManager.registerServerEvents();
 
         RegistriesManager.register(this);
 
@@ -44,15 +46,11 @@ public class UnderControl implements ModInitializer {
         });
     }
 
-    public static void extraInfo(String message) {
-        if (ConfigAPI.getServerProvider(UnderControl.MOD_ID).get("log_extra", Boolean.class)) {
-            LOGGER.info(message);
+    private static ConfigProvider getProvider() {
+        if (ConfigAPI.getServerProvider(UnderControl.MOD_ID) == null) {
+            return ConfigAPI.getClientProvider(UnderControl.MOD_ID);
         }
-    }
 
-    public static void extraWarn(String message) {
-        if (ConfigAPI.getServerProvider(UnderControl.MOD_ID).get("log_extra", Boolean.class)) {
-            LOGGER.warn(message);
-        }
+        return ConfigAPI.getServerProvider(UnderControl.MOD_ID);
     }
 }

@@ -16,7 +16,7 @@ public class VanishList implements ClassProvider<VanishList> {
     }
 
     public VanishList(List<String> playersUUIDs) {
-        this.playersUUIDs = playersUUIDs;
+        this.playersUUIDs = playersUUIDs != null ? new ArrayList<>(playersUUIDs) : new ArrayList<>();
     }
 
     public void addUUID(String uuid) {

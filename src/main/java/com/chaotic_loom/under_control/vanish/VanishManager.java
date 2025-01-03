@@ -11,6 +11,7 @@ import com.chaotic_loom.under_control.events.types.ServerPlayerExtraEvents;
 import com.chaotic_loom.under_control.saving.SavingProvider;
 import com.chaotic_loom.under_control.saving.custom.VanishList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
@@ -23,6 +24,17 @@ import net.minecraft.world.entity.TraceableEntity;
 
 public class VanishManager {
     public static void registerServerEvents() {
+        //UnderControl.extraInfo("Registering a ton of events, idk, like 1 million or so");
+
+        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
+            if (VanishAPI.isVanished(sender)) {
+                sender.sendSystemMessage(Component.literal("IMPLEMENTATION NEEDED").withStyle(ChatFormatting.RED));
+                return false;
+            } else {
+                return true;
+            }
+        });
+
         OtherEvents.PLAYERS_FOUND_BY_COMMAND.register((playerList, css) -> {
             ServerPlayer observer = css.getPlayer();
 
@@ -144,10 +156,12 @@ public class VanishManager {
         ServerPlayerExtraEvents.STARTED_JOINING.register((connection, actor) -> {
             SavingProvider savingProvider = SavingAPI.getWorldProvider(UnderControl.MOD_ID);
 
-            VanishList vanishList = savingProvider.get("vanish_list", VanishList.class);
-            if (vanishList != null && vanishList.contains(actor)) {
-                VanishAPI.vanish(actor);
-            }
+            actor.server.execute(() -> {
+                VanishList vanishList = savingProvider.get("vanish_list", VanishList.class);
+                if (vanishList != null && vanishList.contains(actor)) {
+                    VanishAPI.vanish(actor);
+                }
+            });
         });
 
         ServerPlayerExtraEvents.JOIN_MESSAGE.register((playerList, component, bl, connection, actor) -> {
@@ -255,7 +269,7 @@ public class VanishManager {
         });
 
         ServerPlayerExtraEvents.SLEEPING_COUNT.register((serverPlayer) -> {
-            return VanishAPI.isVanished(serverPlayer) ? EventResult.CANCELED : EventResult.CONTINUE;
+            return VanishAPI.isVanished(serverPlayer) ? EventResult.CANCELED : EventResult.SUCCEEDED;
         });
 
         LivingEntityExtraEvents.CAUSED_GAME_EVENT.register((sourceEntity, serverLevel, gameEvent, context, vec3) -> {
@@ -404,6 +418,14 @@ public class VanishManager {
 
         BlockEvents.TURTLE_EGG_TRAMPLE.register((level, blockState, blockPos, entity, fallHeight) -> {
             if (VanishAPI.isVanished(entity)) {
+                return EventResult.CANCELED;
+            }
+
+            return EventResult.CONTINUE;
+        });
+
+        ServerPlayerExtraEvents.TELLRAW_RECEIVED.register((sender, serverPlayer, commandContext, command) -> {
+            if (!VanishAPI.canSeePlayer(sender, serverPlayer)) {
                 return EventResult.CANCELED;
             }
 

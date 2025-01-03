@@ -18,7 +18,6 @@ import java.util.Collection;
 
 @Mixin(MsgCommand.class)
 public class MsgCommandMixin {
-
     @Inject(method = "sendMessage", at = @At("HEAD"), cancellable = true)
     private static void preventMessage(CommandSourceStack commandSourceStack, Collection<ServerPlayer> collection, PlayerChatMessage playerChatMessage, CallbackInfo ci) {
         if (ServerPlayerExtraEvents.MSG.invoker().onMsg(commandSourceStack, collection, playerChatMessage) == EventResult.CANCELED) {

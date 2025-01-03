@@ -3,6 +3,8 @@ package com.chaotic_loom.under_control.events.types;
 import com.chaotic_loom.under_control.events.Event;
 import com.chaotic_loom.under_control.events.EventFactory;
 import com.chaotic_loom.under_control.events.EventResult;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -103,6 +105,23 @@ public class ServerPlayerExtraEvents {
     @FunctionalInterface
     public interface Msg {
         EventResult onMsg(CommandSourceStack commandSourceStack, Collection<ServerPlayer> collection, PlayerChatMessage playerChatMessage);
+    }
+
+    public static final Event<TellRawReceived> TELLRAW_RECEIVED = EventFactory.createArray(TellRawReceived.class, callbacks -> (sender, serverPlayer, commandContext, command) -> {
+        for (TellRawReceived callback : callbacks) {
+            EventResult result = callback.onTellRawReceived(sender, serverPlayer, commandContext, command);
+
+            if (result == EventResult.CANCELED) {
+                return EventResult.CANCELED;
+            }
+        }
+
+        return EventResult.SUCCEEDED;
+    });
+
+    @FunctionalInterface
+    public interface TellRawReceived {
+        EventResult onTellRawReceived(ServerPlayer sender, ServerPlayer serverPlayer, CommandContext<CommandSourceStack> commandContext, Command<CommandSourceStack> command);
     }
 
     public static final Event<AdvancementMessage> ADVANCEMENT_MESSAGE = EventFactory.createArray(AdvancementMessage.class, callbacks -> (player, playerList, component, bl) -> {
@@ -243,12 +262,10 @@ public class ServerPlayerExtraEvents {
 
             if (result == EventResult.CANCELED) {
                 return EventResult.CANCELED;
-            } else if (result == EventResult.SUCCEEDED) {
-                return EventResult.SUCCEEDED;
             }
         }
 
-        return EventResult.CONTINUE;
+        return EventResult.SUCCEEDED;
     });
 
     @FunctionalInterface

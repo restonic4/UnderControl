@@ -38,7 +38,7 @@ public class ServerJoinRequest {
             mods.remove(mods.size() - 1);
         }
 
-        UnderControl.extraInfo("Client joined with: " + String.join(", ", mods));
+        UnderControl.LOGGER.info("Client joined with: " + String.join(", ", mods));
 
         return mods;
     }
