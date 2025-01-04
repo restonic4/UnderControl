@@ -20,7 +20,9 @@ import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.TraceableEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class VanishManager {
     public static void registerServerEvents() {
@@ -58,14 +60,6 @@ public class VanishManager {
             }
 
             return EventResult.SUCCEEDED;
-        });
-
-        LivingEntityExtraEvents.ENTITY_COLLISIONS.register((entity, actor, aabb, predicate) -> {
-            if (VanishAPI.isVanished(actor)) {
-                return EventResult.CANCELED;
-            }
-
-            return EventResult.CONTINUE;
         });
 
         LivingEntityExtraEvents.ENTITY_OBSTRUCTION.register((entity) -> {
@@ -120,8 +114,8 @@ public class VanishManager {
             return EventResult.CONTINUE;
         });
 
-        LivingEntityExtraEvents.PUSHABLE.register((entity, actor, predicate) -> {
-            if (VanishAPI.isVanished(actor)) {
+        LivingEntityExtraEvents.PUSHABLE.register((entity, actor) -> {
+            if (VanishAPI.isVanished(actor) || VanishAPI.isVanished(entity)) {
                 return EventResult.CANCELED;
             }
 
@@ -330,14 +324,6 @@ public class VanishManager {
 
         BlockEvents.FARM_TRAMPLE.register((level, blockState, blockPos, entity, fallHeight) -> {
             if (VanishAPI.isVanished(entity)) {
-                return EventResult.CANCELED;
-            }
-
-            return EventResult.CONTINUE;
-        });
-
-        LivingEntityExtraEvents.PUSHING.register((livingEntity) -> {
-            if (VanishAPI.isVanished(livingEntity)) {
                 return EventResult.CANCELED;
             }
 

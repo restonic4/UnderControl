@@ -6,53 +6,26 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.List;
-import java.util.function.Predicate;
-
-import static com.chaotic_loom.under_control.util.EntitySelectors.NO_SPECTATORS_AND_NO_VANISH;
-
 @Mixin(AbstractMinecart.class)
 public abstract class AbstractMinecartMixin {
-    @Redirect(
+    @WrapOperation(
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;"
+                    target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"
             )
     )
-    private List<Entity> onGetEntities(Level instance, @Nullable Entity entity, AABB aabb, Predicate<? super Entity> predicate) {
-        List<Entity> entities = instance.getEntities(entity, aabb, predicate);
+    private void onGetEntities(Entity pusher, Entity entity, Operation<Void> original) {
+        AbstractMinecart minecart = (AbstractMinecart) (Object) this;
 
-        entities.removeIf(pusher -> {
-            AbstractMinecart minecart = (AbstractMinecart) (Object) this;
-            return LivingEntityExtraEvents.MINECART_PUSHED.invoker().onMinecartPushed(minecart, pusher) == EventResult.CANCELED;
-        });
+        if (LivingEntityExtraEvents.MINECART_PUSHED.invoker().onMinecartPushed(minecart, pusher) == EventResult.CANCELED) {
+            return;
+        }
 
-        return entities;
-    }
-
-    @Redirect(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;"
-            )
-    )
-    private List<Entity> onGetEntities(Level level, Entity entity, AABB aabb) {
-        List<Entity> entities = level.getEntities(entity, aabb);
-
-        entities.removeIf(pusher -> {
-            AbstractMinecart minecart = (AbstractMinecart) (Object) this;
-            return LivingEntityExtraEvents.MINECART_PUSHED.invoker().onMinecartPushed(minecart, pusher) == EventResult.CANCELED;
-        });
-
-        return entities;
+        original.call(pusher, entity);
     }
 }

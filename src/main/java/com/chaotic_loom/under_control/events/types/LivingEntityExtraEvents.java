@@ -19,25 +19,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.function.Predicate;
 
 public class LivingEntityExtraEvents {
-    public static final Event<Pushing> PUSHING = EventFactory.createArray(Pushing.class, callbacks -> (livingEntity) -> {
-        for (Pushing callback : callbacks) {
-            EventResult result = callback.onPushing(livingEntity);
-
-            if (result == EventResult.CANCELED) {
-                return EventResult.CANCELED;
-            } else if (result == EventResult.SUCCEEDED) {
-                return EventResult.SUCCEEDED;
-            }
-        }
-
-        return EventResult.CONTINUE;
-    });
-
-    @FunctionalInterface
-    public interface Pushing {
-        EventResult onPushing(LivingEntity livingEntity);
-    }
-
     public static final Event<MinecartPushed> MINECART_PUSHED = EventFactory.createArray(MinecartPushed.class, callbacks -> (minecart, pusher) -> {
         for (MinecartPushed callback : callbacks) {
             EventResult result = callback.onMinecartPushed(minecart, pusher);
@@ -70,25 +51,6 @@ public class LivingEntityExtraEvents {
     @FunctionalInterface
     public interface BeeAngered {
         EventResult onBeeAngered(LivingEntity livingEntity);
-    }
-
-    public static final Event<EntityCollisions> ENTITY_COLLISIONS = EventFactory.createArray(EntityCollisions.class, callbacks -> (entity, actor, aabb, predicate) -> {
-        for (EntityCollisions callback : callbacks) {
-            EventResult result = callback.onEntityCollisions(entity, actor, aabb, predicate);
-
-            if (result == EventResult.CANCELED) {
-                return EventResult.CANCELED;
-            } else if (result == EventResult.SUCCEEDED) {
-                return EventResult.SUCCEEDED;
-            }
-        }
-
-        return EventResult.CONTINUE;
-    });
-
-    @FunctionalInterface
-    public interface EntityCollisions {
-        EventResult onEntityCollisions(Entity entity, Entity actor, AABB aabb, Predicate<? super Entity> predicate);
     }
 
     public static final Event<EntityObstruction> ENTITY_OBSTRUCTION = EventFactory.createArray(EntityObstruction.class, callbacks -> (entity) -> {
@@ -163,9 +125,9 @@ public class LivingEntityExtraEvents {
         EventResult onPlaySound(Entity entity, SoundEvent soundEvent, float f, float g);
     }
 
-    public static final Event<Pushable> PUSHABLE = EventFactory.createArray(Pushable.class, callbacks -> (entity, actor, predicate) -> {
+    public static final Event<Pushable> PUSHABLE = EventFactory.createArray(Pushable.class, callbacks -> (entity, actor) -> {
         for (Pushable callback : callbacks) {
-            EventResult result = callback.onPushable(entity, actor, predicate);
+            EventResult result = callback.onPushable(entity, actor);
 
             if (result == EventResult.CANCELED) {
                 return EventResult.CANCELED;
@@ -179,7 +141,7 @@ public class LivingEntityExtraEvents {
 
     @FunctionalInterface
     public interface Pushable {
-        EventResult onPushable(Entity entity, Entity actor, Predicate<Entity> predicate);
+        EventResult onPushable(Entity entity, Entity actor);
     }
 
     public static final Event<SpawnFallParticles> SPAWN_FALL_PARTICLES = EventFactory.createArray(SpawnFallParticles.class, callbacks -> (livingEntity, level, particleOptions, x, y, z, count, dx, dy, dz, speed) -> {

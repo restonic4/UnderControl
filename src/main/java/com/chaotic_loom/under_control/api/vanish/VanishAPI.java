@@ -26,6 +26,10 @@ public class VanishAPI {
 
     @Deprecated
     public static boolean isVanished(Entity actor) {
+        if (actor == null) {
+            return false;
+        }
+
         if (actor.level().isClientSide()) {
             return false;
         }
@@ -41,6 +45,10 @@ public class VanishAPI {
     }
 
     public static void setVanished(Player actor, boolean state) {
+        if (actor == null) {
+            return;
+        }
+
         if (state) {
             vanish(actor);
         } else {
@@ -50,6 +58,10 @@ public class VanishAPI {
 
     @Deprecated
     public static void vanish(Player actor) {
+        if (actor == null) {
+            return;
+        }
+
         if (actor.level().isClientSide()) {
             return;
         }

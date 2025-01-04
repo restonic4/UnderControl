@@ -15,18 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    @Inject(method = "isPushable", at = @At("HEAD"), cancellable = true)
-    public void isPushable(CallbackInfoReturnable<Boolean> cir) {
-        EventResult eventResult = LivingEntityExtraEvents.PUSHING.invoker().onPushing((LivingEntity) (Object) this);
-        if (eventResult == EventResult.CANCELED) {
-            cir.setReturnValue(false);
-            cir.cancel();
-        } else if (eventResult == EventResult.SUCCEEDED) {
-            cir.setReturnValue(true);
-            cir.cancel();
-        }
-    }
-
     @WrapOperation(
             method = "checkFallDamage",
             at = @At(

@@ -13,6 +13,7 @@ import com.chaotic_loom.under_control.registries.RegistriesManager;
 import com.chaotic_loom.under_control.saving.custom.VanishList;
 import com.chaotic_loom.under_control.vanish.VanishManager;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
