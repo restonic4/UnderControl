@@ -20,6 +20,7 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.AABB;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 public class ServerPlayerExtraEvents {
     public static final Event<VillageRaidStarted> VILLAGE_RAID_STARTED = EventFactory.createArray(VillageRaidStarted.class, callbacks -> (player, badOmenLevel) -> {
@@ -271,5 +272,22 @@ public class ServerPlayerExtraEvents {
     @FunctionalInterface
     public interface SleepingCount {
         EventResult onSleepingCount(ServerPlayer player);
+    }
+
+    public static final Event<GotNearestPlayer> GOT_NEAREST_PLAYER = EventFactory.createArray(GotNearestPlayer.class, callbacks -> (player, originalPredicate) -> {
+        for (GotNearestPlayer callback : callbacks) {
+            EventResult result = callback.onGotNearestPlayer(player, originalPredicate);
+
+            if (result == EventResult.CANCELED) {
+                return EventResult.CANCELED;
+            }
+        }
+
+        return EventResult.SUCCEEDED;
+    });
+
+    @FunctionalInterface
+    public interface GotNearestPlayer {
+        EventResult onGotNearestPlayer(Player player, Predicate<Entity> originalPredicate);
     }
 }

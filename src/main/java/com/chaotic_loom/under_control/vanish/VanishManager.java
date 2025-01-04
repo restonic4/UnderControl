@@ -417,5 +417,13 @@ public class VanishManager {
 
             return EventResult.CONTINUE;
         });
+
+        ServerPlayerExtraEvents.GOT_NEAREST_PLAYER.register((player, predicate) -> {
+            if (VanishAPI.isVanished(player)) {
+                return EventResult.CANCELED;
+            }
+
+            return EventResult.CONTINUE;
+        });
     }
 }
