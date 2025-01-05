@@ -37,5 +37,10 @@ Under Control is a library I developed primarily for my personal use. It brings 
   - LivingEntityExtraEvents.
   - ServerPlayerExtraEvents.
   - ShaderEvents.
+  - OtherEvents.
   - More coming soon.
 - Dynamic Mixin System. Decides whether a mixin is applied based on specific conditions.
+- Endpoint listening system for APIs with ApiClient.
+- ServerAPI:
+  - Redirect players to a different server.
+  - Retrieve information about a server, such as its players, name, MOTD, etc.

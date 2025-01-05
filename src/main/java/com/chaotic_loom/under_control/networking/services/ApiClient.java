@@ -1,6 +1,8 @@
 package com.chaotic_loom.under_control.networking.services;
 
 import com.chaotic_loom.under_control.UnderControl;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -81,5 +83,11 @@ public class ApiClient {
         }
         json.append("}");
         return json.toString();
+    }
+
+    public static Map<String, Object> jsonToMap(String json) {
+        Gson gson = new Gson();
+        Map<String, Object> map = gson.fromJson(json, new TypeToken<Map<String, Object>>(){}.getType());
+        return map;
     }
 }

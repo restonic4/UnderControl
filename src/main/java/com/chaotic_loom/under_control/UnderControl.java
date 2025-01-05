@@ -2,22 +2,26 @@ package com.chaotic_loom.under_control;
 
 import com.chaotic_loom.under_control.api.config.ConfigAPI;
 import com.chaotic_loom.under_control.api.saving.SavingAPI;
+import com.chaotic_loom.under_control.api.server.ServerAPI;
 import com.chaotic_loom.under_control.config.ConfigManager;
 import com.chaotic_loom.under_control.config.ConfigProvider;
 import com.chaotic_loom.under_control.networking.services.ApiClient;
 import com.chaotic_loom.under_control.saving.SavingManager;
-import com.chaotic_loom.under_control.api.vanish.VanishAPI;
 import com.chaotic_loom.under_control.networking.PacketManager;
 import com.chaotic_loom.under_control.networking.packets.server_to_client.UpdateServerDataOnClient;
 import com.chaotic_loom.under_control.registries.RegistriesManager;
 import com.chaotic_loom.under_control.saving.custom.VanishList;
 import com.chaotic_loom.under_control.vanish.VanishManager;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.net.InetSocketAddress;
 
 public class UnderControl implements ModInitializer {
     public static final String MOD_ID = "under_control";
