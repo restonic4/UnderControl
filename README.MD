@@ -44,3 +44,4 @@ Under Control is a library I developed primarily for my personal use. It brings 
 - ServerAPI:
   - Redirect players to a different server.
   - Retrieve information about a server, such as its players, name, MOTD, etc.
+- Easing system.
