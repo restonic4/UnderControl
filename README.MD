@@ -37,6 +37,7 @@ Under Control is a library I developed primarily for my personal use. It brings 
   - LivingEntityExtraEvents.
   - ServerPlayerExtraEvents.
   - ShaderEvents.
+  - ClientLifeExtraEvents.
   - OtherEvents.
   - More coming soon.
 - Dynamic Mixin System. Decides whether a mixin is applied based on specific conditions.
