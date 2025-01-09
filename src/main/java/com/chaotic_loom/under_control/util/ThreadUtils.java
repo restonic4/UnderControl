@@ -10,9 +10,12 @@ public class ThreadUtils {
     }
 
     public static void runCountDown(int desiredSeconds, Runnable runnable, Consumer<Integer> consumer) {
-        for (int i = desiredSeconds; i > 0; i--) {
+        for (int i = desiredSeconds; i >= 0; i--) {
             consumer.accept(i);
-            sleep(1000);
+
+            if (i != 0) {
+                sleep(1000);
+            }
         }
 
         if (runnable != null) {
