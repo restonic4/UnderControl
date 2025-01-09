@@ -1,5 +1,6 @@
 package com.chaotic_loom.under_control.mixin.general.client;
 
+import com.chaotic_loom.under_control.client.rendering.effects.SphereManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.chaotic_loom.under_control.client.ClientCacheData;
 import net.minecraft.client.Camera;
@@ -24,6 +25,8 @@ public class LevelRendererMixin {
         } else {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
+
+        SphereManager.render(poseStack, matrix4f, camera);
     }
 
     Vector3f pos = new Vector3f(0, 100, 0);
