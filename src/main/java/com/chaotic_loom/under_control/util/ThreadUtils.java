@@ -9,10 +9,14 @@ public class ThreadUtils {
         } catch (Exception ignored) {}
     }
 
-    public static void runCountDown(int desiredSeconds, Consumer<Integer> consumer) {
+    public static void runCountDown(int desiredSeconds, Runnable runnable, Consumer<Integer> consumer) {
         for (int i = desiredSeconds; i > 0; i--) {
             consumer.accept(i);
             sleep(1000);
+        }
+
+        if (runnable != null) {
+            runnable.run();
         }
     }
 }
