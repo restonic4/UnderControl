@@ -25,13 +25,12 @@ public class LevelRendererMixin {
         } else {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
-
-        SphereManager.render(poseStack, matrix4f, camera);
     }
 
     Vector3f pos = new Vector3f(0, 100, 0);
     @Inject(method = "renderLevel", at = @At("TAIL"))
     private void renderManagers(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
+        SphereManager.render(poseStack, matrix4f, camera);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }
