@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Registration {
     ExecutionSide side();
+    int priority() default 0;
 }

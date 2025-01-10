@@ -42,15 +42,27 @@ public class RegistriesManager {
         Reflections reflections = new Reflections(modPackages);
         Set<Class<?>> registrarsFound = reflections.getTypesAnnotatedWith(Registration.class);
 
-        for (Class<?> registrar : registrarsFound) {
-            Registration annotation = registrar.getAnnotation(Registration.class);
+        List<Class<?>> sortedRegistrars = registrarsFound.stream()
+                .filter(registrar -> {
+                    Registration annotation = registrar.getAnnotation(Registration.class);
+                    return annotation != null && annotation.side() == executionSide;
+                })
+                .sorted((registrar1, registrar2) -> {
+                    Registration annotation1 = registrar1.getAnnotation(Registration.class);
+                    Registration annotation2 = registrar2.getAnnotation(Registration.class);
+                    return Integer.compare(annotation2.priority(), annotation1.priority());
+                })
+                .toList();
 
-            if (annotation != null && annotation.side() == executionSide) {
+
+        for (Class<?> registrar : sortedRegistrars) {
+            Registration annotation = registrar.getAnnotation(Registration.class);
+            if (annotation != null) {
                 try {
                     Method registerMethod = registrar.getDeclaredMethod("register");
 
                     if (Modifier.isStatic(registerMethod.getModifiers())) {
-                        UnderControl.LOGGER.info("Executing registrar: {}", registrar.getName());
+                        UnderControl.LOGGER.info("Executing registrar: {} with priority {}", registrar.getName(), annotation.priority());
                         registerMethod.invoke(null);
                     } else {
                         UnderControl.LOGGER.error("Method 'register' in {} is not static!", registrar.getSimpleName());
