@@ -1,6 +1,7 @@
 package com.chaotic_loom.under_control.client;
 
 import com.chaotic_loom.under_control.UnderControl;
+import com.chaotic_loom.under_control.core.annotations.ExecutionSide;
 import com.chaotic_loom.under_control.saving.SavingManager;
 import com.chaotic_loom.under_control.core.UnderControlConfig;
 import com.chaotic_loom.under_control.incompatibilities.ClientIncompatibilitiesManager;
@@ -15,7 +16,7 @@ public class UnderControlClient implements ClientModInitializer {
 
         SavingManager.registerClientEvents();
         UnderControlConfig.registerClient();
-        RegistriesManager.register(this);
+        RegistriesManager.startRegistrationAnnotationCollection(ExecutionSide.CLIENT);
         ClientIncompatibilitiesManager.registerClient();
         PacketManager.registerServerToClient();
     }

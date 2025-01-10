@@ -2,7 +2,7 @@ package com.chaotic_loom.under_control.util;
 
 import java.util.function.Consumer;
 
-public class ThreadUtils {
+public class ThreadHelper {
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);

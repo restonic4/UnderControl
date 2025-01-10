@@ -1,11 +1,11 @@
-package com.chaotic_loom.under_control.util;
+package com.chaotic_loom.under_control.util.data_holders;
 
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.api.server.ServerAPI;
 
 import java.util.List;
 
-public class ServerData {
+public class ServerInfo {
     private boolean online;
     private String host;
     private int port;
@@ -23,28 +23,28 @@ public class ServerData {
     private List<String> plugins;
 
     public void update() {
-        ServerData newServerData = ServerAPI.getServerData(getHost() + ":" + getPort());
+        ServerInfo newServerInfo = ServerAPI.getServerData(getHost() + ":" + getPort());
 
-        if (newServerData == null) {
+        if (newServerInfo == null) {
             UnderControl.LOGGER.warn("Could not update server data");
             return;
         }
 
-        setOnline(newServerData.isOnline());
-        setHost(newServerData.getHost());
-        setPort(newServerData.getPort());
-        setIpAddress(newServerData.getIpAddress());
-        setEulaBlocked(newServerData.isEulaBlocked());
-        setRetrievedAt(newServerData.getRetrievedAt());
-        setExpiresAt(newServerData.getExpiresAt());
-        setSrvRecord(newServerData.getSrvRecord());
-        setIcon(newServerData.getIcon());
-        setMods(newServerData.getMods());
-        setSoftware(newServerData.getSoftware());
-        setPlugins(newServerData.getPlugins());
-        setVersion(newServerData.getVersion());
-        setPlayers(newServerData.getPlayers());
-        setMotd(newServerData.getMotd());
+        setOnline(newServerInfo.isOnline());
+        setHost(newServerInfo.getHost());
+        setPort(newServerInfo.getPort());
+        setIpAddress(newServerInfo.getIpAddress());
+        setEulaBlocked(newServerInfo.isEulaBlocked());
+        setRetrievedAt(newServerInfo.getRetrievedAt());
+        setExpiresAt(newServerInfo.getExpiresAt());
+        setSrvRecord(newServerInfo.getSrvRecord());
+        setIcon(newServerInfo.getIcon());
+        setMods(newServerInfo.getMods());
+        setSoftware(newServerInfo.getSoftware());
+        setPlugins(newServerInfo.getPlugins());
+        setVersion(newServerInfo.getVersion());
+        setPlayers(newServerInfo.getPlayers());
+        setMotd(newServerInfo.getMotd());
     }
 
     public boolean isOnline() {

@@ -1,5 +1,7 @@
 package com.chaotic_loom.under_control.registries.client;
 
+import com.chaotic_loom.under_control.core.annotations.ExecutionSide;
+import com.chaotic_loom.under_control.core.annotations.Registration;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.client.rendering.shader.ShaderHolder;
@@ -9,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
+@Registration(side = ExecutionSide.CLIENT)
 public class UnderControlShaders {
     private static final List<ShaderHolder> SHADER_HOLDERS = new ArrayList<>();
 

@@ -5,6 +5,7 @@ import com.chaotic_loom.under_control.api.saving.SavingAPI;
 import com.chaotic_loom.under_control.api.server.ServerAPI;
 import com.chaotic_loom.under_control.config.ConfigManager;
 import com.chaotic_loom.under_control.config.ConfigProvider;
+import com.chaotic_loom.under_control.core.annotations.ExecutionSide;
 import com.chaotic_loom.under_control.networking.services.ApiClient;
 import com.chaotic_loom.under_control.saving.SavingManager;
 import com.chaotic_loom.under_control.networking.PacketManager;
@@ -40,7 +41,7 @@ public class UnderControl implements ModInitializer {
 
         VanishManager.registerServerEvents();
 
-        RegistriesManager.register(this);
+        RegistriesManager.startRegistrationAnnotationCollection(ExecutionSide.COMMON);
 
         PacketManager.registerClientToServer();
 
