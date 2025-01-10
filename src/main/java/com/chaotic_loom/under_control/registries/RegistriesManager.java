@@ -20,10 +20,8 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class RegistriesManager {
-    private static final List<String> modPackages = new ArrayList<>();
-
     public static void startRegistrationAnnotationCollection(ExecutionSide executionSide) {
-        collectModPackages(executionSide);
+        List<String> modPackages = collectModPackages(executionSide);
 
         Reflections reflections = new Reflections(modPackages);
         Set<Class<?>> registrarsFound = reflections.getTypesAnnotatedWith(Registration.class);
@@ -36,6 +34,7 @@ public class RegistriesManager {
                     Method registerMethod = registrar.getDeclaredMethod("register");
 
                     if (Modifier.isStatic(registerMethod.getModifiers())) {
+                        UnderControl.LOGGER.info("Executing registrar: {}", registrar.getName());
                         registerMethod.invoke(null);
                     } else {
                         UnderControl.LOGGER.error("Method 'register' in {} is not static!", registrar.getSimpleName());
@@ -49,17 +48,21 @@ public class RegistriesManager {
         }
     }
 
-    public static void collectModPackages(ExecutionSide executionSide) {
+    public static List<String> collectModPackages(ExecutionSide executionSide) {
         if (executionSide == ExecutionSide.CLIENT) {
-            collectPackagesForEntrypoint("client", ClientModInitializer.class);
+            return collectPackagesForEntrypoint("client", ClientModInitializer.class);
         } else if (executionSide == ExecutionSide.COMMON) {
-            collectPackagesForEntrypoint("main", ModInitializer.class);
+            return collectPackagesForEntrypoint("main", ModInitializer.class);
         } else if (executionSide == ExecutionSide.SERVER) {
-            collectPackagesForEntrypoint("server", DedicatedServerModInitializer.class);
+            return collectPackagesForEntrypoint("server", DedicatedServerModInitializer.class);
         }
+
+        return new ArrayList<>();
     }
 
-    private static void collectPackagesForEntrypoint(String entrypointName, Class<?> entrypointType) {
+    private static List<String> collectPackagesForEntrypoint(String entrypointName, Class<?> entrypointType) {
+        List<String> modPackages = new ArrayList<>();
+
         FabricLoader.getInstance().getEntrypointContainers(entrypointName, entrypointType).forEach(entrypoint -> {
             ModMetadata metadata = entrypoint.getProvider().getMetadata();
             String modId = metadata.getId();
@@ -72,20 +75,17 @@ public class RegistriesManager {
 
                 if (!modPackages.contains(modBasePackage)) {
                     modPackages.add(modBasePackage);
-                    System.out.printf("Entrypoint: %s -> Mod ID: %s -> Base Package: %s%n", entrypointName, modId, modBasePackage);
                 }
             } catch (Exception e) {
-                System.err.printf("Could not load the main class %s (ID: %s)%n", metadata.getName(), modId);
+                UnderControl.LOGGER.error("Could not load the main class {} (ID: {})",  metadata.getName(), modId);
             }
         });
+
+        return modPackages;
     }
 
     private static String truncatePackage(String fullPackage, String modId) {
         int modIndex = fullPackage.indexOf(modId);
         return (modIndex != -1) ? fullPackage.substring(0, modIndex + modId.length()) : fullPackage;
-    }
-
-    public static List<String> getModPackages() {
-        return modPackages;
     }
 }
