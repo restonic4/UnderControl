@@ -23,7 +23,7 @@ public class ThreadHelper {
         }
     }
 
-    public void runAsync(Runnable runnable) {
+    public static void runAsync(Runnable runnable) {
         new Thread(runnable).start();
     }
 }
