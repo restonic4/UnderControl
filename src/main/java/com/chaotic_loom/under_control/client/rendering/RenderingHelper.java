@@ -6,6 +6,7 @@ import com.chaotic_loom.under_control.registries.client.UnderControlShaders;
 import com.chaotic_loom.under_control.util.MathHelper;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -83,44 +84,111 @@ public class RenderingHelper {
         return buffer;
     }
 
+    public static void renderBeam3D(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, float width, float height) {
+        renderBeam3D(poseStack, matrix4f, camera, (float) position.x, (float) position.y, (float) position.z, width, height);
+    }
+
     public static void renderBeam3D(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, float width, float height) {
+        renderBeam3D(poseStack, matrix4f, camera, position.x, position.y, position.z, width, height);
+    }
+
+    public static void renderBeam3D(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float width, float height) {
         List<Vector3f[]> vector3fList = RenderShapes.BEAM.getVertices();
 
         for (int i = 0; i < vector3fList.size(); i++) {
             Vector3f[] vector3fs = vector3fList.get(i);
 
             MathHelper.scaleVertices(vector3fs, width, height, width);
-            MathHelper.translateVertices(vector3fs, position.x - width/2, position.y, position.z - width/2);
+            MathHelper.translateVertices(vector3fs, x - width/2, y, z - width/2);
             RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLE_FAN, vector3fs);
         }
     }
 
+    public static void renderBillboardQuad(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 pointA, Vec3 pointB, float width) {
+        renderBillboardQuad(poseStack, matrix4f, camera, (float) pointA.x, (float) pointA.y, (float) pointA.z, (float) pointB.x, (float) pointB.y, (float) pointB.z, width);
+    }
+
     public static void renderBillboardQuad(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f pointA, Vector3f pointB, float width) {
-        Vector3f delta = new Vector3f(pointB).sub(pointA);
+        renderBillboardQuad(poseStack, matrix4f, camera, pointA.x, pointA.y, pointA.z, pointB.x, pointB.y, pointB.z, width);
+    }
 
-        Vector3f cameraDirection = new Vector3f(camera.getPosition().toVector3f()).sub(pointA).normalize();
+    public static void renderBillboardQuad(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float xA, float yA, float zA, float xB, float yB, float zB, float width) {
+        // Calculate the delta vector between point A and point B
+        float deltaX = xB - xA;
+        float deltaY = yB - yA;
+        float deltaZ = zB - zA;
 
-        Vector3f normal = new Vector3f(cameraDirection).cross(delta).normalize().mul(width / 2f, width / 2f, width / 2f);
+        // Get the camera's direction relative to point A
+        float camX = (float) camera.getPosition().x - xA;
+        float camY = (float) camera.getPosition().y - yA;
+        float camZ = (float) camera.getPosition().z - zA;
 
-        Vector3f topLeft = new Vector3f(pointA).sub(normal);
-        Vector3f topRight = new Vector3f(pointA).add(normal);
-        Vector3f bottomLeft = new Vector3f(pointB).sub(normal);
-        Vector3f bottomRight = new Vector3f(pointB).add(normal);
+        // Normalize the camera direction vector
+        float camLength = (float) Math.sqrt(camX * camX + camY * camY + camZ * camZ);
+        camX /= camLength;
+        camY /= camLength;
+        camZ /= camLength;
 
-        Vector3f[] vertices = new Vector3f[] { topLeft, bottomLeft, bottomRight, topRight };
+        // Calculate the cross product of the camera direction and delta (to find the normal vector)
+        float normalX = camY * deltaZ - camZ * deltaY;
+        float normalY = camZ * deltaX - camX * deltaZ;
+        float normalZ = camX * deltaY - camY * deltaX;
 
+        // Normalize the normal vector and scale it by half the width
+        float normalLength = (float) Math.sqrt(normalX * normalX + normalY * normalY + normalZ * normalZ);
+        normalX = (normalX / normalLength) * (width / 2f);
+        normalY = (normalY / normalLength) * (width / 2f);
+        normalZ = (normalZ / normalLength) * (width / 2f);
+
+        // Calculate the positions of the quad's vertices
+        float topLeftX = xA - normalX;
+        float topLeftY = yA - normalY;
+        float topLeftZ = zA - normalZ;
+
+        float topRightX = xA + normalX;
+        float topRightY = yA + normalY;
+        float topRightZ = zA + normalZ;
+
+        float bottomLeftX = xB - normalX;
+        float bottomLeftY = yB - normalY;
+        float bottomLeftZ = zB - normalZ;
+
+        float bottomRightX = xB + normalX;
+        float bottomRightY = yB + normalY;
+        float bottomRightZ = zB + normalZ;
+
+        // Retrieve the pre-allocated quad vertices array
+        Vector3f[] vertices = RenderShapes.QUAD.getVertices().get(0);
+
+        // Assign the calculated vertex positions to the array
+        vertices[0].set(topLeftX, topLeftY, topLeftZ);
+        vertices[1].set(bottomLeftX, bottomLeftY, bottomLeftZ);
+        vertices[2].set(bottomRightX, bottomRightY, bottomRightZ);
+        vertices[3].set(topRightX, topRightY, topRightZ);
+
+        // Build the quad geometry using the vertex data
         BufferBuilder.RenderedBuffer renderedBuffer = buildGeometry(Tesselator.getInstance().getBuilder(), VertexFormat.Mode.QUADS, vertices);
+
+        // Render the quad
         renderQuad(generateBuffer(renderedBuffer), poseStack, matrix4f, camera);
     }
 
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, float radius) {
+        renderSphere(poseStack, matrix4f, camera, (float) position.x, (float) position.y, (float) position.z, radius);
+    }
+
     public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, float radius) {
+        renderSphere(poseStack, matrix4f, camera, position.x, position.y, position.z, radius);
+    }
+
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float radius) {
         List<Vector3f[]> vector3fList = RenderShapes.SPHERE.getVertices();
 
         for (int i = 0; i < vector3fList.size(); i++) {
             Vector3f[] vector3fs = vector3fList.get(i);
 
             MathHelper.scaleVertices(vector3fs, radius, radius, radius);
-            MathHelper.translateVertices(vector3fs, position.x, position.y, position.z);
+            MathHelper.translateVertices(vector3fs, x, y, z);
             RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLES, vector3fs);
         }
     }
