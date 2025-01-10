@@ -15,6 +15,7 @@ public class UnderControlServer implements DedicatedServerModInitializer {
     public void onInitializeServer() {
         LOGGER.info("Starting the library, server side");
 
+        RegistriesManager.collectModPackages();
         RegistriesManager.startRegistrationAnnotationCollection(ExecutionSide.SERVER);
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {

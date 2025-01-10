@@ -4,6 +4,8 @@ import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.api.config.ConfigAPI;
 import com.chaotic_loom.under_control.client.ClientCacheData;
 import com.chaotic_loom.under_control.config.ConfigProvider;
+import com.chaotic_loom.under_control.core.annotations.Packet;
+import com.chaotic_loom.under_control.core.annotations.PacketDirection;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -23,7 +25,12 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.net.InetSocketAddress;
 
+@Packet(direction = PacketDirection.SERVER_TO_CLIENT)
 public class ConnectToServer {
+    public static ResourceLocation getId() {
+        return new ResourceLocation(UnderControl.MOD_ID, "connect_to_server");
+    }
+
     public static void receive(Minecraft minecraft, ClientPacketListener clientPacketListener, FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
         String ip = friendlyByteBuf.readUtf();
         int port = friendlyByteBuf.readInt();
@@ -48,9 +55,5 @@ public class ConnectToServer {
         friendlyByteBuf.writeInt(port);
 
         ServerPlayNetworking.send(serverPlayer, getId(), friendlyByteBuf);
-    }
-
-    public static ResourceLocation getId() {
-        return new ResourceLocation(UnderControl.MOD_ID, "connect_to_server");
     }
 }

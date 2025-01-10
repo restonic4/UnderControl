@@ -6,9 +6,9 @@ import com.chaotic_loom.under_control.api.server.ServerAPI;
 import com.chaotic_loom.under_control.config.ConfigManager;
 import com.chaotic_loom.under_control.config.ConfigProvider;
 import com.chaotic_loom.under_control.core.annotations.ExecutionSide;
+import com.chaotic_loom.under_control.core.annotations.PacketDirection;
 import com.chaotic_loom.under_control.networking.services.ApiClient;
 import com.chaotic_loom.under_control.saving.SavingManager;
-import com.chaotic_loom.under_control.networking.PacketManager;
 import com.chaotic_loom.under_control.networking.packets.server_to_client.UpdateServerDataOnClient;
 import com.chaotic_loom.under_control.registries.RegistriesManager;
 import com.chaotic_loom.under_control.saving.custom.VanishList;
@@ -41,9 +41,9 @@ public class UnderControl implements ModInitializer {
 
         VanishManager.registerServerEvents();
 
+        RegistriesManager.collectModPackages();
         RegistriesManager.startRegistrationAnnotationCollection(ExecutionSide.COMMON);
-
-        PacketManager.registerClientToServer();
+        RegistriesManager.startPacketAnnotationCollection(PacketDirection.CLIENT_TO_SERVER);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer player = handler.getPlayer();
