@@ -107,7 +107,7 @@ public class RegistriesManager {
                     }
 
                     if (packetDirection == PacketDirection.CLIENT_TO_SERVER) {
-                        System.out.printf("Packet registered: %s -> %s%n", packetLocation, packetClass.getName());
+                        UnderControl.LOGGER.info("Packet registered: {} -> {}", packetLocation, packetClass.getName());
                         ServerPlayNetworking.registerGlobalReceiver(packetLocation, (server, player, packetListener, buf, packetSender) -> {
                             try {
                                 receiveMethod.invoke(null, server, player, packetListener, buf, packetSender);
@@ -116,7 +116,7 @@ public class RegistriesManager {
                             }
                         });
                     } else if (packetDirection == PacketDirection.SERVER_TO_CLIENT) {
-                        System.out.printf("Packet registered: %s -> %s%n", packetLocation, packetClass.getName());
+                        UnderControl.LOGGER.info("Packet registered: {} -> {}", packetLocation, packetClass.getName());
                         ClientPlayNetworking.registerGlobalReceiver(packetLocation, (minecraft, clientPacketListener, friendlyByteBuf, packetSender) -> {
                             try {
                                 receiveMethod.invoke(null, minecraft, clientPacketListener, friendlyByteBuf, packetSender);
