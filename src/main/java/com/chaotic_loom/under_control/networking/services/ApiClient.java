@@ -5,7 +5,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -89,5 +91,14 @@ public class ApiClient {
         Gson gson = new Gson();
         Map<String, Object> map = gson.fromJson(json, new TypeToken<Map<String, Object>>(){}.getType());
         return map;
+    }
+
+    public static List<String> stringToArray(String input) {
+        input = input.trim();
+        if (input.startsWith("[") && input.endsWith("]")) {
+            input = input.substring(1, input.length() - 1);
+        }
+
+        return Arrays.asList(input.split("\\s*,\\s*"));
     }
 }

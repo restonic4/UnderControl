@@ -192,4 +192,42 @@ public class RenderingHelper {
             RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLES, vector3fs);
         }
     }
+
+    public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, Vec3 scale, Vec3 rotation) {
+        renderCube(poseStack, matrix4f, camera, (float) position.x, (float) position.y, (float) position.z, (float) scale.x, (float) scale.y, (float) scale.z, (float) rotation.x, (float) rotation.y, (float) rotation.z);
+    }
+
+    public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation) {
+        renderCube(poseStack, matrix4f, camera, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z);
+    }
+
+    public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation) {
+        List<Vector3f[]> vector3fList = RenderShapes.CUBE.getVertices();
+
+        for (int i = 0; i < vector3fList.size(); i++) {
+            Vector3f[] vector3fs = vector3fList.get(i);
+
+            MathHelper.transformGeometry(vector3fs, x, y, z, xScale, yScale, zScale, xRotation, yRotation, zRotation);
+            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLES, vector3fs);
+        }
+    }
+
+    public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, Vec3 scale, Vec3 rotation) {
+        renderCylinder(poseStack, matrix4f, camera, (float) position.x, (float) position.y, (float) position.z, (float) scale.x, (float) scale.y, (float) scale.z, (float) rotation.x, (float) rotation.y, (float) rotation.z);
+    }
+
+    public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation) {
+        renderCylinder(poseStack, matrix4f, camera, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z);
+    }
+
+    public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation) {
+        List<Vector3f[]> vector3fList = RenderShapes.CYLINDER.getVertices();
+
+        for (int i = 0; i < vector3fList.size(); i++) {
+            Vector3f[] vector3fs = vector3fList.get(i);
+
+            MathHelper.transformGeometry(vector3fs, x, y, z, xScale, yScale, zScale, xRotation, yRotation, zRotation);
+            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLES, vector3fs);
+        }
+    }
 }

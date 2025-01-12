@@ -1,5 +1,7 @@
 package com.chaotic_loom.under_control.mixin.general.client;
 
+import com.chaotic_loom.under_control.client.rendering.effects.CubeManager;
+import com.chaotic_loom.under_control.client.rendering.effects.CylinderManager;
 import com.chaotic_loom.under_control.client.rendering.effects.SphereManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.chaotic_loom.under_control.client.ClientCacheData;
@@ -31,6 +33,9 @@ public class LevelRendererMixin {
     @Inject(method = "renderLevel", at = @At("TAIL"))
     private void renderManagers(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
         SphereManager.render(poseStack, matrix4f, camera);
+        CubeManager.render(poseStack, matrix4f, camera);
+        CylinderManager.render(poseStack, matrix4f, camera);
+
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }

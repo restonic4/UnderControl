@@ -142,6 +142,12 @@ public class MathHelper {
         }
     }
 
+    public static void transformGeometry(Vector3f[] vector3fs, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation) {
+        MathHelper.scaleVertices(vector3fs, xScale, yScale, zScale);
+        MathHelper.rotateVertices(vector3fs, xRotation, yRotation, zRotation);
+        MathHelper.translateVertices(vector3fs, x, y, z);
+    }
+
     public static float calculateScale(Vector3f distance, float maxDistance, float maxValue) {
         float lengthXZ = (float) Math.sqrt(distance.x * distance.x + distance.z * distance.z);
 
@@ -246,6 +252,21 @@ public class MathHelper {
         float distanceSquared = sphereCenter.distanceSquared(closestPoint);
 
         return distanceSquared <= sphereRadius * sphereRadius;
+    }
+
+    public static boolean isCylinderCollidingWithAABB(Vector3f cylinderCenter, float radius, float height, AABB rect) {
+        float closestY = Math.max((float) rect.minY, Math.min(cylinderCenter.y, (float) rect.maxY));
+
+        float closestX = Math.max((float) rect.minX, Math.min(cylinderCenter.x, (float) rect.maxX));
+        float closestZ = Math.max((float) rect.minZ, Math.min(cylinderCenter.z, (float) rect.maxZ));
+
+        if (closestY < cylinderCenter.y - height / 2 || closestY > cylinderCenter.y + height / 2) {
+            return false;
+        }
+
+        float distanceSquared = (closestX - cylinderCenter.x) * (closestX - cylinderCenter.x) + (closestZ - cylinderCenter.z) * (closestZ - cylinderCenter.z);
+
+        return distanceSquared <= radius * radius;
     }
 
     public static AABB getReducedPlayerAABB(ServerPlayer player, double scale) {

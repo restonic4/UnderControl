@@ -5,6 +5,7 @@ import java.util.function.Function;
 public class EasingSystem {
     public enum EasingType {
         LINEAR,
+        SINE_IN, SINE_OUT, SINE_IN_OUT,
         QUAD_IN, QUAD_OUT, QUAD_IN_OUT,
         CUBIC_IN, CUBIC_OUT, CUBIC_IN_OUT,
         EXPONENTIAL_IN, EXPONENTIAL_OUT, EXPONENTIAL_IN_OUT,
@@ -38,6 +39,10 @@ public class EasingSystem {
     private static Function<Float, Float> selectEasingFunction(EasingType type) {
         return switch (type) {
             case LINEAR -> t -> t;
+
+            case SINE_IN -> t -> (float) (1 - Math.cos((t * Math.PI) / 2));
+            case SINE_OUT -> t -> (float) Math.sin((t * Math.PI) / 2);
+            case SINE_IN_OUT -> t -> (float) (-(Math.cos(Math.PI * t) - 1) / 2);
 
             case QUAD_IN -> t -> t * t;
             case QUAD_OUT -> t -> 1 - (1 - t) * (1 - t);
