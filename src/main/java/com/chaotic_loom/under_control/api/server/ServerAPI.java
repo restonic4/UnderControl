@@ -42,28 +42,34 @@ public class ServerAPI {
                 LinkedTreeMap<?, ?> versionMap = (LinkedTreeMap<?, ?>) response.get("version");
                 ServerInfo.Version version = new ServerInfo.Version();
 
-                version.setName_raw((String) versionMap.get("name_raw"));
-                version.setName_clean((String) versionMap.get("name_clean"));
-                version.setName_html((String) versionMap.get("name_html"));
-                version.setProtocol(((Double) versionMap.get("protocol")).intValue());
+                if (versionMap != null) {
+                    version.setName_raw((String) versionMap.get("name_raw"));
+                    version.setName_clean((String) versionMap.get("name_clean"));
+                    version.setName_html((String) versionMap.get("name_html"));
+                    version.setProtocol(((Double) versionMap.get("protocol")).intValue());
+                }
 
                 serverInfo.setVersion(version);
 
                 LinkedTreeMap<?, ?> playersMap = (LinkedTreeMap<?, ?>) response.get("players");
                 ServerInfo.Players players = new ServerInfo.Players();
 
-                players.setOnline(((Double) playersMap.get("online")).intValue());
-                players.setMax(((Double) playersMap.get("max")).intValue());
-                players.setList((List<String>) playersMap.get("list"));
+                if (playersMap != null) {
+                    players.setOnline(((Double) playersMap.get("online")).intValue());
+                    players.setMax(((Double) playersMap.get("max")).intValue());
+                    players.setList((List<String>) playersMap.get("list"));
+                }
 
                 serverInfo.setPlayers(players);
 
                 LinkedTreeMap<?, ?> motdMap = (LinkedTreeMap<?, ?>) response.get("motd");
                 ServerInfo.Motd motd = new ServerInfo.Motd();
 
-                motd.setRaw((String) motdMap.get("raw"));
-                motd.setClean((String) motdMap.get("clean"));
-                motd.setHtml((String) motdMap.get("html"));
+                if (motdMap != null) {
+                    motd.setRaw((String) motdMap.get("raw"));
+                    motd.setClean((String) motdMap.get("clean"));
+                    motd.setHtml((String) motdMap.get("html"));
+                }
 
                 serverInfo.setMotd(motd);
             } catch (Exception exception) {
