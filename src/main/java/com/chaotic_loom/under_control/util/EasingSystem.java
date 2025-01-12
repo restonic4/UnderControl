@@ -15,7 +15,10 @@ public class EasingSystem {
     }
 
     public static float getEasedValue(long startTime, long endTime, float startValue, float endValue, EasingType type) {
-        long currentTime = System.currentTimeMillis();
+        return getEasedValue(System.currentTimeMillis(), startTime, endTime, startValue, endValue, type);
+    }
+
+    public static float getEasedValue(long currentTime, long startTime, long endTime, float startValue, float endValue, EasingType type) {
         if (currentTime >= endTime) return endValue;
         if (currentTime <= startTime) return startValue;
 
