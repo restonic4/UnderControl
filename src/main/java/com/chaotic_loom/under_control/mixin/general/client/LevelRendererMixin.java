@@ -1,8 +1,10 @@
 package com.chaotic_loom.under_control.mixin.general.client;
 
+import com.chaotic_loom.under_control.client.EntityTracker;
 import com.chaotic_loom.under_control.client.rendering.effects.CubeManager;
 import com.chaotic_loom.under_control.client.rendering.effects.CylinderManager;
 import com.chaotic_loom.under_control.client.rendering.effects.SphereManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.chaotic_loom.under_control.client.ClientCacheData;
 import net.minecraft.client.Camera;
@@ -32,9 +34,14 @@ public class LevelRendererMixin {
     Vector3f pos = new Vector3f(0, 100, 0);
     @Inject(method = "renderLevel", at = @At("TAIL"))
     private void renderManagers(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
+        RenderSystem.enableBlend();
+
         SphereManager.render(poseStack, matrix4f, camera);
         CubeManager.render(poseStack, matrix4f, camera);
         CylinderManager.render(poseStack, matrix4f, camera);
+        EntityTracker.render(poseStack, matrix4f, camera);
+
+        RenderSystem.disableBlend();
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }

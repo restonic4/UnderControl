@@ -45,11 +45,11 @@
     "vanish.ServerLevelMixin"
   ],
   "client": [
+    "general.client.EntityRendererMixin",
     "general.client.GameRendererMixin",
     "general.client.LevelRendererMixin",
     "general.client.MinecraftMixin",
-    "general.client.ReceivingLevelScreenMixin",
-    "general.client.UserMixin"
+    "general.client.ReceivingLevelScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
