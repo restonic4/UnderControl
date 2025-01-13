@@ -48,7 +48,8 @@
     "general.client.GameRendererMixin",
     "general.client.LevelRendererMixin",
     "general.client.MinecraftMixin",
-    "general.client.ReceivingLevelScreenMixin"
+    "general.client.ReceivingLevelScreenMixin",
+    "general.client.UserMixin"
   ],
   "injectors": {
     "defaultRequire": 1
