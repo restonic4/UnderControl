@@ -285,4 +285,17 @@ public class MathHelper {
                 centerX + halfWidthX, centerY + halfHeightY, centerZ + halfWidthZ
         );
     }
+
+    public static String formatTime(int totalSeconds) {
+        int days = totalSeconds / (24 * 3600);
+        int remainingSecondsAfterDays = totalSeconds % (24 * 3600);
+
+        int hours = remainingSecondsAfterDays / 3600;
+        int remainingSecondsAfterHours = remainingSecondsAfterDays % 3600;
+
+        int minutes = remainingSecondsAfterHours / 60;
+        int seconds = remainingSecondsAfterHours % 60;
+
+        return String.format("%d days, %02d hours, %02d minutes, %02d seconds", days, hours, minutes, seconds);
+    }
 }
