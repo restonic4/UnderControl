@@ -7,12 +7,12 @@ in vec3 Position;
 uniform mat4 ProjMat;
 uniform mat4 ModelViewMat;
 
-out float vertexHeight;
+uniform vec3 Center;
+uniform float Radius;
+
+out float normalizedHeight;
 
 void main() {
-    vec4 worldPosition = ModelViewMat * vec4(Position, 1.0);
-
-    vertexHeight = worldPosition.y;
-
-    gl_Position = ProjMat * worldPosition;
+    normalizedHeight = (Position.y - (Center.y - Radius)) / (2.0 * Radius);
+    gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
 }

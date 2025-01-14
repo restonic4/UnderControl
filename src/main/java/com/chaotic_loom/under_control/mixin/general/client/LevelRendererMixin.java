@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,17 +32,14 @@ public class LevelRendererMixin {
         }
     }
 
-    Vector3f pos = new Vector3f(0, 100, 0);
-    @Inject(method = "renderLevel", at = @At("TAIL"))
+    @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V", ordinal = 3))
     private void renderManagers(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
-        RenderSystem.enableBlend();
+        RenderSystem.enableDepthTest();
 
         SphereManager.render(poseStack, matrix4f, camera);
         CubeManager.render(poseStack, matrix4f, camera);
         CylinderManager.render(poseStack, matrix4f, camera);
         EntityTracker.render(poseStack, matrix4f, camera);
-
-        RenderSystem.disableBlend();
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }

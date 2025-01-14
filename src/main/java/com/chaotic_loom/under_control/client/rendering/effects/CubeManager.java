@@ -1,5 +1,6 @@
 package com.chaotic_loom.under_control.client.rendering.effects;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -42,5 +43,7 @@ public class CubeManager {
         for (Map.Entry<Long, Cube> entry : cubes.entrySet()) {
             entry.getValue().render(poseStack, matrix4f, camera);
         }
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 }

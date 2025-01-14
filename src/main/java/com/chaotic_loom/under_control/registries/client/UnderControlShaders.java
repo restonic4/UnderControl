@@ -24,15 +24,8 @@ public class UnderControlShaders {
     public static ShaderHolder VERTICAL_GRADIENT = registerShader(new ShaderHolder(
             new ResourceLocation(UnderControl.MOD_ID, "program/vertical_gradient"),
             DefaultVertexFormat.POSITION,
-            "TopColor", "BottomColor"
+            "Center", "Radius", "TopColor", "BottomColor"
     ));
-
-    public static ShaderProfile VERTICAL_GRADIENT_PROFILE = new ShaderProfile(VERTICAL_GRADIENT);
-
-    static {
-        VERTICAL_GRADIENT_PROFILE.setUniformData("TopColor", new float[] {1, 0, 0, 1});
-        VERTICAL_GRADIENT_PROFILE.setUniformData("BottomColor", new float[] {0, 1, 0, 1});
-    }
 
     public static void register() {
         ShaderEvents.REGISTRATION.register((resourceProvider, shaderPairList) -> {

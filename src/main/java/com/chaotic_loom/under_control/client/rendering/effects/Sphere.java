@@ -77,8 +77,6 @@ public class Sphere {
         } else {
             RenderingHelper.renderSphere(poseStack, matrix4f, camera, this.shaderHolder, this.position, this.radius, this.renderingFlags);
         }
-
-        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
     public void cleanup() {

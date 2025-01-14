@@ -72,8 +72,6 @@ public class Cube {
         RenderSystem.setShaderColor(r, g, b, a);
 
         RenderingHelper.renderCube(poseStack, matrix4f, camera, this.shaderHolder, this.position, this.scale, this.rotation, this.renderingFlags);
-
-        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
     public void cleanup() {
