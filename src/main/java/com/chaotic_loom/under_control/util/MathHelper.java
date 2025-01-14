@@ -148,6 +148,18 @@ public class MathHelper {
         MathHelper.translateVertices(vector3fs, x, y, z);
     }
 
+    public static void invertNormals(Vector3f[] vertices) {
+        if (vertices == null || vertices.length % 3 != 0) {
+            throw new IllegalArgumentException("The number of vertices must be a multiple of 3.");
+        }
+
+        for (int i = 0; i < vertices.length; i += 3) {
+            Vector3f temp = vertices[i];
+            vertices[i] = vertices[i + 2];
+            vertices[i + 2] = temp;
+        }
+    }
+
     public static float calculateScale(Vector3f distance, float maxDistance, float maxValue) {
         float lengthXZ = (float) Math.sqrt(distance.x * distance.x + distance.z * distance.z);
 

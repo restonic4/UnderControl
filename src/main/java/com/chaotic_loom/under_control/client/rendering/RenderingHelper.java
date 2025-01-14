@@ -1,11 +1,15 @@
 package com.chaotic_loom.under_control.client.rendering;
 
+import com.chaotic_loom.under_control.client.rendering.shader.ShaderHolder;
+import com.chaotic_loom.under_control.util.FlagFactory;
+import com.chaotic_loom.under_control.util.data_holders.RenderingFlags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.chaotic_loom.under_control.registries.client.UnderControlShaders;
 import com.chaotic_loom.under_control.util.MathHelper;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -15,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 public class RenderingHelper {
-    public static void renderDynamicGeometry(PoseStack poseStack, Matrix4f matrix4f, Camera camera, VertexFormat.Mode mode, Vector3f[] vertices) {
+    public static void renderDynamicGeometry(PoseStack poseStack, Matrix4f matrix4f, Camera camera, VertexFormat.Mode mode, Vector3f[] vertices, ShaderHolder shaderHolder) {
         BufferBuilder.RenderedBuffer renderedBuffer = buildGeometryReusable(mode, vertices);
-        renderQuad(generateReusableBuffer(renderedBuffer), poseStack, matrix4f, camera);
+        renderQuad(generateReusableBuffer(renderedBuffer), poseStack, matrix4f, camera, shaderHolder);
     }
 
-    public static void renderQuad(VertexBuffer vertexBuffer, PoseStack poseStack, Matrix4f matrix4f, Camera camera) {
+    public static void renderQuad(VertexBuffer vertexBuffer, PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder) {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
@@ -29,7 +33,7 @@ public class RenderingHelper {
         poseStack.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
 
         vertexBuffer.bind();
-        vertexBuffer.drawWithShader(poseStack.last().pose(), matrix4f, UnderControlShaders.SIMPLE_COLOR.getInstance().get());
+        vertexBuffer.drawWithShader(poseStack.last().pose(), matrix4f, shaderHolder.getInstance().get());
 
         poseStack.popPose();
 
@@ -100,7 +104,7 @@ public class RenderingHelper {
 
             MathHelper.scaleVertices(vector3fs, width, height, width);
             MathHelper.translateVertices(vector3fs, x - width/2, y, z - width/2);
-            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLE_FAN, vector3fs);
+            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLE_FAN, vector3fs, UnderControlShaders.SIMPLE_COLOR);
         }
     }
 
@@ -170,64 +174,124 @@ public class RenderingHelper {
         BufferBuilder.RenderedBuffer renderedBuffer = buildGeometry(Tesselator.getInstance().getBuilder(), VertexFormat.Mode.QUADS, vertices);
 
         // Render the quad
-        renderQuad(generateBuffer(renderedBuffer), poseStack, matrix4f, camera);
+        renderQuad(generateBuffer(renderedBuffer), poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR);
+    }
+
+    public static void renderGeometry(List<Vector3f[]> vector3fList, VertexFormat.Mode vertexFormatMode, PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation) {
+        renderGeometry(vector3fList, vertexFormatMode, UnderControlShaders.SIMPLE_COLOR, poseStack, matrix4f, camera, x, y, z, xScale, yScale, zScale, xRotation, yRotation, zRotation, 0);
+    }
+
+    public static void renderGeometry(List<Vector3f[]> vector3fList, VertexFormat.Mode vertexFormatMode, ShaderHolder shaderHolder, PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation, int flags) {
+        for (int i = 0; i < vector3fList.size(); i++) {
+            Vector3f[] vector3fs = vector3fList.get(i);
+
+            if (FlagFactory.hasFlag(flags, RenderingFlags.INVERT_NORMALS)) {
+                MathHelper.invertNormals(vector3fs);
+            }
+
+            MathHelper.transformGeometry(vector3fs, x, y, z, xScale, yScale, zScale, xRotation, yRotation, zRotation);
+            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, vertexFormatMode, vector3fs, shaderHolder);
+        }
     }
 
     public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, float radius) {
-        renderSphere(poseStack, matrix4f, camera, (float) position.x, (float) position.y, (float) position.z, radius);
+        renderSphere(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, (float) position.x, (float) position.y, (float) position.z, radius, radius, radius, 0, 0, 0, 0);
+    }
+
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, Vec3 scale, Vec3 rotation) {
+        renderSphere(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, (float) position.x, (float) position.y, (float) position.z, (float) scale.x(), (float) scale.y(), (float) scale.z(), (float) rotation.x(), (float) rotation.y(), (float) scale.z(), 0);
     }
 
     public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, float radius) {
-        renderSphere(poseStack, matrix4f, camera, position.x, position.y, position.z, radius);
+        renderSphere(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, radius, radius, radius, 0, 0, 0, 0);
     }
 
-    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float radius) {
-        List<Vector3f[]> vector3fList = RenderShapes.SPHERE.getVertices();
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, float radius, int flags) {
+        renderSphere(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, radius, radius, radius, 0, 0, 0, flags);
+    }
 
-        for (int i = 0; i < vector3fList.size(); i++) {
-            Vector3f[] vector3fs = vector3fList.get(i);
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, Vector3f position, float radius, int flags) {
+        renderSphere(poseStack, matrix4f, camera, shaderHolder, position.x, position.y, position.z, radius, radius, radius, 0, 0, 0, flags);
+    }
 
-            MathHelper.scaleVertices(vector3fs, radius, radius, radius);
-            MathHelper.translateVertices(vector3fs, x, y, z);
-            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLES, vector3fs);
-        }
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation) {
+        renderSphere(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, 0);
+    }
+
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation, int flags) {
+        renderGeometry(
+                RenderShapes.SPHERE.getVertices(),
+                VertexFormat.Mode.TRIANGLES,
+                shaderHolder,
+                poseStack,
+                matrix4f,
+                camera,
+                x, y, z,
+                xScale, yScale, zScale,
+                xRotation, yRotation, zRotation,
+                flags
+        );
     }
 
     public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, Vec3 scale, Vec3 rotation) {
-        renderCube(poseStack, matrix4f, camera, (float) position.x, (float) position.y, (float) position.z, (float) scale.x, (float) scale.y, (float) scale.z, (float) rotation.x, (float) rotation.y, (float) rotation.z);
+        renderCube(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, (float) position.x, (float) position.y, (float) position.z, (float) scale.x, (float) scale.y, (float) scale.z, (float) rotation.x, (float) rotation.y, (float) rotation.z, 0);
     }
 
     public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation) {
-        renderCube(poseStack, matrix4f, camera, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z);
+        renderCube(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, 0);
     }
 
-    public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation) {
-        List<Vector3f[]> vector3fList = RenderShapes.CUBE.getVertices();
+    public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation, int flags) {
+        renderCube(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, flags);
+    }
 
-        for (int i = 0; i < vector3fList.size(); i++) {
-            Vector3f[] vector3fs = vector3fList.get(i);
+    public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, Vector3f position, Vector3f scale, Vector3f rotation, int flags) {
+        renderCube(poseStack, matrix4f, camera, shaderHolder, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, flags);
+    }
 
-            MathHelper.transformGeometry(vector3fs, x, y, z, xScale, yScale, zScale, xRotation, yRotation, zRotation);
-            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLES, vector3fs);
-        }
+    public static void renderCube(PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation, int flags) {
+        renderGeometry(
+                RenderShapes.CUBE.getVertices(),
+                VertexFormat.Mode.TRIANGLES,
+                shaderHolder,
+                poseStack,
+                matrix4f,
+                camera,
+                x, y, z,
+                xScale, yScale, zScale,
+                xRotation, yRotation, zRotation,
+                flags
+        );
     }
 
     public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vec3 position, Vec3 scale, Vec3 rotation) {
-        renderCylinder(poseStack, matrix4f, camera, (float) position.x, (float) position.y, (float) position.z, (float) scale.x, (float) scale.y, (float) scale.z, (float) rotation.x, (float) rotation.y, (float) rotation.z);
+        renderCylinder(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, (float) position.x, (float) position.y, (float) position.z, (float) scale.x, (float) scale.y, (float) scale.z, (float) rotation.x, (float) rotation.y, (float) rotation.z, 0);
     }
 
     public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation) {
-        renderCylinder(poseStack, matrix4f, camera, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z);
+        renderCylinder(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, 0);
     }
 
-    public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation) {
-        List<Vector3f[]> vector3fList = RenderShapes.CYLINDER.getVertices();
+    public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation, int flags) {
+        renderCylinder(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, flags);
+    }
 
-        for (int i = 0; i < vector3fList.size(); i++) {
-            Vector3f[] vector3fs = vector3fList.get(i);
+    public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, Vector3f position, Vector3f scale, Vector3f rotation, int flags) {
+        renderCylinder(poseStack, matrix4f, camera, shaderHolder, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, flags);
+    }
 
-            MathHelper.transformGeometry(vector3fs, x, y, z, xScale, yScale, zScale, xRotation, yRotation, zRotation);
-            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, VertexFormat.Mode.TRIANGLES, vector3fs);
-        }
+    public static void renderCylinder(PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, float x, float y, float z, float xScale, float yScale, float zScale, float xRotation, float yRotation, float zRotation, int flags) {
+        renderGeometry(
+                RenderShapes.CYLINDER.getVertices(),
+                VertexFormat.Mode.TRIANGLES,
+                shaderHolder,
+                poseStack,
+                matrix4f,
+                camera,
+                x, y, z,
+                xScale, yScale, zScale,
+                xRotation, yRotation, zRotation,
+                flags
+        );
     }
 }

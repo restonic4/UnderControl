@@ -1,6 +1,8 @@
 package com.chaotic_loom.under_control.client.rendering.effects;
 
 import com.chaotic_loom.under_control.client.rendering.RenderingHelper;
+import com.chaotic_loom.under_control.client.rendering.shader.ShaderHolder;
+import com.chaotic_loom.under_control.registries.client.UnderControlShaders;
 import com.chaotic_loom.under_control.util.MathHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -18,6 +20,9 @@ public class Cube {
     private Vector3f rotation;
     private Color color;
 
+    private int renderingFlags;
+    private ShaderHolder shaderHolder;
+
     public Cube(long id) {
         this.id = id;
 
@@ -25,6 +30,7 @@ public class Cube {
         this.scale = new Vector3f(1);
         this.rotation = new Vector3f();
         this.color = new Color(0xFFFFFF);
+        this.shaderHolder = UnderControlShaders.SIMPLE_COLOR;
     }
 
     public Cube setPosition(Vector3f position) {
@@ -47,6 +53,16 @@ public class Cube {
         return this;
     }
 
+    public Cube setRenderingFlags(int renderingFlags) {
+        this.renderingFlags = renderingFlags;
+        return this;
+    }
+
+    public Cube setShader(ShaderHolder shaderHolder) {
+        this.shaderHolder = shaderHolder;
+        return this;
+    }
+
     public void render(PoseStack poseStack, Matrix4f matrix4f, Camera camera) {
         float r = MathHelper.getNormalizedColorR(color);
         float g = MathHelper.getNormalizedColorG(color);
@@ -55,7 +71,7 @@ public class Cube {
 
         RenderSystem.setShaderColor(r, g, b, a);
 
-        RenderingHelper.renderCube(poseStack, matrix4f, camera, this.position, this.scale, this.rotation);
+        RenderingHelper.renderCube(poseStack, matrix4f, camera, this.shaderHolder, this.position, this.scale, this.rotation, this.renderingFlags);
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
     }
