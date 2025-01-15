@@ -41,6 +41,8 @@ public class RenderingHelper {
         buffer.upload(renderedBuffer);
         VertexBuffer.unbind();
 
+
+
         return buffer;
     }
 
