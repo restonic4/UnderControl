@@ -32,8 +32,16 @@ public class LevelRendererMixin {
         }
     }
 
-    @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V", ordinal = 3))
+    @Inject(
+            method = "renderLevel",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/FogRenderer;setupNoFog()V"
+            )
+    )
     private void renderManagers(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
+        RenderSystem.depthMask(true);
+        RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
 
         SphereManager.render(poseStack, matrix4f, camera);
@@ -42,5 +50,7 @@ public class LevelRendererMixin {
         EntityTracker.render(poseStack, matrix4f, camera);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        RenderSystem.disableBlend();
     }
 }

@@ -25,10 +25,6 @@ public class RenderingHelper {
     }
 
     public static void renderQuad(VertexBuffer vertexBuffer, PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder) {
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
-
         poseStack.pushPose();
         poseStack.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
 
@@ -36,8 +32,6 @@ public class RenderingHelper {
         vertexBuffer.drawWithShader(poseStack.last().pose(), matrix4f, shaderHolder.getInstance().get());
 
         poseStack.popPose();
-
-        RenderSystem.depthMask(true);
     }
 
     public static VertexBuffer generateBuffer(BufferBuilder.RenderedBuffer renderedBuffer) {
