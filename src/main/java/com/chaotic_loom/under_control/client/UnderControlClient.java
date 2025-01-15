@@ -26,29 +26,5 @@ public class UnderControlClient implements ClientModInitializer {
         RegistriesManager.startRegistrationAnnotationCollection(ExecutionSide.CLIENT);
         ClientIncompatibilitiesManager.registerClient();
         RegistriesManager.startPacketAnnotationCollection(PacketDirection.SERVER_TO_CLIENT);
-
-        ShaderProfile profile1 = new ShaderProfile(UnderControlShaders.VERTICAL_GRADIENT);
-        profile1.setUniformData("Center", new float[] {0, 0, 0});
-        profile1.setUniformData("Radius", new float[] {10});
-        profile1.setUniformData("TopColor", new float[] {1, 0, 0, 1});
-        profile1.setUniformData("BottomColor", new float[] {0, 1, 0, 1});
-
-        Sphere a = SphereManager.create(0);
-        a.setPosition(new Vector3f());
-        a.setRadius(10);
-        a.setRenderingFlags(RenderingFlags.INVERT_NORMALS);
-        a.setShaderProfile(profile1);
-
-        ShaderProfile profile2 = new ShaderProfile(UnderControlShaders.VERTICAL_GRADIENT);
-        profile2.setUniformData("Center", new float[] {20, 0, 0});
-        profile2.setUniformData("Radius", new float[] {10});
-        profile2.setUniformData("TopColor", new float[] {0, 0, 1, 1});
-        profile2.setUniformData("BottomColor", new float[] {0, 1, 1, 1});
-
-        Sphere b = SphereManager.create(1);
-        b.setPosition(new Vector3f(20, 0, 0));
-        b.setRadius(10);
-        b.setRenderingFlags(RenderingFlags.INVERT_NORMALS);
-        b.setShaderProfile(profile2);
     }
 }
