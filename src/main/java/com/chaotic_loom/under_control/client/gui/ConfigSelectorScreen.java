@@ -2,11 +2,14 @@ package com.chaotic_loom.under_control.client.gui;
 
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.api.config.ConfigAPI;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+@Environment(value = EnvType.CLIENT)
 public class ConfigSelectorScreen extends Screen {
     private final Screen parent;
 

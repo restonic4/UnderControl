@@ -13,8 +13,11 @@ import com.chaotic_loom.under_control.incompatibilities.ClientIncompatibilitiesM
 import com.chaotic_loom.under_control.registries.RegistriesManager;
 import com.chaotic_loom.under_control.util.data_holders.RenderingFlags;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Vector3f;
 
+@Environment(value = EnvType.CLIENT)
 public class UnderControlClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {

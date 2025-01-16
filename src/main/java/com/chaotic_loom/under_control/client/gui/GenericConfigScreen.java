@@ -2,6 +2,8 @@ package com.chaotic_loom.under_control.client.gui;
 
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.config.ConfigProvider;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Environment(value = EnvType.CLIENT)
 public class GenericConfigScreen extends Screen {
     private final Screen parent;
     private final ConfigProvider configProvider;

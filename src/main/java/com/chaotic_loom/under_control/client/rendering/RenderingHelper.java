@@ -7,6 +7,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.chaotic_loom.under_control.registries.client.UnderControlShaders;
 import com.chaotic_loom.under_control.util.MathHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Environment(value = EnvType.CLIENT)
 public class RenderingHelper {
     public static void renderDynamicGeometry(PoseStack poseStack, Matrix4f matrix4f, Camera camera, VertexFormat.Mode mode, Vector3f[] vertices, ShaderHolder shaderHolder) {
         BufferBuilder.RenderedBuffer renderedBuffer = buildGeometryReusable(mode, vertices);

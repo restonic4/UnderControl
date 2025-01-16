@@ -1,5 +1,7 @@
 package com.chaotic_loom.under_control.client.rendering.shader;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -10,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@Environment(value = EnvType.CLIENT)
 public class ShaderProfile {
     private final ShaderHolder shaderHolder;
     private final Map<String, UniformValue> uniformData;

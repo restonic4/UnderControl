@@ -22,6 +22,8 @@ package com.chaotic_loom.under_control.client.rendering.shader;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.datafixers.util.Pair;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@Environment(value = EnvType.CLIENT)
 public class ShaderHolder {
     public final ResourceLocation shaderLocation;
     public final VertexFormat vertexFormat;

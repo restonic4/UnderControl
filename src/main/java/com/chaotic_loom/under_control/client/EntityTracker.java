@@ -2,6 +2,8 @@ package com.chaotic_loom.under_control.client;
 
 import com.chaotic_loom.under_control.util.data_holders.QuadConsumer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -12,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Environment(value = EnvType.CLIENT)
 public class EntityTracker {
     private static final List<Class<? extends Entity>> entityTypesToTrack = new ArrayList<>();
     private static final List<Entity> trackedEntities = new ArrayList<>();

@@ -24,6 +24,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ChainedJsonException;
@@ -37,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@Environment(value = EnvType.CLIENT)
 public abstract class ExtendedShaderInstance extends ShaderInstance {
 
     protected Map<String, Consumer<Uniform>> defaultUniformData;

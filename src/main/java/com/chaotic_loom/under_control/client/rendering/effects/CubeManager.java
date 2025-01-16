@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Environment(EnvType.CLIENT)
+@Environment(value = EnvType.CLIENT)
 public class CubeManager {
     private static final Map<Long, Cube> cubes = new HashMap<>();
     private static final List<Long> cubesToDelete = new ArrayList<>();

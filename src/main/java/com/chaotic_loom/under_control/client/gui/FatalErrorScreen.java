@@ -1,11 +1,14 @@
 package com.chaotic_loom.under_control.client.gui;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
+@Environment(value = EnvType.CLIENT)
 public class FatalErrorScreen extends Screen {
     private final Component title;
     private final Component message;

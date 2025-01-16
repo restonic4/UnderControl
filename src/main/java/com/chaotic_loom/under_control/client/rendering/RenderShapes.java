@@ -2,11 +2,14 @@ package com.chaotic_loom.under_control.client.rendering;
 
 import com.chaotic_loom.under_control.util.MathHelper;
 import com.chaotic_loom.under_control.util.VertexArrayStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Environment(value = EnvType.CLIENT)
 public class RenderShapes {
     private final List<Vector3f[]> originalVertices;
     private List<Vector3f[]> vertices;
