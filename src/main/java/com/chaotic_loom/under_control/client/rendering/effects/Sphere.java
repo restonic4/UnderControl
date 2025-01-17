@@ -16,8 +16,6 @@ import org.joml.Vector3f;
 import java.awt.*;
 
 public class Sphere extends RenderableEffect {
-    private float radius;
-
     public Sphere(String id) {
         super(id);
     }
@@ -30,6 +28,6 @@ public class Sphere extends RenderableEffect {
 
         RenderSystem.setShaderColor(r, g, b, a);
 
-        RenderingHelper.renderSphere(poseStack, matrix4f, camera, getAndApplyShader(), this.position, this.radius, this.renderingFlags);
+        RenderingHelper.renderSphere(poseStack, matrix4f, camera, getAndApplyShader(), this.position, this.scale, this.renderingFlags);
     }
 }

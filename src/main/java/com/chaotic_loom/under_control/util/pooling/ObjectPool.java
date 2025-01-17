@@ -16,11 +16,14 @@ public class ObjectPool<T extends Poolable> {
         if (pool.isEmpty()) {
             return objectFactory.get();
         }
-        return pool.pop();
+
+        T object = pool.pop();
+        object.reset();
+
+        return object;
     }
 
     public void release(T object) {
-        object.reset();
         pool.push(object);
     }
 

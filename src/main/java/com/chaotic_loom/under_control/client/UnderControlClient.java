@@ -1,6 +1,8 @@
 package com.chaotic_loom.under_control.client;
 
 import com.chaotic_loom.under_control.UnderControl;
+import com.chaotic_loom.under_control.client.rendering.effects.EffectManager;
+import com.chaotic_loom.under_control.client.rendering.effects.Sphere;
 import com.chaotic_loom.under_control.core.annotations.ExecutionSide;
 import com.chaotic_loom.under_control.core.annotations.PacketDirection;
 import com.chaotic_loom.under_control.registries.client.UnderControlShaders;

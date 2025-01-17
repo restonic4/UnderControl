@@ -213,6 +213,10 @@ public class RenderingHelper {
         renderSphere(poseStack, matrix4f, camera, shaderHolder, position.x, position.y, position.z, radius, radius, radius, 0, 0, 0, flags);
     }
 
+    public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, Vector3f position, Vector3f scale, int flags) {
+        renderSphere(poseStack, matrix4f, camera, shaderHolder, position.x, position.y, position.z, scale.x, scale.y, scale.z, 0, 0, 0, flags);
+    }
+
     public static void renderSphere(PoseStack poseStack, Matrix4f matrix4f, Camera camera, Vector3f position, Vector3f scale, Vector3f rotation) {
         renderSphere(poseStack, matrix4f, camera, UnderControlShaders.SIMPLE_COLOR, position.x, position.y, position.z, scale.x, scale.y, scale.z, rotation.x, rotation.y, rotation.z, 0);
     }
