@@ -60,14 +60,16 @@ public class SynchronizationHelper {
     }
 
     public void askForMultipleSynchronizations(int count, int delayMs) {
-        for (int i = 0; i < count; i++) {
-            AskServerTime.sendToServer(this.id);
-            try {
-                Thread.sleep(delayMs);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        new Thread(() -> {
+            for (int i = 0; i < count; i++) {
+                AskServerTime.sendToServer(this.id);
+                try {
+                    Thread.sleep(delayMs);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
-        }
+        }).start();
     }
 
     public void schedulePeriodicSynchronization(long intervalMs) {

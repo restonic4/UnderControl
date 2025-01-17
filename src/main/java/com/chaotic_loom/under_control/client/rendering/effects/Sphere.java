@@ -15,7 +15,6 @@ import org.joml.Vector3f;
 
 import java.awt.*;
 
-@Environment(value = EnvType.CLIENT)
 public class Sphere extends RenderableEffect {
     private float radius;
 

@@ -14,7 +14,6 @@ import org.joml.Vector3f;
 
 import java.awt.*;
 
-@Environment(value = EnvType.CLIENT)
 public class Cylinder extends RenderableEffect {
     public Cylinder(String id) {
         super(id);

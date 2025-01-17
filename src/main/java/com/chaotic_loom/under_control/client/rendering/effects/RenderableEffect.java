@@ -16,7 +16,6 @@ import org.joml.Vector3f;
 import java.awt.*;
 import java.util.UUID;
 
-@Environment(EnvType.CLIENT)
 public abstract class RenderableEffect implements Poolable {
     private String id;
     protected Vector3f position;
