@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Environment(value = EnvType.CLIENT)
+@Deprecated(forRemoval = true)
 public class CubeManager {
     private static final Map<Long, Cube> cubes = new HashMap<>();
     private static final List<Long> cubesToDelete = new ArrayList<>();

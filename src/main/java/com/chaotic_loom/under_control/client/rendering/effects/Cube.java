@@ -15,55 +15,9 @@ import org.joml.Vector3f;
 import java.awt.*;
 
 @Environment(value = EnvType.CLIENT)
-public class Cube {
-    private final long id;
-
-    private Vector3f position;
-    private Vector3f scale;
-    private Vector3f rotation;
-    private Color color;
-
-    private int renderingFlags;
-    private ShaderHolder shaderHolder;
-
-    public Cube(long id) {
-        this.id = id;
-
-        this.position = new Vector3f();
-        this.scale = new Vector3f(1);
-        this.rotation = new Vector3f();
-        this.color = new Color(0xFFFFFF);
-        this.shaderHolder = UnderControlShaders.SIMPLE_COLOR;
-    }
-
-    public Cube setPosition(Vector3f position) {
-        this.position = position;
-        return this;
-    }
-
-    public Cube setScale(Vector3f scale) {
-        this.scale = scale;
-        return this;
-    }
-
-    public Cube setRotation(Vector3f rotation) {
-        this.rotation = rotation;
-        return this;
-    }
-
-    public Cube setColor(Color color) {
-        this.color = color;
-        return this;
-    }
-
-    public Cube setRenderingFlags(int renderingFlags) {
-        this.renderingFlags = renderingFlags;
-        return this;
-    }
-
-    public Cube setShader(ShaderHolder shaderHolder) {
-        this.shaderHolder = shaderHolder;
-        return this;
+public class Cube extends RenderableEffect {
+    public Cube(String id) {
+        super(id);
     }
 
     public void render(PoseStack poseStack, Matrix4f matrix4f, Camera camera) {
@@ -74,14 +28,6 @@ public class Cube {
 
         RenderSystem.setShaderColor(r, g, b, a);
 
-        RenderingHelper.renderCube(poseStack, matrix4f, camera, this.shaderHolder, this.position, this.scale, this.rotation, this.renderingFlags);
-    }
-
-    public void cleanup() {
-
-    }
-
-    public long getId() {
-        return this.id;
+        RenderingHelper.renderCube(poseStack, matrix4f, camera, getAndApplyShader(), this.position, this.scale, this.rotation, this.renderingFlags);
     }
 }

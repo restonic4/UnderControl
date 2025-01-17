@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
+@Deprecated(forRemoval = true)
 public class CylinderManager {
     private static final Map<Long, Cylinder> cylinders = new HashMap<>();
     private static final List<Long> cylindersToDelete = new ArrayList<>();

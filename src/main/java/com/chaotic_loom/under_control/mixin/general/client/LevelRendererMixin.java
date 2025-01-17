@@ -3,6 +3,7 @@ package com.chaotic_loom.under_control.mixin.general.client;
 import com.chaotic_loom.under_control.client.EntityTracker;
 import com.chaotic_loom.under_control.client.rendering.effects.CubeManager;
 import com.chaotic_loom.under_control.client.rendering.effects.CylinderManager;
+import com.chaotic_loom.under_control.client.rendering.effects.EffectManager;
 import com.chaotic_loom.under_control.client.rendering.effects.SphereManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -47,6 +48,8 @@ public class LevelRendererMixin {
         SphereManager.render(poseStack, matrix4f, camera);
         CubeManager.render(poseStack, matrix4f, camera);
         CylinderManager.render(poseStack, matrix4f, camera);
+
+        EffectManager.render(poseStack, matrix4f, camera);
         EntityTracker.render(poseStack, matrix4f, camera);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

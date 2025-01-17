@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
+@Deprecated(forRemoval = true)
 public class SphereManager {
     private static final Map<Long, Sphere> spheres = new HashMap<>();
     private static final List<Long> spheresToDelete = new ArrayList<>();
