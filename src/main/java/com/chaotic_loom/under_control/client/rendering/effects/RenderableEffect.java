@@ -44,13 +44,28 @@ public abstract class RenderableEffect implements Poolable {
         return this;
     }
 
+    public RenderableEffect setPosition(float x, float y, float z) {
+        this.position.set(x, y, z);
+        return this;
+    }
+
     public RenderableEffect setScale(Vector3f scale) {
         this.scale = scale;
         return this;
     }
 
+    public RenderableEffect setScale(float x, float y, float z) {
+        this.scale.set(x, y, z);
+        return this;
+    }
+
     public RenderableEffect setRotation(Vector3f rotation) {
         this.rotation = rotation;
+        return this;
+    }
+
+    public RenderableEffect setRotation(float x, float y, float z) {
+        this.rotation.set(x, y, z);
         return this;
     }
 

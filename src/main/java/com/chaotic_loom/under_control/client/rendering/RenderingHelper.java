@@ -23,16 +23,32 @@ import java.util.Map;
 @Environment(value = EnvType.CLIENT)
 public class RenderingHelper {
     public static void renderDynamicGeometry(PoseStack poseStack, Matrix4f matrix4f, Camera camera, VertexFormat.Mode mode, Vector3f[] vertices, ShaderHolder shaderHolder) {
+        renderDynamicGeometry(poseStack, matrix4f, camera, mode, vertices, shaderHolder, 0);
+    }
+
+    public static void renderDynamicGeometry(PoseStack poseStack, Matrix4f matrix4f, Camera camera, VertexFormat.Mode mode, Vector3f[] vertices, ShaderHolder shaderHolder, int flags) {
         BufferBuilder.RenderedBuffer renderedBuffer = buildGeometryReusable(mode, vertices);
-        renderQuad(generateReusableBuffer(renderedBuffer), poseStack, matrix4f, camera, shaderHolder);
+        renderQuad(generateReusableBuffer(renderedBuffer), poseStack, matrix4f, camera, shaderHolder, flags);
     }
 
     public static void renderQuad(VertexBuffer vertexBuffer, PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder) {
+        renderQuad(vertexBuffer, poseStack, matrix4f, camera, shaderHolder, 0);
+    }
+
+    public static void renderQuad(VertexBuffer vertexBuffer, PoseStack poseStack, Matrix4f matrix4f, Camera camera, ShaderHolder shaderHolder, int flags) {
         poseStack.pushPose();
         poseStack.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
 
+        if (FlagFactory.hasFlag(flags, RenderingFlags.ON_TOP)) {
+            RenderSystem.disableDepthTest();
+        }
+
         vertexBuffer.bind();
         vertexBuffer.drawWithShader(poseStack.last().pose(), matrix4f, shaderHolder.getInstance().get());
+
+        if (FlagFactory.hasFlag(flags, RenderingFlags.ON_TOP)) {
+            RenderSystem.enableDepthTest();
+        }
 
         poseStack.popPose();
     }
@@ -189,7 +205,7 @@ public class RenderingHelper {
             }
 
             MathHelper.transformGeometry(vector3fs, x, y, z, xScale, yScale, zScale, xRotation, yRotation, zRotation);
-            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, vertexFormatMode, vector3fs, shaderHolder);
+            RenderingHelper.renderDynamicGeometry(poseStack, matrix4f, camera, vertexFormatMode, vector3fs, shaderHolder, flags);
         }
     }
 

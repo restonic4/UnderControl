@@ -4,4 +4,5 @@ import com.chaotic_loom.under_control.util.FlagFactory;
 
 public class RenderingFlags {
     public static int INVERT_NORMALS = FlagFactory.createFlag(0);
+    public static int ON_TOP = FlagFactory.createFlag(1);
 }
