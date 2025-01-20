@@ -45,6 +45,7 @@
     "vanish.ServerLevelMixin"
   ],
   "client": [
+    "general.client.CameraMixin",
     "general.client.EntityRendererMixin",
     "general.client.GameRendererMixin",
     "general.client.LevelRendererMixin",
