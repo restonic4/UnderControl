@@ -196,8 +196,10 @@ public class MathHelper {
     }
 
     public static float getProgress(long startTime, long endTime) {
-        long currentTime = System.currentTimeMillis();
+        return getProgress(System.currentTimeMillis(), startTime, endTime);
+    }
 
+    public static float getProgress(long currentTime, long startTime, long endTime) {
         if (currentTime < startTime) {
             return 0f;
         }

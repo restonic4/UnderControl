@@ -8,9 +8,12 @@ public class EasingSystem {
         SINE_IN, SINE_OUT, SINE_IN_OUT,
         QUAD_IN, QUAD_OUT, QUAD_IN_OUT,
         CUBIC_IN, CUBIC_OUT, CUBIC_IN_OUT,
+        QUART_IN, QUART_OUT, QUART_IN_OUT,
+        QUINT_IN, QUINT_OUT, QUINT_IN_OUT,
         EXPONENTIAL_IN, EXPONENTIAL_OUT, EXPONENTIAL_IN_OUT,
         CIRC_IN, CIRC_OUT, CIRC_IN_OUT,
         BACK_IN, BACK_OUT, BACK_IN_OUT,
+        ELASTIC_IN, ELASTIC_OUT, ELASTIC_IN_OUT,
         BOUNCE_IN, BOUNCE_OUT, BOUNCE_IN_OUT,
     }
 
@@ -38,8 +41,15 @@ public class EasingSystem {
         return startValue + delta * easingFunction.apply(progress);
     }
 
+    public static float[] getEasedBezierValue(long startTime, long endTime, BezierCurve bezierCurve, EasingType type) {
+        return getEasedBezierValue(System.currentTimeMillis(), startTime, endTime, bezierCurve, type);
+    }
 
-    private static Function<Float, Float> selectEasingFunction(EasingType type) {
+    public static float[] getEasedBezierValue(long currentTime, long startTime, long endTime, BezierCurve bezierCurve, EasingType type) {
+        return bezierCurve.getPoint(MathHelper.getProgress(currentTime, startTime, endTime), type);
+    }
+
+    static Function<Float, Float> selectEasingFunction(EasingType type) {
         return switch (type) {
             case LINEAR -> t -> t;
 
@@ -56,6 +66,14 @@ public class EasingSystem {
             case CUBIC_IN_OUT -> t -> t < 0.5
                     ? 4 * t * t * t
                     : 1 - (float) Math.pow(-2 * t + 2, 3) / 2;
+
+            case QUART_IN -> t -> t * t * t * t;
+            case QUART_OUT -> t -> (float) (1 - Math.pow(1 - t, 4));
+            case QUART_IN_OUT -> t -> t < 0.5 ? 8 * t * t * t * t : (float) (1 - Math.pow(-2 * t + 2, 4) / 2);
+
+            case QUINT_IN -> t -> t * t * t * t * t;
+            case QUINT_OUT -> t -> (float) (1 - Math.pow(1 - t, 5));
+            case QUINT_IN_OUT -> t -> t < 0.5 ? 16 * t * t * t * t * t : (float) (1 - Math.pow(-2 * t + 2, 5) / 2);
 
             case EXPONENTIAL_IN -> t -> t == 0 ? 0 : (float) Math.pow(2, 10 * t - 10);
             case EXPONENTIAL_OUT -> t -> t == 1 ? 1 : (float) (1 - Math.pow(2, -10 * t));
@@ -77,6 +95,24 @@ public class EasingSystem {
             case BACK_IN_OUT -> t -> (float) (t < 0.5
                                 ? (Math.pow(2 * t, 2) * ((2.5949095f + 1) * 2 * t - 2.5949095f)) / 2
                                 : (Math.pow(2 * t - 2, 2) * ((2.5949095f + 1) * (t * 2 - 2) + 2.5949095f) + 2) / 2);
+
+            case ELASTIC_IN -> t -> t == 0
+                                ? 0
+                                : (float) (t == 1
+                                ? 1
+                                : -Math.pow(2, 10 * t - 10) * Math.sin((t * 10 - 10.75) * ((2 * Math.PI) / 3)));
+            case ELASTIC_OUT -> t -> t == 0
+                                ? 0
+                                : (float) (t == 1
+                                ? 1
+                                : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1);
+            case ELASTIC_IN_OUT -> t -> t == 0
+                                ? 0
+                                : (float) (t == 1
+                                ? 1
+                                : t < 0.5
+                                ? -(Math.pow(2, 20 * t - 10) * Math.sin((20 * t - 11.125) * ((2 * Math.PI) / 4.5))) / 2
+                                : (Math.pow(2, -20 * t + 10) * Math.sin((20 * t - 11.125) * ((2 * Math.PI) / 4.5))) / 2 + 1);
 
             case BOUNCE_IN -> t -> 1 - selectEasingFunction(EasingType.BOUNCE_OUT).apply(1 - t);
             case BOUNCE_OUT -> t -> {
