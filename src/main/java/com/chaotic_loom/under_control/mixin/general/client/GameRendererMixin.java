@@ -1,6 +1,8 @@
 package com.chaotic_loom.under_control.mixin.general.client;
 
+import com.chaotic_loom.under_control.api.cutscene.CutsceneAPI;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.chaotic_loom.under_control.events.types.ShaderEvents;
 import net.minecraft.client.renderer.GameRenderer;
@@ -20,5 +22,19 @@ public class GameRendererMixin {
     @Inject(method = "reloadShaders", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", ordinal = 0))
     private void registerShaders(ResourceProvider resourceProvider, CallbackInfo ci, @Local(ordinal = 1) List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaderPairList) throws IOException {
         ShaderEvents.REGISTRATION.invoker().onRegistration(resourceProvider, shaderPairList);
+    }
+
+    @Inject(method = "bobHurt", at = @At("HEAD"), cancellable = true)
+    private void bobHurt(PoseStack poseStack, float f, CallbackInfo ci) {
+        if (CutsceneAPI.isPlaying()) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
+    private void bobView(PoseStack poseStack, float f, CallbackInfo ci) {
+        if (CutsceneAPI.isPlaying()) {
+            ci.cancel();
+        }
     }
 }

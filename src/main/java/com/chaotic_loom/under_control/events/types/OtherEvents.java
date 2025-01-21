@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
 
 import java.util.List;
 
@@ -75,5 +76,22 @@ public class OtherEvents {
     @FunctionalInterface
     public interface ServerSentPacket {
         EventResult onServerSentPacket(Object unknownListener, Packet<?> packet, PacketSendListener packetSendListener, MinecraftServer server);
+    }
+
+    public static final Event<Explode> EXPLODE = EventFactory.createArray(Explode.class, callbacks -> (explosion) -> {
+        for (Explode callback : callbacks) {
+            EventResult result = callback.onExplode(explosion);
+
+            if (result == EventResult.CANCELED) {
+                return EventResult.CANCELED;
+            }
+        }
+
+        return EventResult.SUCCEEDED;
+    });
+
+    @FunctionalInterface
+    public interface Explode {
+        EventResult onExplode(Explosion explosion);
     }
 }

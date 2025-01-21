@@ -49,7 +49,7 @@ public class EasingSystem {
         return bezierCurve.getPoint(MathHelper.getProgress(currentTime, startTime, endTime), type);
     }
 
-    static Function<Float, Float> selectEasingFunction(EasingType type) {
+    public static Function<Float, Float> selectEasingFunction(EasingType type) {
         return switch (type) {
             case LINEAR -> t -> t;
 

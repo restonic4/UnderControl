@@ -19,6 +19,7 @@
     "general.common.EntityGetterMixin",
     "general.common.EntityMixin",
     "general.common.EntitySelectorMixin",
+    "general.common.ExplosionMixin",
     "general.common.FarmBlockMixin",
     "general.common.ListPlayersCommandMixin",
     "general.common.LivingEntityMixin",

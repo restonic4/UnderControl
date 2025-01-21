@@ -1,6 +1,8 @@
 package com.chaotic_loom.under_control.mixin.general.client;
 
 import com.chaotic_loom.under_control.api.cutscene.CutsceneAPI;
+import com.chaotic_loom.under_control.client.rendering.screen_shake.types.ScreenShakeGlobalManager;
+import com.chaotic_loom.under_control.util.RandomHelper;
 import net.minecraft.client.Camera;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
@@ -19,29 +21,16 @@ public abstract class CameraMixin {
     @Shadow
     public abstract void setRotation(float f, float g);
 
-    @Shadow private boolean initialized;
-
-    @Shadow private BlockGetter level;
-
-    @Shadow private Entity entity;
-
-    @Shadow private boolean detached;
-
-    @Inject(method = "setup", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setup", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Camera;detached:Z", shift = At.Shift.AFTER), cancellable = true)
     public void setup(BlockGetter blockGetter, Entity entity, boolean bl, boolean bl2, float f, CallbackInfo ci) {
-        long currentTime = System.currentTimeMillis();
-
         if (CutsceneAPI.isPlaying()) {
-            this.initialized = true;
-            this.level = blockGetter;
-            this.entity = entity;
-            this.detached = bl;
-
             Vector3f position = CutsceneAPI.getPosition();
             Vector2f rotation = CutsceneAPI.getRotation();
 
-            this.setPosition(position.x, position.y, position.z);
-            this.setRotation(rotation.x, position.y);
+            float screenShakeIntensity = ScreenShakeGlobalManager.computeGlobalShakeOffset();
+
+            this.setPosition(position.x + RandomHelper.randomBetween(screenShakeIntensity), position.y + RandomHelper.randomBetween(screenShakeIntensity), position.z + RandomHelper.randomBetween(screenShakeIntensity));
+            this.setRotation(rotation.x + RandomHelper.randomBetween(screenShakeIntensity), position.y + RandomHelper.randomBetween(screenShakeIntensity));
 
             ci.cancel();
         }
