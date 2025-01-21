@@ -3,6 +3,7 @@ package com.chaotic_loom.under_control.client.rendering.screen_shake;
 import com.chaotic_loom.under_control.client.rendering.screen_shake.types.ScreenShakeGlobalManager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ScreenShakeManager {
@@ -29,19 +30,25 @@ public class ScreenShakeManager {
 
     public float computeShakeOffset() {
         List<Float> intensities = new ArrayList<>();
-        activeShakes.removeIf(ScreenShake::isFinished);
-
+        Iterator<ScreenShake> iterator = activeShakes.iterator();
         long currentTime = System.currentTimeMillis();
 
-        for (ScreenShake shake : activeShakes) {
-            float intensity = shake.getCurrentIntensity(currentTime);
+        while (iterator.hasNext()) {
+            ScreenShake shake = iterator.next();
 
-            if (intensity > 0) {
-                intensities.add(intensity);
+            if (shake.isFinished()) {
+                iterator.remove();
+            } else {
+                float intensity = shake.getCurrentIntensity(currentTime);
+
+                if (intensity > 0) {
+                    intensities.add(intensity);
+                }
             }
         }
 
         float combinedIntensity = combiner.combine(intensities);
         return Math.min(combinedIntensity, maxIntensity);
     }
+
 }

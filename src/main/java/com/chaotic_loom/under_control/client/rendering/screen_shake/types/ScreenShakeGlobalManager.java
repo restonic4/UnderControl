@@ -4,6 +4,7 @@ import com.chaotic_loom.under_control.client.rendering.screen_shake.ScreenShakeM
 import com.chaotic_loom.under_control.client.rendering.screen_shake.ShakeCombiner;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ScreenShakeGlobalManager {
@@ -17,9 +18,12 @@ public class ScreenShakeGlobalManager {
 
     public static float computeGlobalShakeOffset() {
         List<Float> intensities = new ArrayList<>();
+        Iterator<ScreenShakeManager> iterator = managers.iterator();
 
-        for (ScreenShakeManager manager : managers) {
+        while (iterator.hasNext()) {
+            ScreenShakeManager manager = iterator.next();
             float managerIntensity = manager.computeShakeOffset();
+
             if (managerIntensity > 0) {
                 intensities.add(managerIntensity);
             }
@@ -28,6 +32,7 @@ public class ScreenShakeGlobalManager {
         float combinedGlobalIntensity = globalCombiner.combine(intensities);
         return Math.min(combinedGlobalIntensity, maxGlobalIntensity);
     }
+
 
     public static void setGlobalCombiner(ShakeCombiner shakeCombiner) {
         globalCombiner = shakeCombiner;

@@ -290,4 +290,26 @@ public class ServerPlayerExtraEvents {
     public interface GotNearestPlayer {
         EventResult onGotNearestPlayer(Player player, Predicate<Entity> originalPredicate);
     }
+
+    public static final Event<Jumped> JUMPED = EventFactory.createArray(Jumped.class, callbacks -> (serverPlayer) -> {
+        for (Jumped callback : callbacks) {
+            callback.onJumped(serverPlayer);
+        }
+    });
+
+    @FunctionalInterface
+    public interface Jumped {
+        void onJumped(ServerPlayer serverPlayer);
+    }
+
+    public static final Event<JumpKeyPressed> JUMP_KEY_PRESSED = EventFactory.createArray(JumpKeyPressed.class, callbacks -> (serverPlayer) -> {
+        for (JumpKeyPressed callback : callbacks) {
+            callback.onJumped(serverPlayer);
+        }
+    });
+
+    @FunctionalInterface
+    public interface JumpKeyPressed {
+        void onJumped(ServerPlayer serverPlayer);
+    }
 }

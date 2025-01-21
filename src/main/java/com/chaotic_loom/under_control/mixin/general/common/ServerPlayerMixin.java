@@ -11,6 +11,8 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin {
@@ -50,6 +52,13 @@ public abstract class ServerPlayerMixin {
     private void hideDeathMessage(PlayerList playerList, Component component, boolean overlay, Operation<Void> original) {
         if (ServerPlayerExtraEvents.DEATH_MESSAGE.invoker().onDeathMessage(playerList, null, component, (ServerPlayer) (Object) this) != EventResult.CANCELED) {
             original.call(playerList, component, overlay);
+        }
+    }
+
+    @Inject(method = "setPlayerInput", at = @At("HEAD"))
+    public void setPlayerInput(float f, float g, boolean jumping, boolean sneaking, CallbackInfo ci) {
+        if (jumping) {
+            ServerPlayerExtraEvents.JUMPED.invoker().onJumped((ServerPlayer) (Object) this);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.chaotic_loom.under_control.client.rendering.screen_shake;
 
 import com.chaotic_loom.under_control.util.EasingSystem;
+import com.chaotic_loom.under_control.util.MathHelper;
 
 import java.util.Random;
 
@@ -18,32 +19,12 @@ public class ScreenShake {
         this.easingType = easingType;
     }
 
-    public void applyShake(float[] cameraPosition) {
-        long currentTime = System.currentTimeMillis();
-
-        if (currentTime > endTime) {
-            return;
-        }
-
-        float progress = (float) (currentTime - startTime) / (endTime - startTime);
-        float easedIntensity = EasingSystem.getEasedValue(progress, intensity, 0, easingType);
-
-        // Generate random offsets within the eased intensity range.
-        float offsetX = (random.nextFloat() * 2 - 1) * easedIntensity;
-        float offsetY = (random.nextFloat() * 2 - 1) * easedIntensity;
-
-        // Apply offsets to camera position.
-        cameraPosition[0] += offsetX;
-        cameraPosition[1] += offsetY;
-    }
-
     public float getCurrentIntensity(long currentTime) {
         if (currentTime > endTime) {
             return 0;
         }
 
-        float progress = (float) (currentTime - startTime) / (endTime - startTime);
-        return EasingSystem.getEasedValue(progress, intensity, 0, easingType);
+        return EasingSystem.getEasedValue(startTime, endTime, intensity, 0, easingType);
     }
 
     public boolean isShakeActive() {
