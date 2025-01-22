@@ -46,7 +46,11 @@ public class EasingSystem {
     }
 
     public static float[] getEasedBezierValue(long currentTime, long startTime, long endTime, BezierCurve bezierCurve, EasingType type) {
-        return bezierCurve.getPoint(MathHelper.getProgress(currentTime, startTime, endTime), type);
+        return getEasedBezierValue(MathHelper.getProgress(currentTime, startTime, endTime), bezierCurve, type);
+    }
+
+    public static float[] getEasedBezierValue(float progress, BezierCurve bezierCurve, EasingType type) {
+        return bezierCurve.getPoint(progress, type);
     }
 
     public static Function<Float, Float> selectEasingFunction(EasingType type) {

@@ -43,7 +43,7 @@ public abstract class CameraMixin {
             }
 
             if (rotation != null) {
-                this.setRotation(rotation.y, rotation.x);
+                this.setRotation(rotation.x, rotation.y);
             }
 
             shake();
