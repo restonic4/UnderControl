@@ -14,15 +14,21 @@ public class EffectManager {
     private static final List<String> effectsToDelete = new ArrayList<>();
 
     public static RenderableEffect add(RenderableEffect effect) {
+        assertOnWrongThread();
+
         effects.put(effect.getId(), effect);
         return effect;
     }
 
     public static void delete(String id) {
+        assertOnWrongThread();
+
         effectsToDelete.add(id);
     }
 
     public static RenderableEffect get(String id) {
+        assertOnWrongThread();
+
         return effects.get(id);
     }
 
@@ -37,5 +43,11 @@ public class EffectManager {
         }
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
+    }
+
+    public static void assertOnWrongThread() {
+        if (!RenderSystem.isOnRenderThread()) {
+            throw new IllegalThreadStateException("Trying to add a new effect in the wrong thread. This is " + Thread.currentThread() + ", it should be " + RenderSystem.renderThread);
+        }
     }
 }

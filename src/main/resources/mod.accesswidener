@@ -5,3 +5,4 @@ transitive-extendable	method	net/minecraft/client/renderer/ShaderInstance	parseU
 transitive-accessible	field	net/minecraft/client/renderer/ShaderInstance	uniforms	Ljava/util/List;
 accessible  class   net/minecraft/client/renderer/RenderStateShard$ShaderStateShard
 accessible method net/minecraft/client/quickplay/QuickPlay joinMultiplayerWorld (Lnet/minecraft/client/Minecraft;Ljava/lang/String;)V
+accessible field com/mojang/blaze3d/systems/RenderSystem renderThread Ljava/lang/Thread;
