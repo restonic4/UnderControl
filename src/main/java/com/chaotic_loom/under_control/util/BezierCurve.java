@@ -16,7 +16,11 @@ public class BezierCurve {
     }
 
     public void modifyControlPoint(int index, float x, float y) {
-        this.controlPoints.set(index, new float[]{x, y});
+        if (index >= controlPoints.size()) {
+            controlPoints.add(new float[]{x, y});
+        } else {
+            controlPoints.set(index, new float[]{x, y});
+        }
     }
 
     public float[] getPoint(float t, EasingSystem.EasingType easingType) {
