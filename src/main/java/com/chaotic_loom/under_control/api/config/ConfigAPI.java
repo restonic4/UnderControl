@@ -2,6 +2,7 @@ package com.chaotic_loom.under_control.api.config;
 
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.api.saving.SavingAPI;
+import com.chaotic_loom.under_control.client.gui.ConfigSelectorScreen;
 import com.chaotic_loom.under_control.config.ConfigManager;
 import com.chaotic_loom.under_control.saving.SavingManager;
 import com.chaotic_loom.under_control.config.ConfigProvider;
@@ -44,7 +45,7 @@ public class ConfigAPI {
         return configProvider;
     }
 
-    public static void registerConfigScreen(String modID, Class<? extends Screen> screenClass) {
+    public static void registerConfigScreen(String modID, Class<? extends ConfigSelectorScreen.Builder> screenClass) {
         ConfigScreenManager.registerConfigScreen(modID, screenClass);
     }
 

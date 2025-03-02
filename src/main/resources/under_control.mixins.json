@@ -6,6 +6,7 @@
   "plugin": "com.chaotic_loom.under_control.plugin.UnderControlMixinPlugin",
   "mixins": [
     "compatibility.modmenu.ModMenuAccessor",
+    "compatibility.modmenu.ModMenuMixin",
     "general.client.ShaderInstanceMixin",
     "general.common.AbstractMinecartMixin",
     "general.common.ArmorItemMixin",

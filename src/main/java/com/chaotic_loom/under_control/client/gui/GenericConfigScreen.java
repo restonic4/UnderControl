@@ -112,7 +112,23 @@ public class GenericConfigScreen extends Screen {
                 }
 
                 textField.setResponder(newValue -> {
-                    configProvider.save(key, newValue);
+                    try {
+                        if (value instanceof Integer) {
+                            textField.setFilter(s -> s.matches("-?\\d*"));
+                            configProvider.save(key, Integer.parseInt(newValue));
+                        } else if (value instanceof Long) {
+                            textField.setFilter(s -> s.matches("-?\\d*"));
+                            configProvider.save(key, Long.parseLong(newValue));
+                        } else if (value instanceof Float) {
+                            textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
+                            configProvider.save(key, Float.parseFloat(newValue));
+                        } else if (value instanceof Double) {
+                            textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
+                            configProvider.save(key, Double.parseDouble(newValue));
+                        }
+                    } catch (NumberFormatException e) {
+                        textField.setValue(initialText);
+                    }
                 });
 
                 abstractWidget = textField;

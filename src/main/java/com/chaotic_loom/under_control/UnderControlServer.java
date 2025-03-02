@@ -17,9 +17,5 @@ public class UnderControlServer implements DedicatedServerModInitializer {
 
         RegistriesManager.collectModPackages();
         RegistriesManager.startRegistrationAnnotationCollection(ExecutionSide.SERVER);
-
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            UnderControlConfig.registerServer(server);
-        });
     }
 }

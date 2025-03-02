@@ -2,6 +2,7 @@ package com.chaotic_loom.under_control.client.gui;
 
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.api.config.ConfigAPI;
+import com.chaotic_loom.under_control.config.ConfigProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,6 +13,7 @@ import net.minecraft.network.chat.Component;
 @Environment(value = EnvType.CLIENT)
 public class ConfigSelectorScreen extends Screen {
     private final Screen parent;
+    private String modID = UnderControl.MOD_ID;
 
     private final Component clientSide;
     private final Component serverSide;
@@ -40,14 +42,16 @@ public class ConfigSelectorScreen extends Screen {
         int verticalStart = (this.height - totalHeight) / 2;
 
         // Client Side
-        this.addRenderableWidget(Button.builder(clientSide, (button) -> {
-            this.minecraft.setScreen(new GenericConfigScreen(this, ConfigAPI.getClientProvider(UnderControl.MOD_ID)));
-        }).bounds(horizontalCenter, verticalStart, buttonWidth, buttonHeight).build());
+        ConfigProvider clientProvider = ConfigAPI.getClientProvider(this.modID);
+        if (clientProvider != null) {
+            this.addRenderableWidget(Button.builder(clientSide, this::onClientButton).bounds(horizontalCenter, verticalStart, buttonWidth, buttonHeight).build());
+        }
 
         // Server Side
-        this.addRenderableWidget(Button.builder(serverSide, (button) -> {
-            this.minecraft.setScreen(new GenericConfigScreen(this, ConfigAPI.getServerProvider(UnderControl.MOD_ID)));
-        }).bounds(horizontalCenter, verticalStart + buttonHeight + buttonSpacing, buttonWidth, buttonHeight).build());
+        ConfigProvider serverProvider = ConfigAPI.getServerProvider(this.modID);
+        if (serverProvider != null) {
+            this.addRenderableWidget(Button.builder(serverSide, this::onServerButton).bounds(horizontalCenter, verticalStart + buttonHeight + buttonSpacing, buttonWidth, buttonHeight).build());
+        }
 
         // Close
         this.addRenderableWidget(Button.builder(closeMenu, (button) -> {
@@ -68,5 +72,48 @@ public class ConfigSelectorScreen extends Screen {
     @Override
     public void onClose() {
         this.minecraft.setScreen(this.parent);
+    }
+
+    private void onClientButton(Button button) {
+        ConfigProvider configProvider = ConfigAPI.getClientProvider(this.modID);
+        if (configProvider == null) {
+            return;
+        }
+
+        this.minecraft.setScreen(new GenericConfigScreen(this, configProvider));
+    }
+
+    private void onServerButton(Button button) {
+        ConfigProvider configProvider = ConfigAPI.getServerProvider(this.modID);
+        if (configProvider == null) {
+            return;
+        }
+
+        this.minecraft.setScreen(new GenericConfigScreen(this, configProvider));
+    }
+
+    public String getModID() {
+        return modID;
+    }
+
+    public void setModID(String modID) {
+        this.modID = modID;
+    }
+
+    public static class Builder {
+        private final Screen parent;
+        private final String modID;
+
+        public Builder(Screen parent, String modID) {
+            this.parent = parent;
+            this.modID = modID;
+        }
+
+        public ConfigSelectorScreen build() {
+            ConfigSelectorScreen screen = new ConfigSelectorScreen(parent);
+            screen.setModID(this.modID);
+
+            return screen;
+        }
     }
 }
