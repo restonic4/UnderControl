@@ -8,6 +8,8 @@ import com.chaotic_loom.under_control.config.ConfigProvider;
 import com.chaotic_loom.under_control.core.UnderControlConfig;
 import com.chaotic_loom.under_control.core.annotations.ExecutionSide;
 import com.chaotic_loom.under_control.core.annotations.PacketDirection;
+import com.chaotic_loom.under_control.events.EventResult;
+import com.chaotic_loom.under_control.events.types.LivingEntityExtraEvents;
 import com.chaotic_loom.under_control.networking.services.ApiClient;
 import com.chaotic_loom.under_control.saving.SavingManager;
 import com.chaotic_loom.under_control.networking.packets.server_to_client.UpdateServerDataOnClient;
@@ -27,6 +29,7 @@ import java.net.InetSocketAddress;
 
 public class UnderControl implements ModInitializer {
     public static final String MOD_ID = "under_control";
+    public static final String MOD_NAME = "Under Control";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final ApiClient CHAOTIC_LOOM_API = new ApiClient("https://chaotic-loom.com/api/");
 

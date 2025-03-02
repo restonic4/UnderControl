@@ -35,5 +35,17 @@
     "fabric": "*",
     "minecraft": "${minecraft_version}"
   },
-  "accessWidener": "mod.accesswidener"
+  "accessWidener": "mod.accesswidener",
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.modrinth": "https://modrinth.com/organization/chaotic-loom",
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/under-control"
+      },
+      "badges": [
+        "special_library",
+        "chaotic_loom"
+      ]
+    }
+  }
 }

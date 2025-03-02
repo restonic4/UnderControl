@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "com.chaotic_loom.under_control.plugin.UnderControlMixinPlugin",
   "mixins": [
+    "compatibility.modmenu.BadgeMixin",
     "compatibility.modmenu.ModMenuAccessor",
     "compatibility.modmenu.ModMenuMixin",
     "general.client.ShaderInstanceMixin",

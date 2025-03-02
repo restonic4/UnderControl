@@ -114,3 +114,7 @@ publishing {
     repositories {
     }
 }
+
+tasks.register('buildWithLibs') {
+    dependsOn 'remapJar'
+}

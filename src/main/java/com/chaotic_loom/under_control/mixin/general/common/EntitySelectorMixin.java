@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 @Mixin(EntitySelector.class)
 public class EntitySelectorMixin {
-    @Redirect(
+    /*@Redirect(
             method = "pushableBy",
             at = @At(
                     value = "INVOKE",
@@ -36,5 +36,27 @@ public class EntitySelectorMixin {
 
             return original;
         };
+    }*/
+
+    @Inject(
+            method = "pushableBy",
+            at = @At("RETURN"),
+            cancellable = true
+    )
+    private static void onPushableBy(Entity entity, CallbackInfoReturnable<Predicate<Entity>> cir) {
+        Predicate<Entity> original = cir.getReturnValue();
+
+        cir.setReturnValue(entity2 -> {
+            // Resultado original incluyendo posibles modificaciones del otro mod
+            boolean originalResult = original.test(entity2);
+
+            // Tu lógica personalizada
+            EventResult eventResult = LivingEntityExtraEvents.PUSHABLE.invoker().onPushable(entity, entity2);
+
+            if (eventResult == EventResult.CANCELED) return false;
+            if (eventResult == EventResult.SUCCEEDED) return true;
+
+            return originalResult;
+        });
     }
 }
