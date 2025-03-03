@@ -23,6 +23,7 @@
     "general.common.EntitySelectorMixin",
     "general.common.ExplosionMixin",
     "general.common.FarmBlockMixin",
+    "general.common.FishingHookMixin",
     "general.common.ListPlayersCommandMixin",
     "general.common.LivingEntityMixin",
     "general.common.MapItemSavedDataMixin",
@@ -53,7 +54,8 @@
     "general.client.GameRendererMixin",
     "general.client.LevelRendererMixin",
     "general.client.MinecraftMixin",
-    "general.client.ReceivingLevelScreenMixin"
+    "general.client.ReceivingLevelScreenMixin",
+    "general.client.SoundEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

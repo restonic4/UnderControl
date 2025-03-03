@@ -9,13 +9,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class LivingEntityExtraEvents {
@@ -216,5 +221,22 @@ public class LivingEntityExtraEvents {
     @FunctionalInterface
     public interface WardenPickTarget {
         EventResult onWardenPickTarget(Warden warden, Entity entity);
+    }
+
+    public static final Event<FishingHookRetrieved> FISHING_HOOK_RETRIEVED = EventFactory.createArray(FishingHookRetrieved.class, callbacks -> (player, hook, caughtItems) -> {
+        for (FishingHookRetrieved callback : callbacks) {
+            EventResult result = callback.onEvent(player, hook, caughtItems);
+
+            if (result == EventResult.CANCELED) {
+                return EventResult.CANCELED;
+            }
+        }
+
+        return EventResult.SUCCEEDED;
+    });
+
+    @FunctionalInterface
+    public interface FishingHookRetrieved {
+        EventResult onEvent(Player player, FishingHook hook, @Nullable List<ItemStack> caughtItems);
     }
 }

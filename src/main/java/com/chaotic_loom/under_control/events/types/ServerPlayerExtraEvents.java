@@ -5,6 +5,7 @@ import com.chaotic_loom.under_control.events.EventFactory;
 import com.chaotic_loom.under_control.events.EventResult;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -311,5 +312,22 @@ public class ServerPlayerExtraEvents {
     @FunctionalInterface
     public interface JumpKeyPressed {
         void onJumped(ServerPlayer serverPlayer);
+    }
+
+    public static final Event<AdvancementGranted> ADVANCEMENT_GRANTED = EventFactory.createArray(AdvancementGranted.class, callbacks -> (player, advancement, criterionName) -> {
+        for (AdvancementGranted callback : callbacks) {
+            EventResult result = callback.onEvent(player, advancement, criterionName);
+
+            if (result == EventResult.CANCELED) {
+                return EventResult.CANCELED;
+            }
+        }
+
+        return EventResult.SUCCEEDED;
+    });
+
+    @FunctionalInterface
+    public interface AdvancementGranted {
+        EventResult onEvent(ServerPlayer player, Advancement advancement, String criterionName);
     }
 }

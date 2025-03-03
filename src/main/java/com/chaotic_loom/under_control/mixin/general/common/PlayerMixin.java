@@ -1,7 +1,12 @@
 package com.chaotic_loom.under_control.mixin.general.common;
 
 import com.chaotic_loom.under_control.events.EventResult;
+import com.chaotic_loom.under_control.events.types.PlayerExtraEvents;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.mojang.datafixers.util.Either;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Unit;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.Entity;
@@ -66,5 +71,20 @@ public class PlayerMixin {
         }
 
         return original;
+    }
+
+    @Inject(method = "actuallyHurt", at = @At("HEAD"))
+    public void actuallyHurt(DamageSource damageSource, float amount, CallbackInfo ci) {
+        PlayerExtraEvents.DAMAGED.invoker().onEvent((Player) (Object) this, damageSource, amount);
+    }
+
+    @Inject(method = "startSleepInBed", at = @At("RETURN"))
+    private void onStartSleepInBed(BlockPos blockPos, CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> cir) {
+        PlayerExtraEvents.SLEEPING_START.invoker().onEvent((Player) (Object) this, blockPos);
+    }
+
+    @Inject(method = "stopSleepInBed", at = @At("HEAD"))
+    private void onStopSleepInBed(boolean bl, boolean bl2, CallbackInfo ci) {
+        PlayerExtraEvents.SLEEPING_STOPPED.invoker().onEvent((Player) (Object) this, bl, bl2);
     }
 }
