@@ -11,6 +11,8 @@
   "gui.under_control.config.client_side": "Client side",
   "gui.under_control.config.server_side": "Server side",
   "gui.under_control.config.back": "Go back",
+  "gui.under_control.config.reset_all": "Reset all",
+  "gui.under_control.config.reset_all.tooltip": "Restores all settings to default",
   "gui.under_control.config.open_file": "Open file",
   "gui.under_control.config.reset_option": "Reset option to it's default value.",
   "gui.under_control.config.option.log_extra": "Log extra information.",

@@ -2,6 +2,7 @@ package com.chaotic_loom.under_control.mixin.general.common;
 
 import com.chaotic_loom.under_control.events.types.OtherEvents;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -14,16 +15,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class LootContainerMixins {
     @Mixin(RandomizableContainerBlockEntity.class)
-    public static class RandomizableContainerBlockEntityMixin {
+    public abstract static class RandomizableContainerBlockEntityMixin {
         @Inject(
                 method = "unpackLootTable",
                 at = @At(
                         value = "INVOKE",
-                        target = "Lnet/minecraft/world/level/storage/loot/LootTable;fill(Lnet/minecraft/world/Container;Lnet/minecraft/world/level/storage/loot/LootParams;J)V"
+                        target = "Lnet/minecraft/world/level/storage/loot/LootTable;fill(Lnet/minecraft/world/Container;Lnet/minecraft/world/level/storage/loot/LootParams;J)V",
+                        shift = At.Shift.AFTER
                 )
         )
         private void onUnpackLootTable(Player player, CallbackInfo ci, @Local LootTable lootTable) {
-            onLootTableOpenedFirstTime(player, lootTable, false);
+            OtherEvents.LOOT_CONTAINER_GENERATED_LOOT.invoker().onEvent(player, lootTable, (Container) (Object) this, false);
         }
     }
 
@@ -33,16 +35,12 @@ public class LootContainerMixins {
                 method = "unpackChestVehicleLootTable",
                 at = @At(
                         value = "INVOKE",
-                        target = "Lnet/minecraft/world/level/storage/loot/LootTable;fill(Lnet/minecraft/world/Container;Lnet/minecraft/world/level/storage/loot/LootParams;J)V"
+                        target = "Lnet/minecraft/world/level/storage/loot/LootTable;fill(Lnet/minecraft/world/Container;Lnet/minecraft/world/level/storage/loot/LootParams;J)V",
+                        shift = At.Shift.AFTER
                 )
         )
         private void unpackChestVehicleLootTable(Player player, CallbackInfo ci, @Local LootTable lootTable) {
-            onLootTableOpenedFirstTime(player, lootTable, true);
+            OtherEvents.LOOT_CONTAINER_GENERATED_LOOT.invoker().onEvent(player, lootTable, (Container) (Object) this, true);
         }
-    }
-
-    @Unique
-    private static void onLootTableOpenedFirstTime(Player player, LootTable lootTable, boolean isEntityContainer) {
-        OtherEvents.LOOT_CONTAINER_GENERATED_LOOT.invoker().onEvent(player, lootTable, isEntityContainer);
     }
 }

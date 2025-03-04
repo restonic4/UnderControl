@@ -35,6 +35,12 @@ public class ConfigProvider extends SavingProvider {
         save(key, getDefaultValue(key));
     }
 
+    public void resetAll() {
+        for (Map.Entry<String, Pair<?, String>> entry : registeredOptions.entrySet()) {
+            resetOption(entry.getKey());
+        }
+    }
+
     public void reload() {
         getDataStore().clear();
         getDefaultValues().clear();

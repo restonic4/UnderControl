@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
@@ -97,14 +98,14 @@ public class OtherEvents {
         EventResult onExplode(Explosion explosion);
     }
 
-    public static final Event<LootContainerGeneratedLoot> LOOT_CONTAINER_GENERATED_LOOT = EventFactory.createArray(LootContainerGeneratedLoot.class, callbacks -> (player, lootTable, isEntityContainer) -> {
+    public static final Event<LootContainerGeneratedLoot> LOOT_CONTAINER_GENERATED_LOOT = EventFactory.createArray(LootContainerGeneratedLoot.class, callbacks -> (player, lootTable, container, isEntityContainer) -> {
         for (LootContainerGeneratedLoot callback : callbacks) {
-            callback.onEvent(player, lootTable, isEntityContainer);
+            callback.onEvent(player, lootTable, container, isEntityContainer);
         }
     });
 
     @FunctionalInterface
     public interface LootContainerGeneratedLoot {
-        void onEvent(Player player, LootTable lootTable, boolean isEntityContainer);
+        void onEvent(Player player, LootTable lootTable, Container container, boolean isEntityContainer);
     }
 }

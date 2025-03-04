@@ -2,16 +2,18 @@ package com.chaotic_loom.under_control.client.gui;
 
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.config.ConfigProvider;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import java.awt.*;
 import java.io.File;
@@ -23,6 +25,8 @@ import java.util.Map;
 
 @Environment(value = EnvType.CLIENT)
 public class GenericConfigScreen extends Screen {
+    public static final ResourceLocation resetAllTexture = new ResourceLocation(UnderControl.MOD_ID, "textures/gui/red_button.png");
+
     private final Screen parent;
     private final ConfigProvider configProvider;
 
@@ -209,9 +213,93 @@ public class GenericConfigScreen extends Screen {
 
         scrollHeight = (buttonHeight + buttonSpacing) * scrollableButtons.size() - buttonSpacing;
 
-        this.addRenderableWidget(Button.builder(Component.translatable("gui.under_control.config.back"), (button) -> {
-            this.onClose();
-        }).bounds((this.width - buttonWidth) / 2, this.height - buttonHeight - padding, buttonWidth, buttonHeight).build());
+        int buttonY = this.height - buttonHeight - padding;
+        int spacing = 5;
+        int bottomButtonWidth = 150;
+
+        int totalWidth = bottomButtonWidth * 2 + spacing;
+        int startX = (this.width - totalWidth) / 2;
+
+        Button backButton = Button.builder(Component.translatable("gui.under_control.config.back"), button -> {
+                    this.onClose();
+                })
+                .bounds(startX, buttonY, bottomButtonWidth, buttonHeight)
+                .build();
+
+        /*Button resetAllButton = Button.builder(Component.translatable("gui.under_control.config.reset_all"), button -> {
+                    configProvider.resetAll();
+                    this.init();
+                })
+                .bounds(startX + bottomButtonWidth + spacing, buttonY, bottomButtonWidth, buttonHeight)
+                .tooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_all.tooltip")))
+                .build();*/
+
+        ImageButton resetAllButton = new ImageButton(
+                startX + bottomButtonWidth + spacing,   // Posición X
+                buttonY,                               // Posición Y
+                bottomButtonWidth,                          // Ancho (ajustar según tu imagen)
+                buttonHeight,                          // Alto (ajustar según tu imagen)
+                0,                                      // Coordenada X inicial en la textura
+                0,                                      // Coordenada Y inicial en la textura
+                buttonHeight,                           // Offset Y para estado hover (ej: 20px abajo)
+                resetAllTexture,                        // Ubicación de la textura
+                200,                                    // Ancho total de la textura
+                60,                                    // Alto total de la textura
+                button -> {
+                    configProvider.resetAll();
+                    this.init();
+                },
+                Component.translatable("gui.under_control.config.reset_all")
+        ) {
+            @Override
+            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+                //this.renderTexture(guiGraphics, this.resourceLocation, this.getX(), this.getY(), this.xTexStart, this.yTexStart, this.yDiffTex, this.width, this.height, this.textureWidth, this.textureHeight);
+
+                guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
+                RenderSystem.enableBlend();
+                RenderSystem.enableDepthTest();
+
+                int thing = (int) (Math.sin((double) System.currentTimeMillis() / 1000) * 10);
+
+                guiGraphics.blitNineSliced(
+                        this.resourceLocation,
+                        this.getX(),
+                        this.getY(),
+                        this.getWidth(),
+                        this.getHeight(),
+                        20,
+                        4,
+                        200,
+                        20,
+                        0,
+                        this.getTextureY()
+                );
+
+                guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+                int k = this.active ? 16777215 : 10526880;
+                this.renderString(guiGraphics, minecraft.font, k | Mth.ceil(this.alpha * 255.0F) << 24);
+            }
+
+            public void renderString(GuiGraphics guiGraphics, Font font, int i) {
+                this.renderScrollingString(guiGraphics, font, 2, i);
+            }
+
+            private int getTextureY() {
+                int i = 1;
+                if (!this.active) {
+                    i = 0;
+                } else if (this.isHoveredOrFocused()) {
+                    i = 2;
+                }
+
+                return i * 20;
+            }
+        };
+        resetAllButton.setTooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_all.tooltip")));
+
+        this.addRenderableWidget(backButton);
+        this.addRenderableWidget(resetAllButton);
     }
 
     @Override
