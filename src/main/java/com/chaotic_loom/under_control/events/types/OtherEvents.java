@@ -11,7 +11,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.List;
 
@@ -93,5 +95,16 @@ public class OtherEvents {
     @FunctionalInterface
     public interface Explode {
         EventResult onExplode(Explosion explosion);
+    }
+
+    public static final Event<LootContainerGeneratedLoot> LOOT_CONTAINER_GENERATED_LOOT = EventFactory.createArray(LootContainerGeneratedLoot.class, callbacks -> (player, lootTable, isEntityContainer) -> {
+        for (LootContainerGeneratedLoot callback : callbacks) {
+            callback.onEvent(player, lootTable, isEntityContainer);
+        }
+    });
+
+    @FunctionalInterface
+    public interface LootContainerGeneratedLoot {
+        void onEvent(Player player, LootTable lootTable, boolean isEntityContainer);
     }
 }

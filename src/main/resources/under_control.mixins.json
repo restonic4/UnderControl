@@ -26,6 +26,8 @@
     "general.common.FishingHookMixin",
     "general.common.ListPlayersCommandMixin",
     "general.common.LivingEntityMixin",
+    "general.common.LootContainerMixins$ContainerEntityMixin",
+    "general.common.LootContainerMixins$RandomizableContainerBlockEntityMixin",
     "general.common.MapItemSavedDataMixin",
     "general.common.MinecraftServerMixin",
     "general.common.MobEffectsMixin",
