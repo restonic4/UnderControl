@@ -5,6 +5,7 @@ import com.chaotic_loom.under_control.config.ConfigProvider;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -38,6 +39,8 @@ public class GenericConfigScreen extends Screen {
     private final int buttonHeight = 20;
     private final int buttonSpacing = 5;
     private final int padding = 10;
+    private final int titleSpacing = 15;
+    private final int groupSpacing = 15;
 
     private int scrollOffset = 0;
     private int scrollHeight;
@@ -81,156 +84,175 @@ public class GenericConfigScreen extends Screen {
         widgetComments.clear();
         resetButtons.clear();
 
-        Map<String, Object> savedConfigs = configProvider.getConfigs();
+        int y = padding + groupSpacing;
 
-        int y = padding;
-        for (Map.Entry<String, Object> entry : savedConfigs.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
+        Map<String, Map<String, Object>> configGroups = configProvider.getConfigs();
+        for (Map.Entry<String, Map<String, Object>> groupEntry : configGroups.entrySet()) {
+            String groupName = groupEntry.getKey();
+            Map<String, Object> savedConfigs = groupEntry.getValue();
 
-            Component label = Component.translatable("gui." + configProvider.getModID() + ".config.option." + key);
-            int labelHeight = this.font.lineHeight;
+            Component groupTitle = Component.literal(groupName)
+                    .withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE);
 
-            AbstractWidget abstractWidget;
+            StringWidget titleWidget = new StringWidget(
+                    0,
+                    y,
+                    this.width,
+                    font.lineHeight,
+                    groupTitle,
+                    this.font
+            );
 
-            // Widgets types
-            if (value instanceof Boolean) {
-                final boolean[] currentValue = {(Boolean) value};
+            this.addRenderableWidget(titleWidget);
 
-                Button boolButton = Button.builder(Component.literal(value.toString()), (button) -> {
-                    currentValue[0] = !currentValue[0];
+            y += font.lineHeight + titleSpacing;
 
-                    button.setMessage(Component.literal(String.valueOf(currentValue[0])));
-                    configProvider.save(key, currentValue[0]);
-                }).bounds(buttonHorizontalPosition, y, buttonWidth, buttonHeight).tooltip(Tooltip.create(Component.literal(configProvider.getComment(key)))).build();
+            for (Map.Entry<String, Object> entry : savedConfigs.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
 
-                abstractWidget = boolButton;
-            } else if (value instanceof Integer || value instanceof Float || value instanceof Long || value instanceof Double) {
-                String initialText = value.toString();
-                EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal(initialText));
+                Component label = Component.translatable("gui." + configProvider.getModID() + ".config.option." + key);
+                int labelHeight = this.font.lineHeight;
 
-                textField.setValue(initialText);
-                textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
+                AbstractWidget abstractWidget;
 
-                if (value instanceof Integer) {
-                    textField.setFilter(s -> s.matches("-?\\d*"));
-                } else if (value instanceof Float || value instanceof Double) {
-                    textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
-                } else if (value instanceof Long) {
-                    textField.setFilter(s -> s.matches("-?\\d*"));
-                }
+                // Widgets types
+                if (value instanceof Boolean) {
+                    final boolean[] currentValue = {(Boolean) value};
 
-                textField.setResponder(newValue -> {
-                    try {
-                        if (value instanceof Integer) {
-                            textField.setFilter(s -> s.matches("-?\\d*"));
-                            configProvider.save(key, Integer.parseInt(newValue));
-                        } else if (value instanceof Long) {
-                            textField.setFilter(s -> s.matches("-?\\d*"));
-                            configProvider.save(key, Long.parseLong(newValue));
-                        } else if (value instanceof Float) {
-                            textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
-                            configProvider.save(key, Float.parseFloat(newValue));
-                        } else if (value instanceof Double) {
-                            textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
-                            configProvider.save(key, Double.parseDouble(newValue));
-                        }
-                    } catch (NumberFormatException e) {
-                        textField.setValue(initialText);
+                    Button boolButton = Button.builder(Component.literal(value.toString()), (button) -> {
+                        currentValue[0] = !currentValue[0];
+
+                        button.setMessage(Component.literal(String.valueOf(currentValue[0])));
+                        configProvider.save(key, currentValue[0]);
+                    }).bounds(buttonHorizontalPosition, y, buttonWidth, buttonHeight).tooltip(Tooltip.create(Component.literal(configProvider.getComment(key)))).build();
+
+                    abstractWidget = boolButton;
+                } else if (value instanceof Integer || value instanceof Float || value instanceof Long || value instanceof Double) {
+                    String initialText = value.toString();
+                    EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal(initialText));
+
+                    textField.setValue(initialText);
+                    textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
+
+                    if (value instanceof Integer) {
+                        textField.setFilter(s -> s.matches("-?\\d*"));
+                    } else if (value instanceof Float || value instanceof Double) {
+                        textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
+                    } else if (value instanceof Long) {
+                        textField.setFilter(s -> s.matches("-?\\d*"));
                     }
-                });
 
-                abstractWidget = textField;
-            } else if (value instanceof String) {
-                EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal((String) value));
-
-                textField.setValue((String) value);
-                textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
-
-                textField.setResponder(newValue -> {
-                    configProvider.save(key, newValue);
-                });
-
-                abstractWidget = textField;
-            } else if (value instanceof BlockPos blockPos) {
-                String initialText = value.toString();
-
-                String formattedText;
-
-                int start = initialText.indexOf('{');
-                int end = initialText.indexOf('}');
-
-                if (start != -1 && end != -1 && start < end) {
-                    formattedText = initialText.substring(start + 1, end);
-                } else {
-                    formattedText = initialText;
-                }
-
-                EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal(formattedText));
-
-                textField.setValue(formattedText);
-                textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
-
-                textField.setFilter(s -> s.matches("^x=-?\\d+,\\s*y=-?\\d+,\\s*z=-?\\d+$"));
-
-                textField.setResponder(newValue -> {
-                    if (newValue.matches("^x=-?\\d+,\\s*y=-?\\d+,\\s*z=-?\\d+$")) {
-                        String[] parts = newValue.split("[=,]");
-
+                    textField.setResponder(newValue -> {
                         try {
-                            int bx = Integer.parseInt(parts[1].trim());
-                            int by = Integer.parseInt(parts[3].trim());
-                            int bz = Integer.parseInt(parts[5].trim());
+                            if (value instanceof Integer) {
+                                textField.setFilter(s -> s.matches("-?\\d*"));
+                                configProvider.save(key, Integer.parseInt(newValue));
+                            } else if (value instanceof Long) {
+                                textField.setFilter(s -> s.matches("-?\\d*"));
+                                configProvider.save(key, Long.parseLong(newValue));
+                            } else if (value instanceof Float) {
+                                textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
+                                configProvider.save(key, Float.parseFloat(newValue));
+                            } else if (value instanceof Double) {
+                                textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
+                                configProvider.save(key, Double.parseDouble(newValue));
+                            }
+                        } catch (NumberFormatException e) {
+                            textField.setValue(initialText);
+                        }
+                    });
 
-                            configProvider.save(key, new BlockPos(bx, by, bz));
-                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    abstractWidget = textField;
+                } else if (value instanceof String) {
+                    EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal((String) value));
+
+                    textField.setValue((String) value);
+                    textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
+
+                    textField.setResponder(newValue -> {
+                        configProvider.save(key, newValue);
+                    });
+
+                    abstractWidget = textField;
+                } else if (value instanceof BlockPos blockPos) {
+                    String initialText = value.toString();
+
+                    String formattedText;
+
+                    int start = initialText.indexOf('{');
+                    int end = initialText.indexOf('}');
+
+                    if (start != -1 && end != -1 && start < end) {
+                        formattedText = initialText.substring(start + 1, end);
+                    } else {
+                        formattedText = initialText;
+                    }
+
+                    EditBox textField = new EditBox(this.font, buttonHorizontalPosition, y, buttonWidth, buttonHeight, Component.literal(formattedText));
+
+                    textField.setValue(formattedText);
+                    textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
+
+                    textField.setFilter(s -> s.matches("^x=-?\\d+,\\s*y=-?\\d+,\\s*z=-?\\d+$"));
+
+                    textField.setResponder(newValue -> {
+                        if (newValue.matches("^x=-?\\d+,\\s*y=-?\\d+,\\s*z=-?\\d+$")) {
+                            String[] parts = newValue.split("[=,]");
+
+                            try {
+                                int bx = Integer.parseInt(parts[1].trim());
+                                int by = Integer.parseInt(parts[3].trim());
+                                int bz = Integer.parseInt(parts[5].trim());
+
+                                configProvider.save(key, new BlockPos(bx, by, bz));
+                            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                                textField.setValue(formattedText);
+                            }
+                        } else {
                             textField.setValue(formattedText);
                         }
-                    } else {
-                        textField.setValue(formattedText);
-                    }
-                });
+                    });
 
-                abstractWidget = textField;
+                    abstractWidget = textField;
 
-            } else {
-                Button openConfigButton = Button.builder(Component.translatable("gui." + UnderControl.MOD_ID + ".config.open_file"), (button) -> {
-                    openConfigFile();
-                }).bounds(buttonHorizontalPosition, y, buttonWidth, buttonHeight).tooltip(Tooltip.create(Component.literal(configProvider.getComment(key)))).build();
+                } else {
+                    Button openConfigButton = Button.builder(Component.translatable("gui." + UnderControl.MOD_ID + ".config.open_file"), (button) -> {
+                        openConfigFile();
+                    }).bounds(buttonHorizontalPosition, y, buttonWidth, buttonHeight).tooltip(Tooltip.create(Component.literal(configProvider.getComment(key)))).build();
 
-                abstractWidget = openConfigButton;
+                    abstractWidget = openConfigButton;
+                }
+
+                BetterImageButton resetButton = new BetterImageButton(
+                        buttonsTexture,
+                        buttonHorizontalPosition + buttonWidth,
+                        y,
+                        buttonHeight, buttonHeight,
+                        buttonsTextureWidth, buttonsTextureHeight,
+                        Component.literal("X"),
+                        button -> {
+                            configProvider.resetOption(key);
+                            rebuildWidgets();
+                        }
+                );
+                resetButton.setTooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option")));
+
+                scrollableButtons.add(abstractWidget);
+                widgetComments.put(abstractWidget, label);
+                this.addRenderableWidget(abstractWidget);
+
+                this.resetButtons.put(abstractWidget, resetButton);
+                this.addRenderableWidget(resetButton);
+
+                y += labelHeight + buttonHeight + buttonSpacing;
             }
 
-            /*Button resetButton = Button.builder(Component.literal("X"), (button) -> {
-                configProvider.resetOption(key);
-                rebuildWidgets();
-            }).bounds(buttonHorizontalPosition + buttonWidth, y, buttonHeight, buttonHeight).tooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option"))).build();*/
-
-            BetterImageButton resetButton = new BetterImageButton(
-                    buttonsTexture,
-                    buttonHorizontalPosition + buttonWidth,
-                    y,
-                    buttonHeight, buttonHeight,
-                    buttonsTextureWidth, buttonsTextureHeight,
-                    Component.literal("X"),
-                    button -> {
-                        configProvider.resetOption(key);
-                        rebuildWidgets();
-                    }
-            );
-            resetButton.setTooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option")));
-
-            scrollableButtons.add(abstractWidget);
-            widgetComments.put(abstractWidget, label);
-            this.addRenderableWidget(abstractWidget);
-
-            this.resetButtons.put(abstractWidget, resetButton);
-            this.addRenderableWidget(resetButton);
-
-            y += labelHeight + buttonHeight + buttonSpacing;
+            y += groupSpacing;
         }
 
-        scrollHeight = (buttonHeight + buttonSpacing) * scrollableButtons.size() - buttonSpacing;
+        //scrollHeight = (buttonHeight + buttonSpacing) * scrollableButtons.size() - buttonSpacing;
+        scrollHeight = y - padding - scrollBottomMargin;
 
         int buttonY = this.height - buttonHeight - padding;
         int spacing = 5;
@@ -269,7 +291,7 @@ public class GenericConfigScreen extends Screen {
         return true;
     }
 
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    /*public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0xFF0069B9, 0xFF00B0EF);
 
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, padding, 16777215);
@@ -285,6 +307,11 @@ public class GenericConfigScreen extends Screen {
 
         int y = -scrollOffset + scrollTop;
         for (AbstractWidget abstractWidget : scrollableButtons) {
+            if (abstractWidget instanceof StringWidget) {
+                abstractWidget.setY(y);
+                abstractWidget.render(guiGraphics, mouseX, mouseY, delta);
+                y += abstractWidget.getHeight() + titleSpacing;
+            }
             Button resetButton = resetButtons.get(abstractWidget);
 
             if (y + buttonHeight > scrollTop && y < scrollBottom) {
@@ -314,6 +341,60 @@ public class GenericConfigScreen extends Screen {
         if (scrollHeight > visibleAreaHeight) {
             int barHeight = (int) ((float) visibleAreaHeight / scrollHeight * visibleAreaHeight);
             int barY = scrollTop + (int) ((float) scrollOffset / scrollHeight * visibleAreaHeight);
+            guiGraphics.fill(this.width - scrollBarWidth - padding, barY, this.width - padding, barY + barHeight, 0xFFCCCCCC);
+        }
+
+        super.render(guiGraphics, mouseX, mouseY, delta);
+    }*/
+
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.fillGradient(0, 0, this.width, this.height, 0xFF0069B9, 0xFF00B0EF);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, padding, 16777215);
+
+        // Scrolling
+        int scrollTop = padding + 20 + padding;
+        int scrollBottom = scrollTop + visibleAreaHeight;
+
+        guiGraphics.enableScissor(padding, scrollTop, this.width - padding, scrollBottom);
+
+        // Elements
+        int yPos = -scrollOffset + scrollTop;
+        for (AbstractWidget abstractWidget : scrollableButtons) {
+            Button resetButton = resetButtons.get(abstractWidget);
+            boolean isTitle = abstractWidget instanceof StringWidget;
+
+            if (yPos + abstractWidget.getHeight() > scrollTop && yPos < scrollBottom) {
+                if (!isTitle) {
+                    drawWrappedText(guiGraphics,
+                            widgetComments.get(abstractWidget),
+                            padding,
+                            yPos,
+                            abstractWidget.getX() - padding * 2
+                    );
+                }
+
+                abstractWidget.setY(yPos);
+                abstractWidget.visible = true;
+
+                if (resetButton != null) {
+                    resetButton.setY(yPos);
+                    resetButton.visible = true;
+                }
+            } else {
+                abstractWidget.visible = false;
+                if (resetButton != null) resetButton.visible = false;
+            }
+
+            yPos += abstractWidget.getHeight() + (isTitle ? titleSpacing : buttonSpacing);
+        }
+
+        guiGraphics.disableScissor();
+
+        // Scroll bar
+        if (scrollHeight > visibleAreaHeight) {
+            int barHeight = (int) ((float) visibleAreaHeight * (visibleAreaHeight / (float) scrollHeight));
+            barHeight = Math.max(20, barHeight);
+            int barY = scrollTop + (int) ((float) scrollOffset / scrollHeight * (visibleAreaHeight - barHeight));
             guiGraphics.fill(this.width - scrollBarWidth - padding, barY, this.width - padding, barY + barHeight, 0xFFCCCCCC);
         }
 

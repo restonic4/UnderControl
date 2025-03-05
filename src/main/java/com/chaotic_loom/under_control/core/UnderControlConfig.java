@@ -11,14 +11,14 @@ public class UnderControlConfig extends ModConfig {
 
     @Override
     protected void registerClientOptions() {
-        getClientConfig().registerOption("log_extra", false, "Logs extra information about what's going on with the library.");
+        getClientConfig().registerOption("Logs", "log_extra", false, "Logs extra information about what's going on with the library.");
     }
 
     @Override
     protected void registerServerOptions() {
-        getServerConfig().registerOption("log_extra", false, "Logs extra information about what's going on with the library.");
         getServerConfig().registerOption("allow_render_command", true, "Allows the client the use of the render command.");
         getServerConfig().registerOption("mod_incompatibilities", new IncompatibilitiesList(), "It allows the server to prevent a player from joining with an incompatible mod, or you can even use it as a small layer of security to prevent users from using malicious mods.");
-        getServerConfig().registerOption("log_on_reload_in_chat", true, "Logs info on chat when the server reloads.");
+        getServerConfig().registerOption("Logs", "log_extra", false, "Logs extra information about what's going on with the library.");
+        getServerConfig().registerOption("Logs", "log_on_reload_in_chat", true, "Logs info on chat when the server reloads.");
     }
 }

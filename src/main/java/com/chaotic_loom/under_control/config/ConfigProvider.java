@@ -63,21 +63,6 @@ public class ConfigProvider extends SavingProvider {
         }
     }
 
-    Map<String, Object> cachedConfigs = new HashMap<>();
-    public Map<String, Object> getConfigs() {
-        cachedConfigs.clear();
-
-        for (Map.Entry<String, Object> entry : getDataStore().entrySet()) {
-            String key = entry.getKey();
-
-            if (registeredOptions.containsKey(key)) {
-                cachedConfigs.put(key, entry.getValue());
-            }
-        }
-
-        return cachedConfigs;
-    }
-
     public Map<String, List<String>> getGroups() {
         return groups.entrySet().stream()
                 .collect(Collectors.toMap(
@@ -86,6 +71,32 @@ public class ConfigProvider extends SavingProvider {
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
+    }
+
+    private final LinkedHashMap<String, Map<String, Object>> cachedGroupedConfigs = new LinkedHashMap<>();
+
+    public Map<String, Map<String, Object>> getConfigs() {
+        cachedGroupedConfigs.clear();
+
+        // Iterar sobre los grupos en orden de inserción
+        for (Map.Entry<String, List<String>> groupEntry : groups.entrySet()) {
+            String groupName = groupEntry.getKey();
+            Map<String, Object> groupSettings = new LinkedHashMap<>();
+
+            // Obtener todas las keys del grupo en orden de inserción
+            for (String key : groupEntry.getValue()) {
+                Object currentValue = get(key, registeredOptions.get(key).defaultValue.getClass());
+                if (currentValue != null) {
+                    groupSettings.put(key, currentValue);
+                }
+            }
+
+            if (!groupSettings.isEmpty()) {
+                cachedGroupedConfigs.put(groupName, groupSettings);
+            }
+        }
+
+        return cachedGroupedConfigs;
     }
 
     private record OptionData(Object defaultValue, String comment, String group) {
