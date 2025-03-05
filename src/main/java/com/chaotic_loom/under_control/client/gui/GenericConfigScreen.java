@@ -47,6 +47,8 @@ public class GenericConfigScreen extends Screen {
     private Map<AbstractWidget, Component> widgetComments;
     private Map<AbstractWidget, Button> resetButtons;
 
+    private PopUpScreen currentPopUp = null;
+
     public GenericConfigScreen(final Screen parent, ConfigProvider configProvider) {
         super(Component.translatable("gui.under_control.config_selector.title"));
         this.parent = parent;
@@ -342,10 +344,18 @@ public class GenericConfigScreen extends Screen {
     }
 
     private void onResetAllButton() {
-        this.minecraft.setScreen(new PopUpScreen(this));
+        if (this.currentPopUp == null) {
+            this.currentPopUp = new PopUpScreen(
+                    Component.translatable("gui.under_control.config.reset_all.title"),
+                    Component.translatable("gui.under_control.config.reset_all.message"),
+                    () -> {
+                        configProvider.resetAll();
+                        rebuildWidgets();
+                    }
+            );
+        }
 
-        /*configProvider.resetAll();
-        this.init();*/
+        this.currentPopUp.setShouldBeRendered(true);
     }
 
     private void openConfigFile() {

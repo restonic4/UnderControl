@@ -1,5 +1,6 @@
 package com.chaotic_loom.under_control.client.rendering;
 
+import com.chaotic_loom.under_control.client.gui.DynamicScreen;
 import com.chaotic_loom.under_control.client.rendering.shader.ShaderHolder;
 import com.chaotic_loom.under_control.util.FlagFactory;
 import com.chaotic_loom.under_control.util.data_holders.RenderingFlags;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -318,6 +320,20 @@ public class RenderingHelper {
     }
 
     public static abstract class GUI {
+        private static List<DynamicScreen> dynamicScreens = new ArrayList<>();
+
+        public static void registerDynamicScreen(DynamicScreen dynamicScreen) {
+            dynamicScreens.add(dynamicScreen);
+        }
+
+        public static void removeDynamicScreen(DynamicScreen dynamicScreen) {
+            dynamicScreens.remove(dynamicScreen);
+        }
+
+        public static List<DynamicScreen> getDynamicScreens() {
+            return dynamicScreens;
+        }
+
         public static void blit(GuiGraphics guiGraphics, ResourceLocation resourceLocation, int x, int y, int u, int v, int width, int height, int totalTextureWidth, int totalTextureHeight) {
             guiGraphics.blit(resourceLocation, x, y, 0, (float)u, (float)v, width, height, totalTextureWidth, totalTextureHeight);
         }

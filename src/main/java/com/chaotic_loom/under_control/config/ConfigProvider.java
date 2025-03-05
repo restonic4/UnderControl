@@ -3,25 +3,32 @@ package com.chaotic_loom.under_control.config;
 import com.mojang.datafixers.util.Pair;
 import com.chaotic_loom.under_control.saving.SavingProvider;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConfigProvider extends SavingProvider {
-    private final Map<String, Pair<?, String>> registeredOptions;
+    private final Map<String, OptionData> registeredOptions;
+    private final LinkedHashMap<String, List<String>> groups;
 
     public ConfigProvider(String modID, String saveFilePath) {
         super(modID, saveFilePath);
         this.registeredOptions = new HashMap<>();
+        this.groups = new LinkedHashMap<>();
     }
 
     public <T> void registerOption(String key, T defaultValue, String comment) {
+        registerOption("default", key, defaultValue, comment);
+    }
+
+    public <T> void registerOption(String group, String key, T defaultValue, String comment) {
         Class<?> type = defaultValue.getClass();
 
         if (!registeredOptions.containsKey(key)) {
-            registeredOptions.put(key, new Pair<>(defaultValue, comment));
-        }
+            OptionData data = new OptionData(defaultValue, comment, group);
+            registeredOptions.put(key, data);
 
-        //T duplicatedInstance = JavaHelper.cloneObject(defaultValue);
+            groups.computeIfAbsent(group, k -> new ArrayList<>()).add(key);
+        }
 
         if (get(key, type) == null) {
             addComment(key, comment);
@@ -36,8 +43,8 @@ public class ConfigProvider extends SavingProvider {
     }
 
     public void resetAll() {
-        for (Map.Entry<String, Pair<?, String>> entry : registeredOptions.entrySet()) {
-            resetOption(entry.getKey());
+        for (String key : registeredOptions.keySet()) {
+            resetOption(key);
         }
     }
 
@@ -48,12 +55,11 @@ public class ConfigProvider extends SavingProvider {
 
         super.loadFromFile();
 
-        for (Map.Entry<String, Pair<?, String>> entry : registeredOptions.entrySet()) {
+        for (Map.Entry<String, OptionData> entry : registeredOptions.entrySet()) {
             String optionKey = entry.getKey();
-            Object optionDefaultValue = entry.getValue().getFirst();
-            String optionComment = entry.getValue().getSecond();
+            OptionData data = entry.getValue();
 
-            registerOption(optionKey, optionDefaultValue, optionComment);
+            registerOption(data.group, optionKey, data.defaultValue, data.comment);
         }
     }
 
@@ -70,5 +76,18 @@ public class ConfigProvider extends SavingProvider {
         }
 
         return cachedConfigs;
+    }
+
+    public Map<String, List<String>> getGroups() {
+        return groups.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> List.copyOf(entry.getValue()),
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private record OptionData(Object defaultValue, String comment, String group) {
     }
 }

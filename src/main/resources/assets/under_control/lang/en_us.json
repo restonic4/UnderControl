@@ -20,5 +20,8 @@
   "gui.under_control.config.option.mod_incompatibilities": "Mod incompatibilities.",
   "gui.under_control.config.option.log_on_reload_in_chat": "Log info on reloads in chat.",
   "message.under_control.server.reload.complete": "Server reloaded correctly!",
-  "message.under_control.server.reload.error": "Server reload failed!"
+  "message.under_control.server.reload.error": "Server reload failed!",
+  "gui.under_control.config.reset_all.title": "Reset all?",
+  "gui.under_control.config.reset_all.message": "This will reset every setting to it's default value, you can not undo this action.",
+  "gui.under_control.config.confirm": "Confirm"
 }

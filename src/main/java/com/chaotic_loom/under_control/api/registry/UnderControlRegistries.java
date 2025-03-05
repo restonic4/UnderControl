@@ -1,5 +1,6 @@
 package com.chaotic_loom.under_control.api.registry;
 
+import com.chaotic_loom.under_control.client.gui.DynamicScreen;
 import com.chaotic_loom.under_control.debug.Debugger;
 import com.chaotic_loom.under_control.registries.core.RegistryGroup;
 import com.chaotic_loom.under_control.registries.core.RegistryObject;

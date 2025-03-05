@@ -57,6 +57,7 @@
     "general.client.GameRendererMixin",
     "general.client.LevelRendererMixin",
     "general.client.MinecraftMixin",
+    "general.client.MouseHandlerMixin",
     "general.client.ReceivingLevelScreenMixin",
     "general.client.SoundEngineMixin"
   ],
