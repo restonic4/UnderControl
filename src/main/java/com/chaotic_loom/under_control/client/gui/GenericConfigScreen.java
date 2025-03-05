@@ -9,6 +9,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.PopupScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,9 @@ import java.util.Map;
 
 @Environment(value = EnvType.CLIENT)
 public class GenericConfigScreen extends Screen {
-    public static final ResourceLocation resetAllTexture = new ResourceLocation(UnderControl.MOD_ID, "textures/gui/red_button.png");
+    public static final ResourceLocation buttonsTexture = new ResourceLocation(UnderControl.MOD_ID, "textures/gui/buttons.png");
+    public static final int buttonsTextureWidth = 200;
+    public static final int buttonsTextureHeight = 60;
 
     private final Screen parent;
     private final ConfigProvider configProvider;
@@ -196,10 +199,24 @@ public class GenericConfigScreen extends Screen {
                 abstractWidget = openConfigButton;
             }
 
-            Button resetButton = Button.builder(Component.literal("X"), (button) -> {
+            /*Button resetButton = Button.builder(Component.literal("X"), (button) -> {
                 configProvider.resetOption(key);
                 rebuildWidgets();
-            }).bounds(buttonHorizontalPosition + buttonWidth, y, buttonHeight, buttonHeight).tooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option"))).build();
+            }).bounds(buttonHorizontalPosition + buttonWidth, y, buttonHeight, buttonHeight).tooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option"))).build();*/
+
+            BetterImageButton resetButton = new BetterImageButton(
+                    buttonsTexture,
+                    buttonHorizontalPosition + buttonWidth,
+                    y,
+                    buttonHeight, buttonHeight,
+                    buttonsTextureWidth, buttonsTextureHeight,
+                    Component.literal("X"),
+                    button -> {
+                        configProvider.resetOption(key);
+                        rebuildWidgets();
+                    }
+            );
+            resetButton.setTooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option")));
 
             scrollableButtons.add(abstractWidget);
             widgetComments.put(abstractWidget, label);
@@ -226,76 +243,17 @@ public class GenericConfigScreen extends Screen {
                 .bounds(startX, buttonY, bottomButtonWidth, buttonHeight)
                 .build();
 
-        /*Button resetAllButton = Button.builder(Component.translatable("gui.under_control.config.reset_all"), button -> {
-                    configProvider.resetAll();
-                    this.init();
-                })
-                .bounds(startX + bottomButtonWidth + spacing, buttonY, bottomButtonWidth, buttonHeight)
-                .tooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_all.tooltip")))
-                .build();*/
-
-        ImageButton resetAllButton = new ImageButton(
-                startX + bottomButtonWidth + spacing,   // Posición X
-                buttonY,                               // Posición Y
-                bottomButtonWidth,                          // Ancho (ajustar según tu imagen)
-                buttonHeight,                          // Alto (ajustar según tu imagen)
-                0,                                      // Coordenada X inicial en la textura
-                0,                                      // Coordenada Y inicial en la textura
-                buttonHeight,                           // Offset Y para estado hover (ej: 20px abajo)
-                resetAllTexture,                        // Ubicación de la textura
-                200,                                    // Ancho total de la textura
-                60,                                    // Alto total de la textura
+        BetterImageButton resetAllButton = new BetterImageButton(
+                buttonsTexture,
+                startX + bottomButtonWidth + spacing,
+                buttonY,
+                bottomButtonWidth, buttonHeight,
+                buttonsTextureWidth, buttonsTextureHeight,
+                Component.translatable("gui.under_control.config.reset_all"),
                 button -> {
-                    configProvider.resetAll();
-                    this.init();
-                },
-                Component.translatable("gui.under_control.config.reset_all")
-        ) {
-            @Override
-            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-                //this.renderTexture(guiGraphics, this.resourceLocation, this.getX(), this.getY(), this.xTexStart, this.yTexStart, this.yDiffTex, this.width, this.height, this.textureWidth, this.textureHeight);
-
-                guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-                RenderSystem.enableBlend();
-                RenderSystem.enableDepthTest();
-
-                int thing = (int) (Math.sin((double) System.currentTimeMillis() / 1000) * 10);
-
-                guiGraphics.blitNineSliced(
-                        this.resourceLocation,
-                        this.getX(),
-                        this.getY(),
-                        this.getWidth(),
-                        this.getHeight(),
-                        20,
-                        4,
-                        200,
-                        20,
-                        0,
-                        this.getTextureY()
-                );
-
-                guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-                int k = this.active ? 16777215 : 10526880;
-                this.renderString(guiGraphics, minecraft.font, k | Mth.ceil(this.alpha * 255.0F) << 24);
-            }
-
-            public void renderString(GuiGraphics guiGraphics, Font font, int i) {
-                this.renderScrollingString(guiGraphics, font, 2, i);
-            }
-
-            private int getTextureY() {
-                int i = 1;
-                if (!this.active) {
-                    i = 0;
-                } else if (this.isHoveredOrFocused()) {
-                    i = 2;
+                    onResetAllButton();
                 }
-
-                return i * 20;
-            }
-        };
+        );
         resetAllButton.setTooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_all.tooltip")));
 
         this.addRenderableWidget(backButton);
@@ -381,6 +339,13 @@ public class GenericConfigScreen extends Screen {
     public void onClose() {
         this.configProvider.saveToFile();
         this.minecraft.setScreen(this.parent);
+    }
+
+    private void onResetAllButton() {
+        this.minecraft.setScreen(new PopUpScreen(this));
+
+        /*configProvider.resetAll();
+        this.init();*/
     }
 
     private void openConfigFile() {

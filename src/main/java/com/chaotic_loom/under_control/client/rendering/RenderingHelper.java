@@ -7,11 +7,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.chaotic_loom.under_control.registries.client.UnderControlShaders;
 import com.chaotic_loom.under_control.util.MathHelper;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -312,5 +315,74 @@ public class RenderingHelper {
                 xRotation, yRotation, zRotation,
                 flags
         );
+    }
+
+    public static abstract class GUI {
+        public static void blit(GuiGraphics guiGraphics, ResourceLocation resourceLocation, int x, int y, int u, int v, int width, int height, int totalTextureWidth, int totalTextureHeight) {
+            guiGraphics.blit(resourceLocation, x, y, 0, (float)u, (float)v, width, height, totalTextureWidth, totalTextureHeight);
+        }
+
+        public static void blitNineSlicedTexture(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int outerSliceWidth, int outerSliceHeight, int centerSliceWidth, int centerSliceHeight, int u, int v, int totalTextureWidth, int totalTextureHeight) {
+            blitNineSlicedTexture(guiGraphics, texture, x, y, width, height, outerSliceWidth, outerSliceHeight, outerSliceWidth, outerSliceHeight, centerSliceWidth, centerSliceHeight, u, v, totalTextureWidth, totalTextureHeight);
+        }
+
+        public static void blitNineSlicedTexture(
+                GuiGraphics guiGraphics, ResourceLocation texture,
+                int x, int y,
+                int width, int height,
+                int leftSliceWidth,
+                int topSliceHeight,
+                int rightSliceWidth,
+                int bottomSliceHeight,
+                int centerSliceWidth, int centerSliceHeight,
+                int u, int v,
+                int totalTextureWidth, int totalTextureHeight
+        ) {
+            leftSliceWidth = Math.min(leftSliceWidth, width / 2);
+            rightSliceWidth = Math.min(rightSliceWidth, width / 2);
+            topSliceHeight = Math.min(topSliceHeight, height / 2);
+            bottomSliceHeight = Math.min(bottomSliceHeight, height / 2);
+
+            if (width == centerSliceWidth && height == centerSliceHeight) {
+                blit(guiGraphics, texture, x, y, u, v, width, height, totalTextureWidth, totalTextureHeight);
+            } else if (height == centerSliceHeight) {
+                blit(guiGraphics, texture, x, y, u, v, leftSliceWidth, height, totalTextureWidth, totalTextureHeight);
+                blitRepeating(guiGraphics, texture, x + leftSliceWidth, y, width - rightSliceWidth - leftSliceWidth, height, u + leftSliceWidth, v, centerSliceWidth - rightSliceWidth - leftSliceWidth, centerSliceHeight, totalTextureWidth, totalTextureHeight);
+                blit(guiGraphics, texture, x + width - rightSliceWidth, y, u + centerSliceWidth - rightSliceWidth, v, rightSliceWidth, height, totalTextureWidth, totalTextureHeight);
+            } else if (width == centerSliceWidth) {
+                blit(guiGraphics, texture, x, y, u, v, width, topSliceHeight, totalTextureWidth, totalTextureHeight);
+                blitRepeating(guiGraphics, texture, x, y + topSliceHeight, width, height - bottomSliceHeight - topSliceHeight, u, v + topSliceHeight, centerSliceWidth, centerSliceHeight - bottomSliceHeight - topSliceHeight, totalTextureWidth, totalTextureHeight);
+                blit(guiGraphics, texture, x, y + height - bottomSliceHeight, u, v + centerSliceHeight - bottomSliceHeight, width, bottomSliceHeight, totalTextureWidth, totalTextureHeight);
+            } else {
+                blit(guiGraphics, texture, x, y, u, v, leftSliceWidth, topSliceHeight, totalTextureWidth, totalTextureHeight);
+                blitRepeating(guiGraphics, texture, x + leftSliceWidth, y, width - rightSliceWidth - leftSliceWidth, topSliceHeight, u + leftSliceWidth, v, centerSliceWidth - rightSliceWidth - leftSliceWidth, topSliceHeight, totalTextureWidth, totalTextureHeight);
+                blit(guiGraphics, texture, x + width - rightSliceWidth, y, u + centerSliceWidth - rightSliceWidth, v, rightSliceWidth, topSliceHeight, totalTextureWidth, totalTextureHeight);
+                blit(guiGraphics, texture, x, y + height - bottomSliceHeight, u, v + centerSliceHeight - bottomSliceHeight, leftSliceWidth, bottomSliceHeight, totalTextureWidth, totalTextureHeight);
+                blitRepeating(guiGraphics, texture, x + leftSliceWidth, y + height - bottomSliceHeight, width - rightSliceWidth - leftSliceWidth, bottomSliceHeight, u + leftSliceWidth, v + centerSliceHeight - bottomSliceHeight, centerSliceWidth - rightSliceWidth - leftSliceWidth, bottomSliceHeight, totalTextureWidth, totalTextureHeight);
+                blit(guiGraphics, texture, x + width - rightSliceWidth, y + height - bottomSliceHeight, u + centerSliceWidth - rightSliceWidth, v + centerSliceHeight - bottomSliceHeight, rightSliceWidth, bottomSliceHeight, totalTextureWidth, totalTextureHeight);
+                blitRepeating(guiGraphics, texture, x, y + topSliceHeight, leftSliceWidth, height - bottomSliceHeight - topSliceHeight, u, v + topSliceHeight, leftSliceWidth, centerSliceHeight - bottomSliceHeight - topSliceHeight, totalTextureWidth, totalTextureHeight);
+                blitRepeating(guiGraphics, texture, x + leftSliceWidth, y + topSliceHeight, width - rightSliceWidth - leftSliceWidth, height - bottomSliceHeight - topSliceHeight, u + leftSliceWidth, v + topSliceHeight, centerSliceWidth - rightSliceWidth - leftSliceWidth, centerSliceHeight - bottomSliceHeight - topSliceHeight, totalTextureWidth, totalTextureHeight);
+                blitRepeating(guiGraphics, texture, x + width - rightSliceWidth, y + topSliceHeight, leftSliceWidth, height - bottomSliceHeight - topSliceHeight, u + centerSliceWidth - rightSliceWidth, v + topSliceHeight, rightSliceWidth, centerSliceHeight - bottomSliceHeight - topSliceHeight, totalTextureWidth, totalTextureHeight);
+            }
+        }
+
+        public static void blitRepeating(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int u, int v, int textureWidth, int textureHeight, int totalTextureWidth, int totalTextureHeight) {
+            int newX = x;
+            int newWidth;
+
+            for(IntIterator var11 = GuiGraphics.slices(width, textureWidth); var11.hasNext(); newX += newWidth) {
+                newWidth = var11.nextInt();
+
+                int uOffset = (textureWidth - newWidth) / 2;
+                int newY = y;
+                int newHeight;
+
+                for(IntIterator var15 = GuiGraphics.slices(height, textureHeight); var15.hasNext(); newY += newHeight) {
+                    newHeight = var15.nextInt();
+                    int vOffset = (textureHeight - newHeight) / 2;
+                    blit(guiGraphics, texture, newX, newY, u + uOffset, v + vOffset, newWidth, newHeight, totalTextureWidth, totalTextureHeight);
+                }
+            }
+        }
     }
 }

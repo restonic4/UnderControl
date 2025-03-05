@@ -6,3 +6,5 @@ transitive-accessible	field	net/minecraft/client/renderer/ShaderInstance	uniform
 accessible  class   net/minecraft/client/renderer/RenderStateShard$ShaderStateShard
 accessible method net/minecraft/client/quickplay/QuickPlay joinMultiplayerWorld (Lnet/minecraft/client/Minecraft;Ljava/lang/String;)V
 accessible field com/mojang/blaze3d/systems/RenderSystem renderThread Ljava/lang/Thread;
+accessible method net/minecraft/client/gui/components/AbstractButton getTextureY ()I
+accessible method net/minecraft/client/gui/GuiGraphics slices (II)Lit/unimi/dsi/fastutil/ints/IntIterator;
