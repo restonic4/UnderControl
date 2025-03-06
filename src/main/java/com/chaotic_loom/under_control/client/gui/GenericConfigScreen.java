@@ -209,7 +209,7 @@ public class GenericConfigScreen extends Screen {
         EditBox textField = new EditBox(font, x, y, width, height, Component.literal(formattedText));
 
         textField.setValue(formattedText);
-        textField.setTooltip(Tooltip.create(Component.literal(configProvider.getComment(key))));
+        textField.setTooltip(Tooltip.create(comment));
 
         textField.setFilter(s -> s.matches("^x=-?\\d+,\\s*y=-?\\d+,\\s*z=-?\\d+$"));
 
@@ -235,6 +235,10 @@ public class GenericConfigScreen extends Screen {
     }
 
     private AbstractWidget createStringWidget(String key, String value, Component comment, int x, int y, int width, int height) {
+        if (value == null) {
+            value = configProvider.get(key, String.class);
+        }
+
         EditBox textField = new EditBox(font, x, y, width, height, Component.literal((String) value));
 
         textField.setValue((String) value);
@@ -263,14 +267,6 @@ public class GenericConfigScreen extends Screen {
         resetButton.setTooltip(Tooltip.create(Component.translatable("gui.under_control.config.reset_option")));
 
         return resetButton;
-    }
-
-    private Number parseNumber(String text, Number original) {
-        if (original instanceof Integer) return Integer.parseInt(text);
-        if (original instanceof Long) return Long.parseLong(text);
-        if (original instanceof Float) return Float.parseFloat(text);
-        if (original instanceof Double) return Double.parseDouble(text);
-        return original;
     }
 
     private void setupStaticButtons() {
