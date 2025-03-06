@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//TODO: NUMBER CONFIGS BROKEN, CANT CHANGE THEM
+
 @Environment(value = EnvType.CLIENT)
 public class GenericConfigScreen extends Screen {
     public static final ResourceLocation BUTTONS_TEXTURE = new ResourceLocation(UnderControl.MOD_ID, "textures/gui/buttons.png");
