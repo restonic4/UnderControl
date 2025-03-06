@@ -53,6 +53,7 @@
   "client": [
     "general.client.AbstractButtonMixin",
     "general.client.CameraMixin",
+    "general.client.EffectInstanceMixin",
     "general.client.EntityRendererMixin",
     "general.client.GameRendererMixin",
     "general.client.LevelRendererMixin",
