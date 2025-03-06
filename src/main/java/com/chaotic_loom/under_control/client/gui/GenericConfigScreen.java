@@ -49,7 +49,6 @@ public class GenericConfigScreen extends Screen {
     private int scrollOffset = 0;
     private int totalContentHeight = 0;
     private int visibleAreaHeight;
-    private boolean isScrolling = false;
 
     private final List<ConfigGroup> configGroups = new ArrayList<>();
     private final List<AbstractWidget> dynamicWidgets = new ArrayList<>();
@@ -79,9 +78,13 @@ public class GenericConfigScreen extends Screen {
         int widgetWidth = availableWidth - resetButtonSize - GAP;
         int resetButtonX = widgetX + widgetWidth + GAP;
 
+        int staticButtonsHeight = BUTTON_HEIGHT + PADDING;
+        int headerHeight = PADDING + font.lineHeight + PADDING;
+        visibleAreaHeight = height - headerHeight - staticButtonsHeight;
+
         for (Map.Entry<String, Map<String, Object>> groupEntry : configProvider.getConfigs().entrySet()) {
             ConfigGroup group = new ConfigGroup(
-                    Component.literal(groupEntry.getKey())
+                    Component.translatable("gui." + configProvider.getModID() + ".config.option.group." + groupEntry.getKey())
                             .withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE),
                     yCounter
             );
@@ -93,7 +96,7 @@ public class GenericConfigScreen extends Screen {
                 Object value = entry.getValue();
 
                 Component label = Component.translatable("gui." + configProvider.getModID() + ".config.option." + key);
-                Component comment = Component.literal(configProvider.getComment(key));
+                Component comment = Component.translatable("gui." + configProvider.getModID() + ".config.option." + key + ".tooltip");
 
                 ConfigEntry configEntry = new ConfigEntry(
                         createValueWidget(key, value, comment, widgetX, yCounter, widgetWidth, BUTTON_HEIGHT),
@@ -150,19 +153,31 @@ public class GenericConfigScreen extends Screen {
     }
 
     private AbstractWidget createNumberWidget(String key, Number value, Component comment, int x, int y, int width, int height) {
-        EditBox textField = new EditBox(font, x, y, width, height, Component.literal(value.toString()));
-        textField.setValue(value.toString());
+        String initialText = value.toString();
+        EditBox textField = new EditBox(font, x, y, width, height, Component.literal(initialText));
+        textField.setValue(initialText);
         textField.setTooltip(Tooltip.create(comment));
 
-        String filter = value instanceof Integer || value instanceof Long ? "-?\\d*" : "-?\\d*\\.?\\d*";
-        textField.setFilter(filter::matches);
+        // Filter
+        if (value instanceof Integer || value instanceof Long) {
+            textField.setFilter(s -> s.matches("-?\\d*"));
+        } else if (value instanceof Float || value instanceof Double) {
+            textField.setFilter(s -> s.matches("-?\\d*\\.?\\d*"));
+        }
 
-        textField.setResponder(text -> {
+        textField.setResponder(newValue -> {
             try {
-                Number newValue = parseNumber(text, value);
-                configProvider.save(key, newValue);
+                if (value instanceof Integer) {
+                    configProvider.save(key, Integer.parseInt(newValue));
+                } else if (value instanceof Long) {
+                    configProvider.save(key, Long.parseLong(newValue));
+                } else if (value instanceof Float) {
+                    configProvider.save(key, Float.parseFloat(newValue));
+                } else if (value instanceof Double) {
+                    configProvider.save(key, Double.parseDouble(newValue));
+                }
             } catch (NumberFormatException e) {
-                textField.setValue(value.toString());
+                textField.setValue(initialText);
             }
         });
 
@@ -300,7 +315,7 @@ public class GenericConfigScreen extends Screen {
 
     private void renderScrollableContent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         int scrollTop = PADDING + font.lineHeight + PADDING;
-        int scrollBottom = scrollTop + visibleAreaHeight;
+        int scrollBottom = height - BUTTON_HEIGHT - PADDING - BUTTON_HEIGHT;
 
         guiGraphics.enableScissor(PADDING, scrollTop, width - PADDING, scrollBottom);
 

@@ -16,22 +16,21 @@ public class ConfigProvider extends SavingProvider {
         this.groups = new LinkedHashMap<>();
     }
 
-    public <T> void registerOption(String key, T defaultValue, String comment) {
-        registerOption("default", key, defaultValue, comment);
+    public <T> void registerOption(String key, T defaultValue) {
+        registerOption("default", key, defaultValue);
     }
 
-    public <T> void registerOption(String group, String key, T defaultValue, String comment) {
+    public <T> void registerOption(String group, String key, T defaultValue) {
         Class<?> type = defaultValue.getClass();
 
         if (!registeredOptions.containsKey(key)) {
-            OptionData data = new OptionData(defaultValue, comment, group);
+            OptionData data = new OptionData(defaultValue, group);
             registeredOptions.put(key, data);
 
             groups.computeIfAbsent(group, k -> new ArrayList<>()).add(key);
         }
 
         if (get(key, type) == null) {
-            addComment(key, comment);
             save(key, defaultValue);
         }
 
@@ -59,7 +58,7 @@ public class ConfigProvider extends SavingProvider {
             String optionKey = entry.getKey();
             OptionData data = entry.getValue();
 
-            registerOption(data.group, optionKey, data.defaultValue, data.comment);
+            registerOption(data.group, optionKey, data.defaultValue);
         }
     }
 
@@ -99,6 +98,6 @@ public class ConfigProvider extends SavingProvider {
         return cachedGroupedConfigs;
     }
 
-    private record OptionData(Object defaultValue, String comment, String group) {
+    private record OptionData(Object defaultValue, String group) {
     }
 }

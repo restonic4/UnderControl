@@ -15,13 +15,24 @@
   "gui.under_control.config.reset_all.tooltip": "Restablece la configuración a la por defecto",
   "gui.under_control.config.open_file": "Abrir archivo",
   "gui.under_control.config.reset_option": "Reinicia la opción a su valor por defecto.",
-  "gui.under_control.config.option.log_extra": "Información extra en los logs.",
-  "gui.under_control.config.option.allow_render_command": "Permitir el uso del comando render a los jugadores.",
-  "gui.under_control.config.option.mod_incompatibilities": "Mods incompatibles.",
-  "gui.under_control.config.option.log_on_reload_in_chat": "Información en el chat al hacer reload.",
   "message.under_control.server.reload.complete": "¡Servidor recargado correctamente!",
   "message.under_control.server.reload.error": "¡Hubo un problema recargando el servidor!",
   "gui.under_control.config.reset_all.title": "¿Reiniciar todo?",
   "gui.under_control.config.reset_all.message": "Esto reiniciara todo a su valor por defecto, no podrás deshacerlo.",
-  "gui.under_control.config.confirm": "Confirmar"
+  "gui.under_control.config.confirm": "Confirmar",
+
+  "gui.under_control.config.option.group.default": "Opciones generales",
+  "gui.under_control.config.option.group.logs": "Registros",
+  "gui.under_control.config.option.group.other": "Otro",
+  "gui.under_control.config.option.group.commands": "Comandos",
+  "gui.under_control.config.option.group.testing": "Pruebas (No hace nada)",
+
+  "gui.under_control.config.option.log_extra": "Información extra en los logs.",
+  "gui.under_control.config.option.log_extra.tooltip": "Registra información extra sobre que ocurre en la librería.",
+  "gui.under_control.config.option.allow_render_command": "Permitir el uso del comando render a los jugadores.",
+  "gui.under_control.config.option.allow_render_command.tooltip": "Permite el uso del comando 'render' en este servidor.",
+  "gui.under_control.config.option.mod_incompatibilities": "Mods incompatibles.",
+  "gui.under_control.config.option.mod_incompatibilities.tooltip": "Permite al servidor no dejar que un jugador se una con un mod incompatible, o incluso puedes usar esto para añadir una pequeña capa de seguridad y asi evitar que los jugadores entren con mods maliciosos.",
+  "gui.under_control.config.option.log_on_reload_in_chat": "Información en el chat al hacer reload.",
+  "gui.under_control.config.option.log_on_reload_in_chat.tooltip": "Informa en el chat cuando el servidor hace reload."
 }
