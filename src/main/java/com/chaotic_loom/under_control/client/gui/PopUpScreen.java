@@ -123,11 +123,11 @@ public class PopUpScreen extends DynamicScreen {
 
         this.addRenderableWidget(
                 new BetterImageButton(
-                        GenericConfigScreen.buttonsTexture,
+                        GenericConfigScreen.BUTTONS_TEXTURE,
                         buttonsStartX + buttonWidth + spacing,
                         buttonsY - 2,
                         buttonWidth, buttonHeight,
-                        GenericConfigScreen.buttonsTextureWidth, GenericConfigScreen.buttonsTextureHeight,
+                        GenericConfigScreen.BUTTONS_TEXTURE_WIDTH, GenericConfigScreen.BUTTONS_TEXTURE_HEIGHT,
                         confirmText,
                         button -> {
                             this.confirmRunnable.run();

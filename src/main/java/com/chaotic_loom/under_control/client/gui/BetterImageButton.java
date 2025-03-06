@@ -5,10 +5,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
 public class BetterImageButton extends Button {
     private ResourceLocation texture;
@@ -81,5 +83,10 @@ public class BetterImageButton extends Button {
 
     public void setOuterSliceHeight(int outerSliceHeight) {
         this.outerSliceHeight = outerSliceHeight;
+    }
+
+    public BetterImageButton setTooltip(MutableComponent component) {
+        super.setTooltip(Tooltip.create(component));
+        return this;
     }
 }
