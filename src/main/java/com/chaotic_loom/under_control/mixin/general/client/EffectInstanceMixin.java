@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class EffectInstanceMixin {
     // Why is this even a thing, pls mojang
 
-    @WrapOperation(
+    /*@WrapOperation(
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/resources/ResourceLocation",
@@ -27,12 +27,9 @@ public class EffectInstanceMixin {
             method = "<init>"
     )
     ResourceLocation constructProgramIdentifier(String string, Operation<ResourceLocation> original) {
-        if (!id.contains(":")) {
-            return original.call(arg);
-        }
-        ResourceLocation split = new ResourceLocation(id);
-        return new ResourceLocation(split.getNamespace(), "shaders/program/" + split.getPath() + ".json");
-    }
+        System.out.println("Shader loading 1: " + string + ", " + original.call(string));
+        return original.call(string);
+    }*/
     /*ResourceLocation constructProgramIdentifier(String arg, Operation<ResourceLocation> original, ResourceProvider unused, String id) {
         if (!id.contains(":")) {
             return original.call(arg);
@@ -42,7 +39,7 @@ public class EffectInstanceMixin {
     }*/
 
 
-    @WrapOperation(
+    /*@WrapOperation(
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/resources/ResourceLocation",
@@ -50,11 +47,15 @@ public class EffectInstanceMixin {
             ),
             method = "getOrCreate"
     )
-    private static ResourceLocation constructProgramIdentifier(String arg, Operation<ResourceLocation> original, ResourceProvider unused, Program.Type shaderType, String id) {
+    private static ResourceLocation constructProgramIdentifier2(String string, Operation<ResourceLocation> original) {
+        System.out.println("Shader loading 1: " + string + ", " + original.call(string));
+        return original.call(string);
+    }*/
+    /*private static ResourceLocation constructProgramIdentifier(String arg, Operation<ResourceLocation> original, ResourceProvider unused, Program.Type shaderType, String id) {
         if (!arg.contains(":")) {
             return original.call(arg);
         }
         ResourceLocation split = new ResourceLocation(id);
         return new ResourceLocation(split.getNamespace(), "shaders/program/" + split.getPath() + shaderType.getExtension());
-    }
+    }*/
 }

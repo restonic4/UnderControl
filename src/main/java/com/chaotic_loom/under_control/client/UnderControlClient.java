@@ -21,6 +21,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,11 @@ public class UnderControlClient implements ClientModInitializer {
             if (client.options.keyJump.consumeClick()) {
                 ClientJumpKeyPressed.sendToServer();
             }
+        });
+
+        Minecraft mc = Minecraft.getInstance();
+        mc.execute(() -> {
+            mc.gameRenderer.loadEffect(new ResourceLocation(UnderControl.MOD_ID, "shaders/post/greyscale.json"));
         });
     }
 }

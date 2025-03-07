@@ -8,3 +8,4 @@ accessible method net/minecraft/client/quickplay/QuickPlay joinMultiplayerWorld 
 accessible field com/mojang/blaze3d/systems/RenderSystem renderThread Ljava/lang/Thread;
 accessible method net/minecraft/client/gui/components/AbstractButton getTextureY ()I
 accessible method net/minecraft/client/gui/GuiGraphics slices (II)Lit/unimi/dsi/fastutil/ints/IntIterator;
+accessible method net/minecraft/client/renderer/GameRenderer loadEffect (Lnet/minecraft/resources/ResourceLocation;)V

@@ -229,6 +229,7 @@ public class MathHelper {
         return (value - min) / (max - min);
     }
 
+
     public static Vector3f getMidPoint(Vector3f startPosition, Vector3f endPosition) {
         float midX = (startPosition.x + endPosition.x) / 2;
         float midY = (startPosition.y + endPosition.y) / 2;
