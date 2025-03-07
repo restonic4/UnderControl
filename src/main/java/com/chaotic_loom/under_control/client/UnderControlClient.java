@@ -63,9 +63,9 @@ public class UnderControlClient implements ClientModInitializer {
             }
         });
 
-        Minecraft mc = Minecraft.getInstance();
+        /*Minecraft mc = Minecraft.getInstance();
         mc.execute(() -> {
             mc.gameRenderer.loadEffect(new ResourceLocation(UnderControl.MOD_ID, "shaders/post/greyscale.json"));
-        });
+        });*/
     }
 }
