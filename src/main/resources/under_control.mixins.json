@@ -60,8 +60,10 @@
     "general.client.LevelRendererMixin",
     "general.client.MinecraftMixin",
     "general.client.MouseHandlerMixin",
+    "general.client.OptionsMixin",
     "general.client.ReceivingLevelScreenMixin",
-    "general.client.SoundEngineMixin"
+    "general.client.SoundEngineMixin",
+    "general.client.SoundOptionsScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -2,6 +2,7 @@ package com.chaotic_loom.under_control.mixin.general.common;
 
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.events.types.RegistrationEvents;
+import com.chaotic_loom.under_control.util.HiddenSoundSourcesCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.terraformersmc.modmenu.api.ModMenuApi;
@@ -56,23 +57,48 @@ public class SoundSourceMixin {
         currentOrdinal = last.ordinal() + 1;
         sourcesToRegister = new ArrayList<>();
 
+        System.out.println("-----------------------------------");
+        System.out.println("SOUND SOURCES");
+        System.out.println("-----------------------------------");
+
         for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
             CustomValue custom = container.getMetadata().getCustomValue(UnderControl.MOD_ID);
+
             if (custom != null && custom.getType() == CustomValue.CvType.OBJECT) {
-                CustomValue.CvObject modmenuObj = custom.getAsObject();
-                CustomValue soundSourcesValue = modmenuObj.get("sound_sources");
+                CustomValue.CvObject obj = custom.getAsObject();
+
+                CustomValue soundSourcesValue = obj.get("sound_sources");
 
                 if (soundSourcesValue != null && soundSourcesValue.getType() == CustomValue.CvType.ARRAY) {
-                    CustomValue.CvArray badgesArray = soundSourcesValue.getAsArray();
-                    for (int i = 0; i < badgesArray.size(); i++) {
-                        String soundSource = badgesArray.get(i).getAsString();
+                    CustomValue.CvArray sourcesArray = soundSourcesValue.getAsArray();
+                    for (int i = 0; i < sourcesArray.size(); i++) {
+                        String soundSource = sourcesArray.get(i).getAsString();
+
+                        System.out.println(soundSource);
 
                         registerSource(soundSource);
                         RegistrationEvents.SOUND_SOURCE.invoker().onEvent(soundSource);
                     }
                 }
+
+                CustomValue hiddenSoundSourcesValue = obj.get("hidden_sound_sources");
+
+                if (hiddenSoundSourcesValue != null && hiddenSoundSourcesValue.getType() == CustomValue.CvType.ARRAY) {
+                    CustomValue.CvArray sourcesArray = hiddenSoundSourcesValue.getAsArray();
+                    for (int i = 0; i < sourcesArray.size(); i++) {
+                        String soundSource = sourcesArray.get(i).getAsString();
+
+                        System.out.println(soundSource);
+
+                        SoundSource newSoundSource = registerSource(soundSource);
+                        HiddenSoundSourcesCache.registerSoundSource(newSoundSource);
+                        RegistrationEvents.SOUND_SOURCE.invoker().onEvent(soundSource);
+                    }
+                }
             }
         }
+
+        System.out.println("-----------------------------------");
 
         soundSources.addAll(sourcesToRegister);
 
@@ -82,7 +108,14 @@ public class SoundSourceMixin {
         }
 
         $VALUES = soundSources.toArray(new SoundSource[0]);
+    }
 
+    @Inject(
+            method = "<clinit>",
+            remap = false,
+            at = @At("RETURN")
+    )
+    private static void onSoundSourceInitCompleted(CallbackInfo ci) {
         RegistrationEvents.SOUND_SOURCE_COMPLETED.invoker().onEvent();
     }
 
