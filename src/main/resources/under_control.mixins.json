@@ -42,6 +42,7 @@
     "general.common.ServerLevelMixin",
     "general.common.ServerPlayerMixin",
     "general.common.SleepStatusMixin",
+    "general.common.SoundSourceMixin",
     "general.common.TellRawCommandMixin",
     "general.common.TripWireBlockMixin",
     "general.common.TurtleEggBlockMixin",

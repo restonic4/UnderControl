@@ -48,12 +48,8 @@ public class BadgeMixin {
         currentOrdinal = last.ordinal() + 1;
         badgesToRegister = new ArrayList<>();
 
-        System.out.println("WAOS 1");
-
         registerBadge("special_library", "Library", 0xff107454, 0xff093929);
         registerBadge("chaotic_loom", "Chaotic Loom", 0xFF9B59B6, 0xFF4B0082);
-
-        System.out.println("WAOS 2");
 
         badges.addAll(badgesToRegister);
 

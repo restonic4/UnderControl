@@ -18,14 +18,16 @@ public class ScreenShakeGlobalManager {
 
     public static float computeGlobalShakeOffset() {
         List<Float> intensities = new ArrayList<>();
-        Iterator<ScreenShakeManager> iterator = managers.iterator();
 
-        while (iterator.hasNext()) {
-            ScreenShakeManager manager = iterator.next();
-            float managerIntensity = manager.computeShakeOffset();
+        synchronized (managers) {
+            Iterator<ScreenShakeManager> iterator = managers.iterator();
+            while (iterator.hasNext()) {
+                ScreenShakeManager manager = iterator.next();
+                float managerIntensity = manager.computeShakeOffset();
 
-            if (managerIntensity > 0) {
-                intensities.add(managerIntensity);
+                if (managerIntensity > 0) {
+                    intensities.add(managerIntensity);
+                }
             }
         }
 
