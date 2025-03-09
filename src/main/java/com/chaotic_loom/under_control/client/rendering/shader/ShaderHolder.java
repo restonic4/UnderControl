@@ -20,19 +20,19 @@ package com.chaotic_loom.under_control.client.rendering.shader;
  *
  */
 
+import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -43,12 +43,38 @@ public class ShaderHolder {
 
     protected ExtendedShaderInstance shaderInstance;
     public Collection<String> uniformsToCache;
-    private final RenderStateShard.ShaderStateShard renderStateShard = new RenderStateShard.ShaderStateShard(getInstance());
+    private final RenderStateShard.ShaderStateShard renderStateShard;
+
+    public ShaderHolder(ShaderInstance shaderInstance) throws IOException {
+        Minecraft client = Minecraft.getInstance();
+        ResourceLocation shaderLocation = new ResourceLocation("minecraft", shaderInstance.getName());
+        VertexFormat vertexFormat = shaderInstance.getVertexFormat();
+
+        ShaderHolder shaderHolder = this;
+
+        this.shaderLocation = shaderLocation;
+        this.vertexFormat = vertexFormat;
+        this.uniformsToCache = new ArrayList<>();
+
+        for (Uniform uniform : shaderInstance.uniforms) {
+            this.uniformsToCache.add(uniform.getName());
+        }
+
+        this.shaderInstance = new ExtendedShaderInstance(client.getVanillaPackResources().asProvider(), shaderLocation, vertexFormat) {
+            @Override
+            public ShaderHolder getShader() {
+                return shaderHolder;
+            }
+        };
+
+        this.renderStateShard = new RenderStateShard.ShaderStateShard(getInstance());
+    }
 
     public ShaderHolder(ResourceLocation shaderLocation, VertexFormat vertexFormat, String... uniformsToCache) {
         this.shaderLocation = shaderLocation;
         this.vertexFormat = vertexFormat;
         this.uniformsToCache = new ArrayList<>(List.of(uniformsToCache));
+        this.renderStateShard = new RenderStateShard.ShaderStateShard(getInstance());
     }
 
     public ExtendedShaderInstance createInstance(ResourceProvider provider) throws IOException {

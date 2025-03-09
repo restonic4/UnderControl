@@ -21,4 +21,15 @@ public class ShaderEvents {
     public interface Registration {
         void onRegistration(ResourceProvider resourceProvider, List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaderPairList) throws IOException;
     }
+
+    public static final Event<VanillaShadersLoaded> VANILLA_SHADERS_LOADED = EventFactory.createArray(VanillaShadersLoaded.class, callbacks -> (resourceProvider) -> {
+        for (VanillaShadersLoaded callback : callbacks) {
+            callback.onEvent(resourceProvider);
+        }
+    });
+
+    @FunctionalInterface
+    public interface VanillaShadersLoaded {
+        void onEvent(ResourceProvider resourceProvider);
+    }
 }

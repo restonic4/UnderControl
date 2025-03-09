@@ -73,4 +73,9 @@ public class GameRendererMixin {
             dynamicScreens.get(i).preRender(guiGraphics, x, y, this.minecraft.getDeltaFrameTime());
         }
     }
+
+    @Inject(method = "preloadUiShader", at = @At("TAIL"))
+    public void preloadUiShader(ResourceProvider resourceProvider, CallbackInfo ci) {
+        ShaderEvents.VANILLA_SHADERS_LOADED.invoker().onEvent(resourceProvider);
+    }
 }
