@@ -3,6 +3,9 @@ package com.chaotic_loom.under_control.client;
 import com.chaotic_loom.under_control.UnderControl;
 import com.chaotic_loom.under_control.api.registry.UnderControlRegistries;
 import com.chaotic_loom.under_control.api.registry.UnderControlRegistry;
+import com.chaotic_loom.under_control.client.rendering.RenderingHelper;
+import com.chaotic_loom.under_control.client.rendering.render_layers.CubeGeometry;
+import com.chaotic_loom.under_control.client.rendering.render_layers.RenderLayerRenderer;
 import com.chaotic_loom.under_control.config.ModConfig;
 import com.chaotic_loom.under_control.core.annotations.ExecutionSide;
 import com.chaotic_loom.under_control.core.annotations.PacketDirection;
@@ -18,10 +21,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -62,6 +67,8 @@ public class UnderControlClient implements ClientModInitializer {
                 ClientJumpKeyPressed.sendToServer();
             }
         });
+
+        WorldRenderEvents.END.register(RenderingHelper.RenderLayers::renderLayers);
 
         /*Minecraft mc = Minecraft.getInstance();
         mc.execute(() -> {
